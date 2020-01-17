@@ -24,9 +24,10 @@ public class User {
      * @param name: Name of the user.
      * @param email E-mail of the user.
      */
-    public User(String name, String email) {
+    public User(String name, String email, String phoneNumber) {
         this.name = name;
         this.email = email;
+        setPhoneNumber(phoneNumber);
     }
 
 
@@ -70,12 +71,11 @@ public class User {
      * @param phoneNumber: String value of the phone number.
      */
     public void setPhoneNumber(String phoneNumber) {
-        phoneNumber = phoneNumber.replace("\\D", "");
+        phoneNumber = phoneNumber.replaceAll("\\D", "");
         try {
-            int temp = Integer.parseInt(phoneNumber);
-            this.phoneNumber = temp;
+            this.phoneNumber = Integer.parseInt(phoneNumber);
         } catch (NumberFormatException e) {
-            System.out.println("Error: Invalid phone number. From setPhoneNumber()");
+            System.out.println("Error: Invalid phone number: " + phoneNumber + "\nFrom setPhoneNumber()");
         }
     }
 
