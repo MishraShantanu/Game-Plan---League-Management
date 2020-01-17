@@ -30,12 +30,54 @@ public class User {
     }
 
 
-    // Getter and Setters.
+    /**
+     * Retrieves the name of the user.
+     * @return name of the user.
+     */
     public String getName() { return name; }
+
+
+    /**
+     * Retrieves the email of the user.
+     * @return email of the user.
+     */
     public String getEmail() { return email; }
 
+
+    /**
+     * Retrieves the phone number of the user.
+     * @return phone number of the user.
+     */
+    public int getPhoneNumber() { return phoneNumber; }
+
+
+    /**
+     * Sets the name of the user to the given name.
+     * @param name: new name for the user.
+     */
     public void setName(String name) { this.name = name; }
+
+
+    /**
+     * Set the email of the user to the given email.
+     * @param email: new email for the user.
+     */
     public void setEmail(String email) { this.email = email; }
+
+
+    /**
+     * Set the phone number of a user to new phone number.
+     * @param phoneNumber: String value of the phone number.
+     */
+    public void setPhoneNumber(String phoneNumber) {
+        phoneNumber = phoneNumber.replace("\\D", "");
+        try {
+            int temp = Integer.parseInt(phoneNumber);
+            this.phoneNumber = temp;
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Invalid phone number. From setPhoneNumber()");
+        }
+    }
 
 
     /**
