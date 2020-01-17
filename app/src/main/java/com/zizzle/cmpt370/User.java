@@ -11,7 +11,7 @@ public class User {
     private String email;
 
     /** Phone number of the user */
-    private int phoneNumber;
+    private long phoneNumber;
 
     // TODO 15/01/2020 Add Password field.
 
@@ -49,7 +49,7 @@ public class User {
      * Retrieves the phone number of the user.
      * @return phone number of the user.
      */
-    public int getPhoneNumber() { return phoneNumber; }
+    public long getPhoneNumber() { return phoneNumber; }
 
 
     /**
@@ -73,7 +73,7 @@ public class User {
     public void setPhoneNumber(String phoneNumber) {
         phoneNumber = phoneNumber.replaceAll("\\D", "");
         try {
-            this.phoneNumber = Integer.parseInt(phoneNumber);
+            this.phoneNumber = Long.parseLong(phoneNumber);
         } catch (NumberFormatException e) {
             System.out.println("Error: Invalid phone number: " + phoneNumber + "\nFrom setPhoneNumber()");
         }
@@ -86,6 +86,6 @@ public class User {
      */
     @NonNull
     public String toString() {
-        return "Name: " + this.name + "\nEmail: " + this.email + "\n";
+        return "Name: " + this.name + "\nEmail: " + this.email + "\nPhone Number: " + this.phoneNumber + "\n";
     }
 }

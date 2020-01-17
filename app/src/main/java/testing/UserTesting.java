@@ -35,6 +35,9 @@ public class UserTesting {
     }
 
 
+    /**
+     * Tests the setEmail() function from the User class.
+     */
     private static void testSetEmail() {
         String[] expected = {
                 "tom@mail.com",
@@ -111,6 +114,47 @@ public class UserTesting {
     }
 
 
+    /**
+     * Tests the toString() function from the User class.
+     */
+    private static void testToString() {
+        String[] expected = {
+                "Name: a\n" +
+                    "Email: a@mail.com\n" +
+                    "Phone Number: 1234567890\n",
+                "Name: Shantanu\n" +
+                    "Email: shantanu@mail.com\n" +
+                    "Phone Number: 1987654321\n",
+                "Name: Lee\n" +
+                    "Email: lee@mail.gov\n" +
+                    "Phone Number: 123\n",
+                "Name: Jay Shah\n" +
+                    "Email: jay@mail.com\n" +
+                    "Phone Number: 321\n",
+                "Name: Brayden\n" +
+                    "Email: bkm257@usask.ca\n" +
+                    "Phone Number: 3066814380\n"
+        };
+
+        // Setting up test cases.
+        User[] testUsers = {
+                new User("a", "a@mail.com", "1234567890"),
+                new User("Shantanu", "shantanu@mail.com", "1987654321"),
+                new User("Lee", "lee@mail.gov", "1q2w3"),
+                new User("Jay Shah", "jay@mail.com", "number:321"),
+                new User("Brayden", "bkm257@usask.ca", "3066814380")
+        };
+
+        // Checking if toString() outputs information on User object in expected format.
+        for (int i = 0; i < testUsers.length; i++) {
+            if (!testUsers[i].toString().equals(expected[i])) {
+                System.out.println("Error testSetPhoneNumber(): Test #" + (i+1) + "\n\tExpected:\n" +
+                        expected[i] + "\treceived:\n" + testUsers[i].toString());
+            }
+        }
+    }
+
+
     public static void main(String[] args) {
         System.out.println("*** Beginning Testing ***\n");
 
@@ -122,6 +166,9 @@ public class UserTesting {
 
         System.out.println("-- SetPhoneNumber() --");
         testSetPhoneNumber();
+
+        System.out.println("-- toString() --");
+        testToString();
 
         System.out.println("\n*** Testing Complete ***");
     }
