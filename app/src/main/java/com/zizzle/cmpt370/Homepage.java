@@ -16,6 +16,8 @@ public class Homepage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         //four parameters: the activity, drawer layout, open String (see strings.xml in values folder), close String (see strings.xml)
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
@@ -25,5 +27,14 @@ public class Homepage extends AppCompatActivity {
         mToggle.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
