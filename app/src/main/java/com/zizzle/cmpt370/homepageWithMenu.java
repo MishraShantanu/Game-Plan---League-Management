@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 public class homepageWithMenu extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout; //main layout ID of homepage.xml
+    private DrawerLayout mDrawerLayout; //main layout ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
 
     @Override
