@@ -1,17 +1,20 @@
-package testing;
+package com.zizzle.cmpt370;
 
-import com.zizzle.cmpt370.User;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 
 /**
- * Class for testing the User class.
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class UserTesting {
-
+public class UserTest {
     /**
      * Tests the setName() function from the User class.
      */
-    private static void testSetName() {
+    @Test
+    public void testSetName() {
         String[] expected = {"a", "b", "JOHN BYER", "123", ""};
         // Setting up test cases.
         User[] testUsers = {
@@ -28,10 +31,7 @@ public class UserTesting {
         testUsers[4].setName("");
         // Checking to see if setName() changed the name of the user.
         for (int i = 0; i < testUsers.length; i++) {
-            if (!testUsers[i].getName().equals(expected[i])) {
-                System.out.println("Error testSetName(): Test #" + (i+1) + "\n\tExpected: " +
-                        expected[i] + ", received: " + testUsers[i].getName() + "\n");
-            }
+            assertEquals(expected[i], testUsers[i].getName());
         }
     }
 
@@ -39,7 +39,8 @@ public class UserTesting {
     /**
      * Tests the setEmail() function from the User class.
      */
-    private static void testSetEmail() {
+    @Test
+    public void testSetEmail() {
         String[] expected = {
                 "tom@mail.com",
                 "123@mail.com",
@@ -62,10 +63,7 @@ public class UserTesting {
         testUsers[4].setEmail("bar@mail.ca");
         // Checking to see if setEmail() changed the email of the user.
         for (int i = 0; i < testUsers.length; i++) {
-            if (!testUsers[i].getEmail().equals(expected[i])) {
-                System.out.println("Error testSetEmail(): Test #" + (i+1) + "\n\tExpected: " +
-                        expected[i] + ", received: " + testUsers[i].getEmail() + "\n");
-            }
+            assertEquals(expected[i], testUsers[i].getEmail());
         }
     }
 
@@ -74,23 +72,21 @@ public class UserTesting {
      * Tests the setSetPhoneNumber() function from the User class.
      * (setPhoneNumber() is used inside the User constructor)
      */
-    private static void testSetPhoneNumber() {
+    @Test
+    public void testSetPhoneNumber() {
         int expected = 1234567890;
         int[] secondExpected = {1, 1234567890, 3, 4, 5};
         // Setting up test cases.
         User[] testUsers = {
-            new User("a", "a", "(123) 456 - 7890"),
-            new User("a", "a", "1234567890"),
-            new User("a", "a", "123-456-7890"),
-            new User("a", "a", "(123)    45 6  - 7890"),
-            new User("a", "a", "123.456.7890")
+                new User("a", "a", "(123) 456 - 7890"),
+                new User("a", "a", "1234567890"),
+                new User("a", "a", "123-456-7890"),
+                new User("a", "a", "(123)    45 6  - 7890"),
+                new User("a", "a", "123.456.7890")
         };
         // Checking if setPhoneNumber() stripped non-numeric character from Phone Number.
-        for (int i = 0; i < testUsers.length; i++) {
-            if (testUsers[i].getPhoneNumber() != expected) {
-                System.out.println("Error testSetPhoneNumber(): Test #" + (i+1) + "\n\tExpected: " +
-                        expected + ", received: " + testUsers[i].getPhoneNumber() + "\n");
-            }
+        for (User user : testUsers) {
+            assertEquals(expected, user.getPhoneNumber());
         }
         // Changing the phone number of the users.
         testUsers[0].setPhoneNumber("1");
@@ -100,10 +96,7 @@ public class UserTesting {
         testUsers[4].setPhoneNumber("nijvnlfbavlfsbl5");
         // Checking if setPhoneNumber() stripped non-numeric character from Phone Number.
         for (int i = 0; i < testUsers.length; i++) {
-            if (testUsers[i].getPhoneNumber() != secondExpected[i]) {
-                System.out.println("Error testSetPhoneNumber(): Test #" + (i+1+testUsers.length) + "\n\tExpected: " +
-                        secondExpected[i] + ", received: " + testUsers[i].getPhoneNumber());
-            }
+            assertEquals(secondExpected[i], testUsers[i].getPhoneNumber());
         }
     }
 
@@ -111,28 +104,29 @@ public class UserTesting {
     /**
      * Tests the toString() function from the User class.
      */
-    private static void testToString() {
+    @Test
+    public void testToString() {
         String[] expected = {
                 "Name: a\n" +
-                    "Email: a@mail.com\n" +
-                    "Phone Number: 1234567890\n" +
-                    "Teams:",
+                        "Email: a@mail.com\n" +
+                        "Phone Number: 1234567890\n" +
+                        "Teams:",
                 "Name: Shantanu\n" +
-                    "Email: shantanu@mail.com\n" +
-                    "Phone Number: 1987654321\n" +
-                    "Teams:",
+                        "Email: shantanu@mail.com\n" +
+                        "Phone Number: 1987654321\n" +
+                        "Teams:",
                 "Name: Lee\n" +
-                    "Email: lee@mail.gov\n" +
-                    "Phone Number: 123\n" +
-                    "Teams:",
+                        "Email: lee@mail.gov\n" +
+                        "Phone Number: 123\n" +
+                        "Teams:",
                 "Name: Jay Shah\n" +
-                    "Email: jay@mail.com\n" +
-                    "Phone Number: 321\n" +
-                    "Teams:",
+                        "Email: jay@mail.com\n" +
+                        "Phone Number: 321\n" +
+                        "Teams:",
                 "Name: Brayden\n" +
-                    "Email: bkm257@usask.ca\n" +
-                    "Phone Number: 3066814380\n" +
-                    "Teams:"
+                        "Email: bkm257@usask.ca\n" +
+                        "Phone Number: 3066814380\n" +
+                        "Teams:"
         };
         // Setting up test cases.
         User[] testUsers = {
@@ -144,36 +138,7 @@ public class UserTesting {
         };
         // Checking if toString() outputs information on User object in expected format.
         for (int i = 0; i < testUsers.length; i++) {
-            if (!testUsers[i].toString().equals(expected[i])) {
-                System.out.println("Error testSetPhoneNumber(): Test #" + (i+1) + "\n\tExpected:\n" +
-                        expected[i] + "\treceived:\n" + testUsers[i].toString());
-            }
+            assertEquals(expected[i], testUsers[i].toString());
         }
-    }
-
-
-    /**
-     * Main for running the test case functions.
-     * @param args: Unused
-     */
-    public static void main(String[] args) {
-        System.out.println("*** Beginning Testing ***\n");
-
-        System.out.println("-- SetName() --");
-        testSetName();
-
-        System.out.println("-- SetEmail() --");
-        testSetEmail();
-
-        System.out.println("-- SetPhoneNumber() --");
-        testSetPhoneNumber();
-
-        // TODO 17/01/2020 Update testToString() after Team class is implemented.
-        System.out.println("-- toString() --");
-        testToString();
-
-        // TODO 17/01/2020 Add testing for addTeam() and removeTeam().
-
-        System.out.println("\n*** Testing Complete ***");
     }
 }
