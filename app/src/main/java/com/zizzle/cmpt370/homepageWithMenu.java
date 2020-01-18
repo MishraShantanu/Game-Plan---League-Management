@@ -16,12 +16,9 @@ public class homepageWithMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepagewithmenu);
 
-
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         //four parameters: the activity, drawer layout, open String (see strings.xml in values folder), close String (see strings.xml)
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
-
 
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
