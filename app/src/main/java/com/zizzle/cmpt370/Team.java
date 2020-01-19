@@ -101,5 +101,35 @@ public class Team {
         this.members.remove(memberToRemove);
     }
 
+    /**
+     * Returns the number of wins the team has
+     * @return int number of wins the team has
+     */
+    public int getWins(){
+        return this.wins;
+    }
+
+    /**
+     * Returns the number of losses the team has
+     * @return int number of losses the team has
+     */
+    public int getLosses(){
+        return this.losses;
+    }
+
+    /**
+     * Increases the number of wins the team has by 1
+     */
+    public void incrementWins(){
+        this.wins++;
+    }
+
+    /**
+     * Increases the number of losses the team has by 1
+     */
+    public void incrementLosses(){
+        this.losses++;
+    }
+
 
 }
