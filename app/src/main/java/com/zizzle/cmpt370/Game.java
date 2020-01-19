@@ -21,6 +21,9 @@ public class Game {
     /** name of the sport of the game */
     private String sport;
 
+    /** final scores of the teams who are in the game, can only be set after the game has been played */
+    private Pair<Integer,Integer> finalScores;
+
 
     /**
      * Game constructor
@@ -30,6 +33,7 @@ public class Game {
      *               hour is on a 24 hr clock ie 0-23, minutes are from 0-59
      * @param location: String name of the location the game is being held
      * @param sport: String name of the sport of the game
+     * @throws IllegalArgumentException if time fields in gameDate are out of the bounds specified
      */
     public Game(Team team1, Team team2, int[] gameDate, String location, String sport) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
@@ -73,6 +77,14 @@ public class Game {
     }
 
     /**
+     * Returns the sport of the game
+     * @return String name of the sport of the game
+     */
+    public String getSport(){
+        return this.sport;
+    }
+
+    /**
      * Returns the year the game is scheduled to be on
      * @return int year the game is being played on
      */
@@ -111,6 +123,37 @@ public class Game {
      */
     public int getGameMinutes(){
         return this.date.get(4);
+    }
+
+    /**
+     * Returns true if the start time of the game has been reached
+     * @return true if the current time is past the start time of the game, false otherwise
+     */
+    public boolean hasGameStarted(){
+        Calendar now = Calendar.getInstance();
+        // is now after the start of the game
+        return now.after(this.date);
+    }
+
+    /**
+     * Sets the final scores of each team of the game, this can only be done after the game has started,
+     * ie hasGameStarted() is true
+     * @param team1Score: int final score of team 1 after the game has finished, cannot be negative
+     * @param team2Score: int final score of team 2 after the game has finished, cannot be negative
+     * @throws IllegalStateException if hasGameStarted() is false
+     * @throws IllegalArgumentException if input scores are negative
+     */
+    public void setScore(int team1Score, int team2Score) throws IllegalStateException, IllegalArgumentException{
+        // can only set score once game has started
+        if(!hasGameStarted()){
+            throw new IllegalStateException("Game: setScore() called before game has started");
+        }
+        // scores must be non negative
+        if(team1Score < 0 || team2Score < 0) {
+            throw new IllegalArgumentException("Game: setscore() called with negative score as argument");
+        }
+
+        this.finalScores = new Pair<>(team1Score,team2Score);
     }
 
     //TODO: timeUntilGame method in game not yet played object
