@@ -1,7 +1,5 @@
 package com.zizzle.cmpt370;
 
-import android.util.Pair;
-
 import java.util.ArrayList;
 
 /**
@@ -27,18 +25,26 @@ public class Team {
     /** Next game the team is scheduled to play */
     private Game nextGame;
 
-    /** win loss record of team, first entry in the pair is the number of wins, second is number of losses */
-    private Pair<Integer,Integer> winLoss;
+    /** Number of wins the team has */
+    private int wins;
+
+    /** number of losses the team has*/
+    private int losses;
 
 
-
-
-
-
-
-
-    public Team(){
-
+    /**
+     * Constructor for a Team object
+     * @param name: String name of the new team, team names must be unique for the league the team is in
+     * @param owner: User object, owner/creator of the team
+     */
+    public Team(String name, User owner){
+        this.name = name;
+        this.owner = owner;
+        this.members = new ArrayList<>();
+        // assume the owner is always a player on the team
+        this.members.add(owner);
+        this.wins = 0;
+        this.losses = 0;
     }
 
 
