@@ -41,7 +41,16 @@ public class Game {
             throw new IllegalArgumentException("Game: gameDate month out of bounds, valid bounds: 0-11" +
                     " actual month: " + month);
         }
-        
+        int hour = gameDate[3];
+        if(hour < 0 || hour > 23){
+            throw new IllegalArgumentException("Game: gameDate hour out of bounds, valid bounds: 0-23" +
+                    " actual hour: " + hour);
+        }
+        int minutes = gameDate[4];
+        if(minutes < 0 || minutes > 59){
+            throw new IllegalArgumentException("Game: gameDate minutes out of bounds, valid bounds: 0-59" +
+                    " actual minutes: " + minutes);
+        }
         date.set(gameDate[0],gameDate[1],gameDate[2], gameDate[3], gameDate[4]);
         this.location = location;
         this.sport = sport;
