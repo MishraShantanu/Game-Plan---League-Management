@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!--"Homepage" wording (temporary)-->
+        <!--"homepage" wording (temporary)-->
         <TextView
             android:id="@+id/homepage"
             android:layout_width="match_parent"
