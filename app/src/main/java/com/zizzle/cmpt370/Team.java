@@ -38,6 +38,7 @@ public class Team {
      * @param owner: User object, owner/creator of the team
      */
     public Team(String name, User owner){
+        //TODO check if new team name is unique for the league the team is in
         this.name = name;
         this.owner = owner;
         this.members = new ArrayList<>();
@@ -47,7 +48,6 @@ public class Team {
         this.losses = 0;
     }
 
-
     /**
      * Retrieves the name of the team.
      * @return String name of the team.
@@ -55,4 +55,51 @@ public class Team {
     public String getName() {
         return this.name;
     }
+
+    /**
+     * Returns the owner of the team
+     * @return User object owner of the team
+     */
+    public User getOwner(){
+        return this.owner;
+    }
+
+    /**
+     * Sets the owner of the team to the user specified, if the new owner isn't part of the team,
+     * they will be added to the members of the team, the old owner still remains part of the team
+     * and can be removed using removeMember
+     * @param newOwner: User object, new owner of the team
+     */
+    public void setOwner(User newOwner){
+        // if newOwner isn't on the team, add them to the team members
+        if(! members.contains(newOwner)){
+            members.add(newOwner);
+        }
+        this.owner = newOwner;
+    }
+
+    /**
+     * Removes the input User from the team
+     * @param memberToRemove: User object to be removed from the team, this User must be on the team
+     *        and cannot be the owner of the team, a new owner of the team must be
+     *        set before the old owner can be removed
+     * @throws IllegalStateException if memberToRemove is the owner of the team
+     * @throws IllegalArgumentException if memberToRemove isn't on the team
+     */
+    public void removeMember(User memberToRemove) throws IllegalStateException, IllegalArgumentException{
+        // make sure memberToRemove is on the team
+        if(! this.members.contains(memberToRemove)){
+            throw new IllegalArgumentException("Team: User: " + memberToRemove.getName() + " to remove from team: "
+                    + this.name + " isn't a member of the team");
+        }
+        // make sure memberToRemove isn't the owner
+        if(memberToRemove.equals(this.owner)){
+            throw new IllegalStateException("Team: User: " + memberToRemove.getName() + " cannot be removed from team " +
+                    this.name + " as this user is the owner of the team");
+        }
+
+        this.members.remove(memberToRemove);
+    }
+
+
 }
