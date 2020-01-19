@@ -27,7 +27,7 @@ public class Game {
      * @param team1: Team object, first of the teams playing in the game
      * @param team2: Team object, second of the teams playing in the game
      * @param gameDate: int array of the form [year, month, day, hour, minute], months are from 0-11,
-     *               hour is on a 24 hr clock ie 1-24
+     *               hour is on a 24 hr clock ie 0-23, minutes are from 0-59
      * @param location: String name of the location the game is being held
      * @param sport: String name of the sport of the game
      */
@@ -41,6 +41,7 @@ public class Game {
             throw new IllegalArgumentException("Game: gameDate month out of bounds, valid bounds: 0-11" +
                     " actual month: " + month);
         }
+        
         date.set(gameDate[0],gameDate[1],gameDate[2], gameDate[3], gameDate[4]);
         this.location = location;
         this.sport = sport;
@@ -54,27 +55,51 @@ public class Game {
         return this.teams;
     }
 
+    /**
+     * Returns the location of the game
+     * @return String name of the location of the game
+     */
     public String getLocation(){
         return this.location;
     }
 
+    /**
+     * Returns the year the game is scheduled to be on
+     * @return int year the game is being played on
+     */
     public int getGameYear(){
         // return the 0th (year) field of the calendar
         return this.date.get(0);
     }
 
+    /**
+     * Returns the month the game is being played on
+     * @return int 0-11 the month number the game is played on
+     */
     public int getGameMonth(){
         return this.date.get(1);
     }
 
+    /**
+     * Returns the day the game is being played on
+     * @return int day the game is being played on
+     */
     public int getGameDay(){
         return this.date.get(2);
     }
 
+    /**
+     * Returns the hour the game is being played on
+     * @return int 0-23 the hour the game is being played on
+     */
     public int getGameHour(){
         return this.date.get(3);
     }
 
+    /**
+     * Returns the minutes of the hour the game is being played on
+     * @return int minutes 0-59 of the hour the game is being played on
+     */
     public int getGameMinutes(){
         return this.date.get(4);
     }
