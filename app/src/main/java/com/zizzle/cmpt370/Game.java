@@ -46,6 +46,45 @@ public class Game {
         this.sport = sport;
     }
 
+    /**
+     * Returns the teams playing in the game
+     * @return Pair object of the teams playing
+     */
+    public Pair<Team, Team> getTeams(){
+        return this.teams;
+    }
+
+    public String getLocation(){
+        return this.location;
+    }
+
+    public int getGameYear(){
+        // return the 0th (year) field of the calendar
+        return this.date.get(0);
+    }
+
+    public int getGameMonth(){
+        return this.date.get(1);
+    }
+
+    public int getGameDay(){
+        return this.date.get(2);
+    }
+
+    public int getGameHour(){
+        return this.date.get(3);
+    }
+
+    public int getGameMinutes(){
+        return this.date.get(4);
+    }
+
+    //TODO: timeUntilGame method in game not yet played object
+
+
+
+
+
 
 
 }
