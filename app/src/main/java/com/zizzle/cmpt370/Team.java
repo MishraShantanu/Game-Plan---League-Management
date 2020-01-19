@@ -31,6 +31,9 @@ public class Team {
     /** number of losses the team has*/
     private int losses;
 
+    /** number of ties the team has */
+    private int ties;
+
 
     /**
      * Constructor for a Team object
@@ -46,6 +49,7 @@ public class Team {
         this.members.add(owner);
         this.wins = 0;
         this.losses = 0;
+        this.ties = 0;
     }
 
     /**
@@ -129,6 +133,21 @@ public class Team {
      */
     public void incrementLosses(){
         this.losses++;
+    }
+
+    /**
+     * Returns the number of ties the team has
+     * @return int number of ties the team has
+     */
+    public int getTies(){
+        return this.ties;
+    }
+
+    /**
+     * Increases the number of ties the team has by 1
+     */
+    public void incrementTies(){
+        this.ties++;
     }
 
 
