@@ -30,10 +30,12 @@ public class Game {
      * @param team1: Team object, first of the teams playing in the game
      * @param team2: Team object, second of the teams playing in the game
      * @param gameDate: int array of the form [year, month, day, hour, minute], months are from 0-11,
-     *               hour is on a 24 hr clock ie 0-23, minutes are from 0-59
+     *               hour is on a 24 hr clock ie 0-23, minutes are from 0-59, gameDate must be after
+     *               the current date
      * @param location: String name of the location the game is being held
      * @param sport: String name of the sport of the game
-     * @throws IllegalArgumentException if time fields in gameDate are out of the bounds specified
+     * @throws IllegalArgumentException if time fields in gameDate are out of the bounds specified or if
+     * the game is scheduled to occur in the past
      */
     public Game(Team team1, Team team2, int[] gameDate, String location, String sport) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
@@ -56,6 +58,12 @@ public class Game {
                     " actual minutes: " + minutes);
         }
         date.set(gameDate[0],gameDate[1],gameDate[2], gameDate[3], gameDate[4]);
+        // make sure game isn't scheduled to occur in the past
+        Calendar now = Calendar.getInstance();
+        if(now.after(this.date)){
+            // Game is scheduled before now and so is scheduled for the past
+            throw new IllegalArgumentException("Game: gameDate specified is in the past");
+        }
         this.location = location;
         this.sport = sport;
     }
@@ -156,7 +164,25 @@ public class Game {
         this.finalScores = new Pair<>(team1Score,team2Score);
     }
 
-    //TODO: timeUntilGame method in game not yet played object
+    /**
+     * Returns the team who won the game, can only be called after the game has started ie hasGameStarted()
+     * is true, final score should be set using setScore() before calling this method
+     * @return Team object, winner of the game
+     * @throws IllegalStateException if hasGameStarted() is false
+     */
+    public Team getWinner(){
+        //TODO potentially return some number to indicate winning team, have some code to indicate tie
+        // TODO really want to enforce that setScore must be called first
+
+    }
+
+    public Team getLoser(){
+
+    }
+
+    public int timeUntilGame(){
+        return 0;
+    }
 
 
 
