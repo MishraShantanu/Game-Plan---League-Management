@@ -2,6 +2,7 @@ package com.zizzle.cmpt370;
 
 import java.util.ArrayList;
 
+
 /**
  * Team class for holding information of the team.
  */
@@ -148,6 +149,32 @@ public class Team {
      */
     public void incrementTies(){
         this.ties++;
+    }
+
+    /**
+     * Returns an array of the members of the team
+     * @return User[], array of members of the team
+     */
+    public User[] getTeamMembers(){
+        return (User[]) this.members.toArray();
+    }
+
+    /**
+     * Returns the User who has the specified name from the team
+     * @param username: String name of a user on the team, this name must belong to a user on the team
+     * @return User with the name input
+     * @throws IllegalArgumentException if username doesn't belong to any user on the team
+     */
+    public User getMemberByName(String username) throws IllegalArgumentException{
+        // linear search the list of team members for the input name
+        for(User currentUser : this.members){
+            if(currentUser.getName().equals(username)){
+                // user found
+                return currentUser;
+            }
+        }
+        // user not found
+        throw new IllegalArgumentException("Team: User with name '" + username + "' not on team: " + this.name);
     }
 
 
