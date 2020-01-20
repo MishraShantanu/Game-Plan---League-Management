@@ -24,6 +24,9 @@ public class Game {
     /** final scores of the teams who are in the game, can only be set after the game has been played */
     private Pair<Integer,Integer> finalScores;
 
+    /** boolean true if the game has been played, false otherwise */
+    private boolean played;
+
 
     /**
      * Game constructor
@@ -66,6 +69,7 @@ public class Game {
         }
         this.location = location;
         this.sport = sport;
+        this.played = false;
     }
 
     /**
@@ -144,14 +148,22 @@ public class Game {
     }
 
     /**
+     * Checks if the game has been played, a game is played when the setGameAsPlayed() method is used
+     * @return true if the game has been played, false otherwise
+     */
+    public boolean hasBeenPlayed(){
+        return this.played;
+    }
+
+    /**
      * Sets the final scores of each team of the game, this can only be done after the game has started,
-     * ie hasGameStarted() is true
+     * ie hasGameStarted() is true, sets this game to played so that hasBeenPlayed() will now be true
      * @param team1Score: int final score of team 1 after the game has finished, cannot be negative
      * @param team2Score: int final score of team 2 after the game has finished, cannot be negative
      * @throws IllegalStateException if hasGameStarted() is false
      * @throws IllegalArgumentException if input scores are negative
      */
-    public void setScore(int team1Score, int team2Score) throws IllegalStateException, IllegalArgumentException{
+    public void setGameAsPlayed(int team1Score, int team2Score) throws IllegalStateException, IllegalArgumentException{
         // can only set score once game has started
         if(!hasGameStarted()){
             throw new IllegalStateException("Game: setScore() called before game has started");
@@ -160,24 +172,71 @@ public class Game {
         if(team1Score < 0 || team2Score < 0) {
             throw new IllegalArgumentException("Game: setscore() called with negative score as argument");
         }
-
+        // game has now been played
+        this.played = true;
         this.finalScores = new Pair<>(team1Score,team2Score);
     }
 
     /**
-     * Returns the team who won the game, can only be called after the game has started ie hasGameStarted()
-     * is true, final score should be set using setScore() before calling this method
-     * @return Team object, winner of the game
-     * @throws IllegalStateException if hasGameStarted() is false
+     * Checks if the game has ended in a tie, game must have been played, ie hasBeenPlayed() must be true
+     * @return true if the game has been played, false otherwise
+     * @throws IllegalStateException if game hasn't yet been played
      */
-    public Team getWinner(){
-        //TODO potentially return some number to indicate winning team, have some code to indicate tie
-        // TODO really want to enforce that setScore must be called first
-
+    public boolean gameTied() throws IllegalStateException{
+        // check that game has been played and we have valid scores
+        if(! this.hasBeenPlayed()){
+            throw new IllegalStateException("Game: gameTied() called before game has been played");
+        }
+        // game has tied if both teams have the same score
+        return this.finalScores.first.equals(this.finalScores.second);
     }
 
-    public Team getLoser(){
+    /**
+     * Returns the team who won the game, can only be called after the game has been played ie hasBeenPlayed() is true
+     * @return Team object, winner of the game if one exists ie the teams didn't tie
+     * @throws IllegalStateException if hasBeenPlayed() is false or the teams have tied ie gameTied() is true
+     */
+    public Team getWinner() throws IllegalStateException{
+        // make sure game has been played
+        if(! this.hasBeenPlayed()){
+            throw new IllegalStateException("Game: getWinner() called before game has been played");
+        }
+        // make sure the game didn't end in a tie
+        if(this.gameTied()){
+            throw new IllegalStateException("Game: getWinner() called when the teams have tied");
+        }
+        // the winner is the team with higher score
+        if(this.finalScores.first.compareTo(this.finalScores.second) > 0){
+            // team 1 has a higher score and is winner
+            return this.teams.first;
+        }
+        else{
+            return this.teams.second;
+        }
+    }
 
+    /**
+     * Returns the team who lost the game, can only be called after the game has been played, ie hasBeenPlayed() is true
+     * @return Team object, loser of the game if one exists, ie game didn't end in a tie
+     * @throws IllegalStateException if hasBeenPlayed() is false or the teams have tied ie gameTied() is true
+     */
+    public Team getLoser() throws IllegalStateException{
+        // make sure game has been played
+        if(! this.hasBeenPlayed()){
+            throw new IllegalStateException("Game: getLoser() called before game has been played");
+        }
+        // make sure the game didn't end in a tie
+        if(this.gameTied()){
+            throw new IllegalStateException("Game: getLoser() called when the teams have tied");
+        }
+        // the loser is the team with lower score
+        if(this.finalScores.first.compareTo(this.finalScores.second) < 0){
+            // team 1 has a lower score and is loser
+            return this.teams.first;
+        }
+        else{
+            return this.teams.second;
+        }
     }
 
     public int timeUntilGame(){
