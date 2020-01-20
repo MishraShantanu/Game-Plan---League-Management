@@ -60,11 +60,11 @@ public class LeagueTest {
         };
         // Leagues for testing.
         League[] testLeagues = {
-                new League("UofS", testUsers[0], "Football", "small description"),
-                new League("UofS", testUsers[1], "Soccer", "description"),
-                new League("UofS", testUsers[2], "Hockey", "other description"),
-                new League("UofS", testUsers[1], "Football", "large description"),
-                new League("UofS", testUsers[0], "Soccer", "words 1132")
+                new League("UofS", testUsers[0], "sport", "description"),
+                new League("UofS", testUsers[1], "sport", "description"),
+                new League("UofS", testUsers[2], "sport", "description"),
+                new League("UofS", testUsers[1], "sport", "description"),
+                new League("UofS", testUsers[0], "sport", "description")
         };
         // Changing the name of the leagues.
         testLeagues[1].setOwner(testUsers[0]);
@@ -74,6 +74,40 @@ public class LeagueTest {
         // Checking if the league names have been changed.
         for (int i = 0; i < testLeagues.length; i++) {
             assertEquals(expected[i], testLeagues[i].getOwner());
+        }
+    }
+
+
+    /**
+     * Testing for setSport() function from the League class.
+     */
+    @Test
+    public void testSetSport() {
+        String[] expected = {
+                "Football",
+                "Soccer",
+                "Hockey",
+                "Football",
+                "Tennis"
+        };
+        // Owner for league.
+        User testUser = new User("Brayden", "b@mail.com", "1234567890");
+        // Leagues for testing.
+        League[] testLeagues = {
+                new League("UofS", testUser, "Football", "description"),
+                new League("UofS", testUser, "Football", "description"),
+                new League("UofS", testUser, "Soccer", "description"),
+                new League("UofS", testUser, "Soccer", "description"),
+                new League("UofS", testUser, "Hockey", "description")
+        };
+        // Changing the name of the leagues.
+        testLeagues[1].setSport("Soccer");
+        testLeagues[2].setSport("Hockey");
+        testLeagues[3].setSport("Football");
+        testLeagues[4].setSport("Tennis");
+        // Checking if the league names have been changed.
+        for (int i = 0; i < testLeagues.length; i++) {
+            assertEquals(expected[i], testLeagues[i].getSport());
         }
     }
 }
