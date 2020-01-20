@@ -23,8 +23,9 @@ public class Team {
     /** Owner of the team */
     private User owner;
 
-    /** Next game the team is scheduled to play */
-    private Game nextGame;
+    /** List of games the team is scheduled to play, this list is ordered such that closer games are
+     * towards the front of the list and further away games are towards the end of the list */
+    private ArrayList<Game> scheduledGames;
 
     /** Number of wins the team has */
     private int wins;
@@ -51,6 +52,8 @@ public class Team {
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
+        this.gamesPlayed = new ArrayList<>();
+        this.scheduledGames = new ArrayList<>();
     }
 
     /**
@@ -176,6 +179,9 @@ public class Team {
         // user not found
         throw new IllegalArgumentException("Team: User with name '" + username + "' not on team: " + this.name);
     }
+
+
+    
 
 
 }
