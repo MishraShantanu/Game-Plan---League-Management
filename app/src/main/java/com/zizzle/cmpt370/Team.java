@@ -180,8 +180,59 @@ public class Team {
         throw new IllegalArgumentException("Team: User with name '" + username + "' not on team: " + this.name);
     }
 
+    /**
+     * Checks if the team has at least 1 game scheduled in the future
+     * @return true if the team has at least 1 game scheduled in the future, false otherwise
+     */
+    public boolean hasGamesScheduled(){
+        return this.scheduledGames.size() > 0;
+    }
+
+    /**
+     * Gets the closest upcoming game the team has scheduled
+     * @return Game object that is scheduled to be played closest to now
+     * @throws IllegalStateException if the team has no games scheduled
+     */
+    public Game getClosestScheduledGame() throws IllegalStateException{
+        // make sure there is a game scheduled
+        if(! this.hasGamesScheduled()){
+            throw new IllegalStateException("Team: team '" + this.name + "' has no games scheduled");
+        }
+
+        // the closest game is always at the front of the list of scheduled games
+        return this.scheduledGames.get(0);
+    }
+
+    /**
+     * Checks if the team has played at least 1 game before
+     * @return true if the team has played a game, false otherwise
+     */
+    public boolean hasPlayedGame(){
+        return this.gamesPlayed.size() > 0;
+    }
+
+    /**
+     * Gets the game the team most recently played
+     * @return
+     */
+    public Game getMostRecentPlayedGame(){
+        // make sure the team has played at least 1 game
+        if(! this.hasPlayedGame()){
+            throw new IllegalStateException("Team: team '" + this.name + "' hasn't yet played any games");
+        }
+        // most recently played game is always at the front of the list of played games
+        return this.gamesPlayed.get(0);
+    }
 
     
+
+    //TODO methods to schedule new games, assert the times of these games are after now
+    // TODO method to set a game as played, require scores etc, can move game from scheduled to played, assert the game's start time has passed
+
+
+
+
+
 
 
 }
