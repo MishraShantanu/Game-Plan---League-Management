@@ -213,9 +213,10 @@ public class Team {
 
     /**
      * Gets the game the team most recently played
-     * @return
+     * @return Game object, most recently played game
+     * @throws IllegalStateException if the team hasn't played any games
      */
-    public Game getMostRecentPlayedGame(){
+    public Game getMostRecentPlayedGame() throws IllegalStateException{
         // make sure the team has played at least 1 game
         if(! this.hasPlayedGame()){
             throw new IllegalStateException("Team: team '" + this.name + "' hasn't yet played any games");
@@ -224,7 +225,40 @@ public class Team {
         return this.gamesPlayed.get(0);
     }
 
-    
+    /**
+     * Returns an array of the games played by the team in order, the first game is most recently played
+     * the last game is least recently played, the team must have played at least 1 game
+     * @return Game[] specified above
+     * @throws IllegalStateException if the team hasn't played a game yet
+     */
+    public Game[] getPlayedGames() throws IllegalStateException{
+        // make sure the team has played at least 1 game
+        if(! this.hasPlayedGame()){
+            throw new IllegalStateException("Team: team '" + this.name + "' hasn't yet played any games");
+        }
+        return (Game[]) this.gamesPlayed.toArray();
+    }
+
+    /**
+     * Returns an array of games the team is scheduled to play, this array is sorted so the first element
+     * is the closest upcoming game, and the last element is the game scheduled furthest in the future,
+     * the team must have at least 1 game scheduled
+     * @return Game[] specified above
+     * @throws IllegalStateException if the team doesn't have at least 1 game scheduled
+     */
+    public Game[] getScheduledGames() throws IllegalStateException{
+        // make sure the team has at least 1 game scheduled
+        if(! this.hasGamesScheduled()){
+            throw new IllegalStateException("Team: team '" + this.name + "' doesn't have any games scheduled");
+        }
+        return (Game[]) this.scheduledGames.toArray();
+    }
+
+
+
+
+
+
 
     //TODO methods to schedule new games, assert the times of these games are after now
     // TODO method to set a game as played, require scores etc, can move game from scheduled to played, assert the game's start time has passed
