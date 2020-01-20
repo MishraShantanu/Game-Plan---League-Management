@@ -60,7 +60,9 @@ public class Game {
             throw new IllegalArgumentException("Game: gameDate minutes out of bounds, valid bounds: 0-59" +
                     " actual minutes: " + minutes);
         }
-        date.set(gameDate[0],gameDate[1],gameDate[2], gameDate[3], gameDate[4]);
+        date = Calendar.getInstance();
+        // by default set the last field, seconds to 0
+        date.set(gameDate[0],gameDate[1],gameDate[2], gameDate[3], gameDate[4], 0);
         // make sure game isn't scheduled to occur in the past
         Calendar now = Calendar.getInstance();
         if(now.after(this.date)){
@@ -239,8 +241,77 @@ public class Game {
         }
     }
 
-    public int timeUntilGame(){
-        return 0;
+    public void rescheduleGame(int[] newTime) throws IllegalStateException{
+        // check that time fields are valid
+        int month = newTime[1];
+        if(month < 0 || newTime[1] > 11){
+            throw new IllegalArgumentException("Game: gameDate month out of bounds, valid bounds: 0-11" +
+                    " actual month: " + month);
+        }
+        int hour = newTime[3];
+        if(hour < 0 || hour > 23){
+            throw new IllegalArgumentException("Game: gameDate hour out of bounds, valid bounds: 0-23" +
+                    " actual hour: " + hour);
+        }
+        int minutes = newTime[4];
+        if(minutes < 0 || minutes > 59){
+            throw new IllegalArgumentException("Game: gameDate minutes out of bounds, valid bounds: 0-59" +
+                    " actual minutes: " + minutes);
+        }
+        Calendar newDate = Calendar.getInstance();
+        // by default set the last field, seconds to 0
+        newDate.set(newTime[0],newTime[1],newTime[2], newTime[3], newTime[4], 0);
+        // make sure game isn't scheduled to occur in the past
+        Calendar now = Calendar.getInstance();
+        if(now.after(newDate)){
+            // Game is scheduled before now and so is scheduled for the past
+            throw new IllegalArgumentException("Game: gameDate specified is in the past");
+        }
+        // new time is valid
+        this.date = newDate;
+    }
+
+    /**
+     * Returns the an array of the form [years, months, days, hours, minutes] until the game is scheduled
+     * to occur
+     * @return int[] of the form above
+     * @throws IllegalStateException if the game has already started
+     */
+    public int[] timeUntilGame() throws IllegalStateException{
+        if(this.hasGameStarted()){
+            throw new IllegalStateException("Game: timeUntilGame called after game has started, use timeSinceGameStarted() instead");
+        }
+        Calendar currentTime = Calendar.getInstance();
+        long currentMilliseconds = currentTime.getTimeInMillis();
+        long gameMilliseconds = this.date.getTimeInMillis();
+        // convert the time in milliseconds until game to a Calendar so conversions to years, months etc are done automatically
+        Calendar timeDifference = Calendar.getInstance();
+        timeDifference.setTimeInMillis(gameMilliseconds - currentMilliseconds);
+        // convert this Calendar into an array for easier use
+        int[] timeDifferenceArray = {timeDifference.get(0), timeDifference.get(1),timeDifference.get(2),
+                timeDifference.get(3), timeDifference.get(4)};
+        return timeDifferenceArray;
+    }
+
+    /**
+     * Returns an array of the form [years, months, days, hours, minutes] since the game has started
+     * @return int[] of the form above
+     * @throws IllegalStateException if the game hasn't yet started
+     */
+    public int[] timeSinceGameStarted() throws IllegalStateException{
+        if(! this.hasGameStarted()){
+            throw new IllegalStateException("Game: timeSinceGameStart called before game has started, use timeUntilGame() instead");
+        }
+        Calendar currentTime = Calendar.getInstance();
+        long currentMilliseconds = currentTime.getTimeInMillis();
+        long gameMilliseconds = this.date.getTimeInMillis();
+        // convert the time in milliseconds until game to a Calendar so conversions to years, months etc are done automatically
+        Calendar timeDifference = Calendar.getInstance();
+        timeDifference.setTimeInMillis(currentMilliseconds - gameMilliseconds);
+        // convert this Calendar into an array for easier use
+        int[] timeDifferenceArray = {timeDifference.get(0), timeDifference.get(1),timeDifference.get(2),
+                timeDifference.get(3), timeDifference.get(4)};
+        return timeDifferenceArray;
     }
 
 
