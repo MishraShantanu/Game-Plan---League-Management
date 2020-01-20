@@ -28,6 +28,22 @@ public class League {
 
 
     /**
+     * Constructor for league object.
+     * @param name: Name of the league.
+     * @param owner: User that owns the league.
+     * @param sport: Type of the sport that the league plays.
+     * @param description: Description of the league.
+     */
+    public League(String name, User owner, String sport, String description) {
+        this.name = name;
+        this.owner = owner;
+        this.sport = sport;
+        this.description = description;
+        this.teams = new ArrayList<>();
+    }
+
+
+    /**
      * Retrieves the name of the league.
      * @return name of the league.
      */
