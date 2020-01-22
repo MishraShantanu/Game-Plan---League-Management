@@ -1,5 +1,6 @@
 package com.zizzle.cmpt370;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import java.util.Calendar;
@@ -12,7 +13,7 @@ public class Game {
     /** teams who are in the game */
     private Pair<Team,Team> teams;
 
-    /** date (year, month, day, time) the game is being/was played */
+    /** date (year, month, day, hour, minute) the game is being/was played */
     private Calendar date;
 
     /** name of the location the game is/was held at */
@@ -272,46 +273,79 @@ public class Game {
     }
 
     /**
-     * Returns the an array of the form [years, months, days, hours, minutes] until the game is scheduled
+     * Returns an array of the form [days, hours, minutes] until the game is scheduled
      * to occur
-     * @return int[] of the form above
+     * @return long[] of the form above
      * @throws IllegalStateException if the game has already started
      */
-    public int[] timeUntilGame() throws IllegalStateException{
+    public long[] timeUntilGame() throws IllegalStateException{
         if(this.hasGameStarted()){
             throw new IllegalStateException("Game: timeUntilGame called after game has started, use timeSinceGameStarted() instead");
         }
         Calendar currentTime = Calendar.getInstance();
         long currentMilliseconds = currentTime.getTimeInMillis();
         long gameMilliseconds = this.date.getTimeInMillis();
-        // convert the time in milliseconds until game to a Calendar so conversions to years, months etc are done automatically
-        Calendar timeDifference = Calendar.getInstance();
-        timeDifference.setTimeInMillis(gameMilliseconds - currentMilliseconds);
-        // convert this Calendar into an array for easier use
-        int[] timeDifferenceArray = {timeDifference.get(0), timeDifference.get(1),timeDifference.get(2),
-                timeDifference.get(3), timeDifference.get(4)};
+        long millisecondsUntilGame = gameMilliseconds-currentMilliseconds;
+        // convert the milliseconds to days, hours, minutes, manually
+        final long millisecondsPerMinute = 1000*60;
+        final long millisecondsPerHour = millisecondsPerMinute*60;
+        final long millisecondsPerDay = millisecondsPerHour*24;
+        long daysUntilGame = millisecondsUntilGame/millisecondsPerDay;
+        // update millisecondsUntilDay now that days have been considered
+        millisecondsUntilGame = millisecondsUntilGame%millisecondsPerDay;
+        long hoursUntilGame = millisecondsUntilGame/millisecondsPerHour;
+        millisecondsUntilGame = millisecondsUntilGame%millisecondsPerHour;
+        long minutesUntilGame = millisecondsUntilGame/millisecondsPerMinute;
+        long[] timeDifferenceArray = {daysUntilGame,hoursUntilGame,minutesUntilGame};
         return timeDifferenceArray;
     }
 
     /**
-     * Returns an array of the form [years, months, days, hours, minutes] since the game has started
-     * @return int[] of the form above
+     * Returns an array of the form [days, hours, minutes] since the game has started
+     * @return long[] of the form above
      * @throws IllegalStateException if the game hasn't yet started
      */
-    public int[] timeSinceGameStarted() throws IllegalStateException{
+    public long[] timeSinceGameStarted() throws IllegalStateException{
         if(! this.hasGameStarted()){
             throw new IllegalStateException("Game: timeSinceGameStart called before game has started, use timeUntilGame() instead");
         }
         Calendar currentTime = Calendar.getInstance();
         long currentMilliseconds = currentTime.getTimeInMillis();
         long gameMilliseconds = this.date.getTimeInMillis();
-        // convert the time in milliseconds until game to a Calendar so conversions to years, months etc are done automatically
-        Calendar timeDifference = Calendar.getInstance();
-        timeDifference.setTimeInMillis(currentMilliseconds - gameMilliseconds);
-        // convert this Calendar into an array for easier use
-        int[] timeDifferenceArray = {timeDifference.get(0), timeDifference.get(1),timeDifference.get(2),
-                timeDifference.get(3), timeDifference.get(4)};
+        long millisecondsSinceGame = currentMilliseconds - gameMilliseconds;
+        // convert the milliseconds to days, hours, minutes, manually
+        final long millisecondsPerMinute = 1000*60;
+        final long millisecondsPerHour = millisecondsPerMinute*60;
+        final long millisecondsPerDay = millisecondsPerHour*24;
+        long daysUntilGame = millisecondsSinceGame/millisecondsPerDay;
+        // update millisecondsUntilDay now that days have been considered
+        millisecondsSinceGame = millisecondsSinceGame%millisecondsPerDay;
+        long hoursUntilGame = millisecondsSinceGame/millisecondsPerHour;
+        millisecondsSinceGame = millisecondsSinceGame%millisecondsPerHour;
+        long minutesUntilGame = millisecondsSinceGame/millisecondsPerMinute;
+        long[] timeDifferenceArray = {daysUntilGame,hoursUntilGame,minutesUntilGame};
         return timeDifferenceArray;
+    }
+
+    /**
+     * Returns a string representation of the game
+     * @return String representing the game, including the sport, teams playing in the game, the scheduled time
+     * of the game and the final scores if the game has been played
+     */
+    @Override
+    @NonNull
+    public String toString(){
+        String gameString = "Sport: " + this.sport;
+        gameString += "\nTeams: " + this.teams.first + " vs " + this.teams.second;
+        gameString += "\nFinal Score: ";
+        if(this.hasBeenPlayed()){
+            gameString += this.finalScores.first + " to " + this.finalScores.second;
+        }
+        else{
+            // game scores haven't yet been decided
+            gameString += "TBD";
+        }
+        return gameString;
     }
 
 
