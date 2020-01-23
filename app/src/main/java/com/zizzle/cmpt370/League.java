@@ -1,5 +1,7 @@
 package com.zizzle.cmpt370;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 
@@ -135,5 +137,24 @@ public class League {
      */
     public void sortTeams() {
         // TODO 18/01/2020 Sort teams based on the standings of teams.
+    }
+
+
+    /**
+     * Retrieve a string of the information stored inside the League object.
+     * @return string of information about the league.
+     */
+    @NonNull
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("League Name: " + this.name + "\n");
+        sb.append("Owner: " + this.owner.getName() + "\n");
+        sb.append("Sport: " + this.sport + "\n");
+        sb.append("Description: " + this.description + "\n");
+        sb.append("Teams:");
+        for (Team team : this.teams) {
+            sb.append("\n\t" + team.getName());
+        }
+        return sb.toString();
     }
 }

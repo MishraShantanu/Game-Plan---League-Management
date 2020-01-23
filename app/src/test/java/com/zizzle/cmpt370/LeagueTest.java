@@ -146,5 +146,60 @@ public class LeagueTest {
     }
 
 
+    /**
+     * Testing for toString() function from the League class.
+     */
+    @Test
+    public void testToString() {
+        String[] expected = {
+                "League Name: UofS\n" +
+                        "Owner: Brayden\n" +
+                        "Sport: Volley Ball\n" +
+                        "Description: Bump, Set, Spike!\n" +
+                        "Teams:",
+                "League Name: Kids Soccer\n" +
+                        "Owner: Tod\n" +
+                        "Sport: Soccer\n" +
+                        "Description: Tykes\n" +
+                        "Teams:",
+                "League Name: Senior Squash\n" +
+                        "Owner: Jill\n" +
+                        "Sport: Squash\n" +
+                        "Description: Laid back squash\n" +
+                        "Teams:",
+                "League Name: Joe's Dodgeball\n" +
+                        "Owner: Joe\n" +
+                        "Sport: Dodgeball\n" +
+                        "Description: If you can dodge a wrench, you can dodge a ball\n" +
+                        "Teams:",
+                "League Name: test\n" +
+                        "Owner: Ted\n" +
+                        "Sport: test\n" +
+                        "Description: test\n" +
+                        "Teams:"
+        };
+        // Owners for league.
+        User[] testUsers = {
+                new User("Brayden", "b@mail.com", "1234567890"),
+                new User("Tod", "t@m.ca", "123"),
+                new User("Jill", "jillybean@email.com", "321"),
+                new User("Joe", "joeybean@email.com", "1q2w3e4r5t6y7u8i9o0p"),
+                new User("Ted", "t@email.com", "0987654321")
+        };
+        // Leagues for testing.
+        League[] testLeagues = {
+                new League("UofS", testUsers[0], "Volley Ball", "Bump, Set, Spike!"),
+                new League("Kids Soccer", testUsers[1], "Soccer", "Tykes"),
+                new League("Senior Squash", testUsers[2], "Squash", "Laid back squash"),
+                new League("Joe's Dodgeball", testUsers[3], "Dodgeball", "If you can dodge a wrench, you can dodge a ball"),
+                new League("test", testUsers[4], "test", "test")
+        };
+        // Checking if the league names have been changed.
+        for (int i = 0; i < testLeagues.length; i++) {
+            assertEquals(expected[i], testLeagues[i].toString());
+        }
+    }
+
+
     // TODO 23/01/2020 - Add tests for addTeam(), removeTeam(), and sortTeam().
 }
