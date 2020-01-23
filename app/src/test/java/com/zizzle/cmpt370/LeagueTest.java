@@ -110,4 +110,41 @@ public class LeagueTest {
             assertEquals(expected[i], testLeagues[i].getSport());
         }
     }
+
+
+    /**
+     * Testing for setDescription() function from the League class.
+     */
+    @Test
+    public void testSetDescription() {
+        String[] expected = {
+                "description",
+                "new description",
+                "123",
+                "",
+                "       31  3fd"
+        };
+        // Owner for league.
+        User testUser = new User("Brayden", "b@mail.com", "1234567890");
+        // Leagues for testing.
+        League[] testLeagues = {
+                new League("UofS", testUser, "sport", "description"),
+                new League("UofS", testUser, "sport", "description"),
+                new League("UofS", testUser, "sport", "description"),
+                new League("UofS", testUser, "sport", "description"),
+                new League("UofS", testUser, "sport", "description")
+        };
+        // Changing the name of the leagues.
+        testLeagues[1].setDescription("new description");
+        testLeagues[2].setDescription("123");
+        testLeagues[3].setDescription("");
+        testLeagues[4].setDescription("       31  3fd");
+        // Checking if the league names have been changed.
+        for (int i = 0; i < testLeagues.length; i++) {
+            assertEquals(expected[i], testLeagues[i].getDescription());
+        }
+    }
+
+
+    // TODO 23/01/2020 - Add tests for addTeam(), removeTeam(), and sortTeam().
 }
