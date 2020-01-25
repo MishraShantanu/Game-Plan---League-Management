@@ -7,6 +7,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!--Transparent status bar only works for API 21 and higher. For lower API, it will just be opaque-->
     </style>
 
 </resources>
