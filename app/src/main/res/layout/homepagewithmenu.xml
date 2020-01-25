@@ -13,6 +13,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--Added to make menu overlap the main page (adding navigation_action.xml)-->
+        <include
+            layout="@layout/navigation_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!--"homepage" wording (temporary)-->
+        <TextView
+            android:id="@+id/homepage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:text="Homepage"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+
         <!--///////////////////////////-->
 <!--        <android.support.v7.widget.Toolbar-->
 <!--            android:id="@+id/toolbar"-->
@@ -31,21 +47,7 @@
         <!--///////////////////////////-->
 
 
-        <!--Added to make menu overlap the main page (adding navigation_action.xml)-->
-        <include
-            layout="@layout/navigation_action"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-        <!--"homepage" wording (temporary)-->
-        <TextView
-            android:id="@+id/homepage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:text="Homepage"
-            android:textAlignment="center"
-            android:textSize="24sp" />
 
     </LinearLayout>
 
