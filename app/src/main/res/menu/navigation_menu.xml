@@ -3,14 +3,22 @@
 
     <group android:checkableBehavior="single">
 
-        <item android:id="@+id/nav_account"
-            android:icon="@mipmap/account_black_48"
-            android:title="My Account" />
+        <item android:id="@+id/home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home" />
 
-        <item android:id="@+id/nav_settings"
-            android:title="Settings" />
+        <item android:id="@+id/leagues"
+            android:title="All Leagues" />
 
-        <item android:id="@+id/nav_logout"
+        <item android:id="@+id/profile"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="Profile" />
+
+        <item android:id="@+id/aboutUs"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="About Us" />
+
+        <item android:id="@+id/logOut"
             android:title="Log Out" />
 
     </group>
