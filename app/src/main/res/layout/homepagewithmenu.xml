@@ -5,6 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".homepageWithMenu">
 
     <LinearLayout
@@ -12,11 +13,29 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--Added to make menu overlap the main page (adding navigation_action.xml)-->
-        <include
-            layout="@layout/navigation_action"
+        <!--///////////////////////////-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!--///////////////////////////-->
+
+
+        <!--&lt;!&ndash;Added to make menu overlap the main page (adding navigation_action.xml)&ndash;&gt;-->
+        <!--<include-->
+            <!--layout="@layout/navigation_action"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
 
         <!--"homepage" wording (temporary)-->
         <TextView
@@ -26,7 +45,7 @@
             android:layout_gravity="center_vertical"
             android:text="Homepage"
             android:textAlignment="center"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
     </LinearLayout>
 
