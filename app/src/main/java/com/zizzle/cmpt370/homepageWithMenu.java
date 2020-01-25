@@ -20,14 +20,14 @@ public class homepageWithMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepagewithmenu); //content to open
 
-        //Adding overlay effect for menu
-        mToolBar = (Toolbar) findViewById(R.id.toolbar); //////////changed to toolbar from menuMain instead of using nav_action
+        //add top bar from navigation_action as action bar
+        mToolBar = (Toolbar) findViewById(R.id.nav_action);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
         //MENU (button & drawer)
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         //four parameters: the activity, drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolBar,
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.sidebar_navigation_open, R.string.sidebar_navigation_close); //added "menu button" which automatically animates icon for open/close
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState(); //takes care of rotating the menu icon
@@ -42,7 +42,7 @@ public class homepageWithMenu extends AppCompatActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         else {
-            super.onBackPressed();
+            super.onBackPressed(); //close activity (as usual)
         }
     }
 
