@@ -1,5 +1,4 @@
 package com.zizzle.cmpt370;
-
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -40,12 +39,13 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
 
         //Open Home Fragment when app is first opened
         if (savedInstanceState == null) { //savedInstanceState is from onCreateMethod (null if activity started for first time); not null when device is rotates or something else
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new HomeFragment()).commit();
-        navigationView.setCheckedItem(R.id.nav_home); //Make "Home" option selected in the menu when app opens
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new HomeFragment()).commit();
+            navigationView.setCheckedItem(R.id.nav_home); //Make "Home" option selected in the menu when app opens
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
-        }
+
     }
 
     //When item is selected in the menu, open the respective fragment
@@ -55,6 +55,18 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
             case R.id.nav_home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new HomeFragment()).commit();
+                break;
+            case R.id.nav_leagues:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new LeaguesFragment()).commit();
+                break;
+            case R.id.nav_profile:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ProfileFragment()).commit();
+                break;
+            case R.id.nav_aboutUs:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new AboutUsFragment()).commit();
                 break;
         }
         //close drawer
@@ -68,8 +80,7 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             super.onBackPressed(); //close activity (as usual)
         }
     }
