@@ -8,26 +8,28 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/home"
+            android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="Home" />
 
         <item
-            android:id="@+id/leagues"
+            android:id="@+id/nav_leagues"
+            android:icon="@drawable/baseline_sports_tennis_24"
             android:title="All Leagues" />
 
         <item
-            android:id="@+id/profile"
+            android:id="@+id/nav_profile"
             android:icon="@drawable/ic_account_circle_black_24dp"
             android:title="Profile" />
 
         <item
-            android:id="@+id/aboutUs"
+            android:id="@+id/nav_aboutUs"
             android:icon="@drawable/ic_info_black_24dp"
             android:title="About Us" />
 
         <item
-            android:id="@+id/logOut"
+            android:id="@+id/nav_logOut"
+            android:icon="@drawable/ic_arrow_back_black_24dp"
             android:title="Log Out" />
 
     </group>
