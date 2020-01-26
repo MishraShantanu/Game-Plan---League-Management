@@ -37,7 +37,15 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState(); //takes care of rotating the menu icon
 
+
+        //Open Home Fragment when app is first opened
+        if (savedInstanceState == null) { //savedInstanceState is from onCreateMethod (null if activity started for first time); not null when device is rotates or something else
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
+        navigationView.setCheckedItem(R.id.nav_home); //Make "Home" option selected in the menu when app opens
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
+        }
     }
 
     //When item is selected in the menu, open the respective fragment
@@ -49,6 +57,9 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
                         new HomeFragment()).commit();
                 break;
         }
+        //close drawer
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+
         return true;
     }
 
