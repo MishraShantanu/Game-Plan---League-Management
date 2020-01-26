@@ -19,40 +19,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!--"homepage" wording (temporary)-->
-        <TextView
-            android:id="@+id/homepage"
+<!--        &lt;!&ndash;"homepage" wording (temporary)&ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:id="@+id/homepage"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:text="Homepage"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textSize="24sp" />-->
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:text="Homepage"
-            android:textAlignment="center"
-            android:textSize="24sp" />
-
-        <!--///////////////////////////-->
-<!--        <android.support.v7.widget.Toolbar-->
-<!--            android:id="@+id/toolbar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            android:background="@color/colorPrimary"-->
-<!--            android:elevation="4dp"-->
-<!--            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-<!--            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-
-<!--        <FrameLayout-->
-<!--            android:id="@+id/fragment_container"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent" />-->
-
-        <!--///////////////////////////-->
-
-
-
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
     <!--Navigation menu-->
     <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
