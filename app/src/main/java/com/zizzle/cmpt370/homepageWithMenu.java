@@ -1,5 +1,7 @@
 package com.zizzle.cmpt370;
 
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -8,7 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 
-public class homepageWithMenu extends AppCompatActivity {
+public class homepageWithMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout; //main layout ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -26,6 +28,9 @@ public class homepageWithMenu extends AppCompatActivity {
 
         //MENU (button & drawer)
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        NavigationView navigationView = findViewById(R.id.nav_view); //ADDED FOR CLICK
+        navigationView.setNavigationItemSelectedListener(this);
+
         //four parameters: the activity, drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.sidebar_navigation_open, R.string.sidebar_navigation_close); //added "menu button" which automatically animates icon for open/close
@@ -35,7 +40,19 @@ public class homepageWithMenu extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
     }
 
-    //WHe back button is pressed, we want to just close the menu, not close the activity
+    //When item is selected in the menu, open the respective fragment
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.nav_home:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new HomeFragment()).commit();
+                break;
+        }
+        return true;
+    }
+
+    //When back button is pressed, we want to just close the menu, not close the activity
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
