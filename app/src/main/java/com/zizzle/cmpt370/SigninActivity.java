@@ -43,7 +43,7 @@ public class SigninActivity extends AppCompatActivity {
 
                 if(mfirebaseUser != null){
                     Toast.makeText(SigninActivity.this," You are  logged in",Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(SigninActivity.this,MainActivity.class);
+                    Intent i = new Intent(SigninActivity.this,homepageWithMenu.class);
                     startActivity(i);
                 }else {
                     Toast.makeText(SigninActivity.this,"Please Login",Toast.LENGTH_SHORT).show();
@@ -76,7 +76,7 @@ public class SigninActivity extends AppCompatActivity {
                                 Toast.makeText(SigninActivity.this,"Login Error, Please try again..",Toast.LENGTH_SHORT).show();
 
                         }else{
-                                Intent intoMain = new Intent(SigninActivity.this,MainActivity.class);
+                                Intent intoMain = new Intent(SigninActivity.this,homepageWithMenu.class);
                                 startActivity(intoMain);
                             }
 
