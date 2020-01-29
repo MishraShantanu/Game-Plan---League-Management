@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CMPT370</string>
+    <string name="sidebar_navigation_open">Open navigation drawer</string>
+    <string name="sidebar_navigation_close">Close navigation drawer</string>
 </resources>
