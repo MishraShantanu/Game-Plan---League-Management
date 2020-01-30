@@ -1,4 +1,5 @@
 package com.zizzle.cmpt370;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class homepageWithMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -68,6 +71,11 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AboutUsFragment()).commit();
                 break;
+
+            case R.id.nav_logOut:
+                FirebaseAuth.getInstance().signOut();
+                Intent tolog = new Intent(homepageWithMenu.this, SigninActivity.class);
+                startActivity(tolog);
         }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
