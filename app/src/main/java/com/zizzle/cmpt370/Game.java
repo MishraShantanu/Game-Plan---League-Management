@@ -3,7 +3,6 @@ package com.zizzle.cmpt370;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import java.util.Calendar;
 
 /**
  * Parent class, stores generic information about sports games
@@ -14,7 +13,7 @@ public class Game {
     private Pair<Team,Team> teams;
 
     /** date (year, month, day, hour, minute) the game is being/was played */
-    private Calendar date;
+    private GameTime date;
 
     /** name of the location the game is/was held at */
     private String location;
@@ -33,43 +32,19 @@ public class Game {
      * Game constructor
      * @param team1: Team object, first of the teams playing in the game
      * @param team2: Team object, second of the teams playing in the game
-     * @param gameDate: int array of the form [year, month, day, hour, minute], months are from 0-11,
-     *               hour is on a 24 hr clock ie 0-23, minutes are from 0-59, gameDate must be after
-     *               the current date
+     * @param gameDate: GameTime object specifying when this game is scheduled to occur
      * @param location: String name of the location the game is being held
      * @param sport: String name of the sport of the game
-     * @throws IllegalArgumentException if time fields in gameDate are out of the bounds specified or if
-     * the game is scheduled to occur in the past
+     * @throws IllegalArgumentException if the gameDate refers to a time in the past, games must be
+     * scheduled for a time in the future
      */
-    public Game(Team team1, Team team2, int[] gameDate, String location, String sport) throws IllegalArgumentException{
+    public Game(Team team1, Team team2, GameTime gameDate, String location, String sport) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
         this.teams = new Pair<>(team1,team2);
-
-        // check that time fields are valid
-        int month = gameDate[1];
-        if(month < 0 || gameDate[1] > 11){
-            throw new IllegalArgumentException("Game: gameDate month out of bounds, valid bounds: 0-11" +
-                    " actual month: " + month);
+        if(!gameDate.isInFuture()){
+            throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
         }
-        int hour = gameDate[3];
-        if(hour < 0 || hour > 23){
-            throw new IllegalArgumentException("Game: gameDate hour out of bounds, valid bounds: 0-23" +
-                    " actual hour: " + hour);
-        }
-        int minutes = gameDate[4];
-        if(minutes < 0 || minutes > 59){
-            throw new IllegalArgumentException("Game: gameDate minutes out of bounds, valid bounds: 0-59" +
-                    " actual minutes: " + minutes);
-        }
-        date = Calendar.getInstance();
-        // by default set the last field, seconds to 0
-        date.set(gameDate[0],gameDate[1],gameDate[2], gameDate[3], gameDate[4], 0);
-        // make sure game isn't scheduled to occur in the past
-        Calendar now = Calendar.getInstance();
-        if(now.after(this.date)){
-            // Game is scheduled before now and so is scheduled for the past
-            throw new IllegalArgumentException("Game: gameDate specified is in the past");
-        }
+        this.date = gameDate;
         this.location = location;
         this.sport = sport;
         this.played = false;
@@ -100,44 +75,11 @@ public class Game {
     }
 
     /**
-     * Returns the year the game is scheduled to be on
-     * @return int year the game is being played on
+     * Returns the time the game was scheduled to be played at
+     * @return GameTime object describing the time the game is scheduled to be played
      */
-    public int getGameYear(){
-        // return the 0th (year) field of the calendar
-        return this.date.get(0);
-    }
-
-    /**
-     * Returns the month the game is being played on
-     * @return int 0-11 the month number the game is played on
-     */
-    public int getGameMonth(){
-        return this.date.get(1);
-    }
-
-    /**
-     * Returns the day the game is being played on
-     * @return int day the game is being played on
-     */
-    public int getGameDay(){
-        return this.date.get(2);
-    }
-
-    /**
-     * Returns the hour the game is being played on
-     * @return int 0-23 the hour the game is being played on
-     */
-    public int getGameHour(){
-        return this.date.get(3);
-    }
-
-    /**
-     * Returns the minutes of the hour the game is being played on
-     * @return int minutes 0-59 of the hour the game is being played on
-     */
-    public int getGameMinutes(){
-        return this.date.get(4);
+    public GameTime getGameTime(){
+        return this.date;
     }
 
     /**
@@ -145,9 +87,8 @@ public class Game {
      * @return true if the current time is past the start time of the game, false otherwise
      */
     public boolean hasGameStarted(){
-        Calendar now = Calendar.getInstance();
-        // is now after the start of the game
-        return now.after(this.date);
+        // if this game isn't scheduled for the future, it must have started
+        return !this.date.isInFuture();
     }
 
     /**
@@ -242,89 +183,26 @@ public class Game {
         }
     }
 
-    public void rescheduleGame(int[] newTime) throws IllegalStateException{
-        // check that time fields are valid
-        int month = newTime[1];
-        if(month < 0 || newTime[1] > 11){
-            throw new IllegalArgumentException("Game: gameDate month out of bounds, valid bounds: 0-11" +
-                    " actual month: " + month);
-        }
-        int hour = newTime[3];
-        if(hour < 0 || hour > 23){
-            throw new IllegalArgumentException("Game: gameDate hour out of bounds, valid bounds: 0-23" +
-                    " actual hour: " + hour);
-        }
-        int minutes = newTime[4];
-        if(minutes < 0 || minutes > 59){
-            throw new IllegalArgumentException("Game: gameDate minutes out of bounds, valid bounds: 0-59" +
-                    " actual minutes: " + minutes);
-        }
-        Calendar newDate = Calendar.getInstance();
-        // by default set the last field, seconds to 0
-        newDate.set(newTime[0],newTime[1],newTime[2], newTime[3], newTime[4], 0);
-        // make sure game isn't scheduled to occur in the past
-        Calendar now = Calendar.getInstance();
-        if(now.after(newDate)){
-            // Game is scheduled before now and so is scheduled for the past
-            throw new IllegalArgumentException("Game: gameDate specified is in the past");
-        }
-        // new time is valid
-        this.date = newDate;
-    }
-
     /**
-     * Returns an array of the form [days, hours, minutes] until the game is scheduled
-     * to occur
-     * @return long[] of the form above
-     * @throws IllegalStateException if the game has already started
+     * Reschedules the game to be played at a new time, cannot reschedule a game if it has already started
+     * or been played
+     * @param newTime: GameTime object, new time for the game to be played at
+     * @throws IllegalStateException if newTime specifies a time in the past, or this game has already
+     * started or been played
      */
-    public long[] timeUntilGame() throws IllegalStateException{
-        if(this.hasGameStarted()){
-            throw new IllegalStateException("Game: timeUntilGame called after game has started, use timeSinceGameStarted() instead");
+    public void rescheduleGame(GameTime newTime) throws IllegalStateException{
+        // can't reschedule game if it's already started or been played
+        if(this.hasBeenPlayed() || this.hasGameStarted()){
+            throw new IllegalStateException("Game: game cannot be rescheduled if it has already started or been played");
         }
-        Calendar currentTime = Calendar.getInstance();
-        long currentMilliseconds = currentTime.getTimeInMillis();
-        long gameMilliseconds = this.date.getTimeInMillis();
-        long millisecondsUntilGame = gameMilliseconds-currentMilliseconds;
-        // convert the milliseconds to days, hours, minutes, manually
-        final long millisecondsPerMinute = 1000*60;
-        final long millisecondsPerHour = millisecondsPerMinute*60;
-        final long millisecondsPerDay = millisecondsPerHour*24;
-        long daysUntilGame = millisecondsUntilGame/millisecondsPerDay;
-        // update millisecondsUntilDay now that days have been considered
-        millisecondsUntilGame = millisecondsUntilGame%millisecondsPerDay;
-        long hoursUntilGame = millisecondsUntilGame/millisecondsPerHour;
-        millisecondsUntilGame = millisecondsUntilGame%millisecondsPerHour;
-        long minutesUntilGame = millisecondsUntilGame/millisecondsPerMinute;
-        long[] timeDifferenceArray = {daysUntilGame,hoursUntilGame,minutesUntilGame};
-        return timeDifferenceArray;
-    }
-
-    /**
-     * Returns an array of the form [days, hours, minutes] since the game has started
-     * @return long[] of the form above
-     * @throws IllegalStateException if the game hasn't yet started
-     */
-    public long[] timeSinceGameStarted() throws IllegalStateException{
-        if(! this.hasGameStarted()){
-            throw new IllegalStateException("Game: timeSinceGameStart called before game has started, use timeUntilGame() instead");
+        // cannot reschedule a game for a time not in the future
+        else if(!newTime.isInFuture()){
+            throw new IllegalStateException("Game: game must be rescheduled for a time in the future");
         }
-        Calendar currentTime = Calendar.getInstance();
-        long currentMilliseconds = currentTime.getTimeInMillis();
-        long gameMilliseconds = this.date.getTimeInMillis();
-        long millisecondsSinceGame = currentMilliseconds - gameMilliseconds;
-        // convert the milliseconds to days, hours, minutes, manually
-        final long millisecondsPerMinute = 1000*60;
-        final long millisecondsPerHour = millisecondsPerMinute*60;
-        final long millisecondsPerDay = millisecondsPerHour*24;
-        long daysUntilGame = millisecondsSinceGame/millisecondsPerDay;
-        // update millisecondsUntilDay now that days have been considered
-        millisecondsSinceGame = millisecondsSinceGame%millisecondsPerDay;
-        long hoursUntilGame = millisecondsSinceGame/millisecondsPerHour;
-        millisecondsSinceGame = millisecondsSinceGame%millisecondsPerHour;
-        long minutesUntilGame = millisecondsSinceGame/millisecondsPerMinute;
-        long[] timeDifferenceArray = {daysUntilGame,hoursUntilGame,minutesUntilGame};
-        return timeDifferenceArray;
+        else{
+            // new time is valid
+            this.date = newTime;
+        }
     }
 
     /**
