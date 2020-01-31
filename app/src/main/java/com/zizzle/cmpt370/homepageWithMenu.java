@@ -71,7 +71,6 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AboutUsFragment()).commit();
                 break;
-
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
                 Intent tolog = new Intent(homepageWithMenu.this, SigninActivity.class);
