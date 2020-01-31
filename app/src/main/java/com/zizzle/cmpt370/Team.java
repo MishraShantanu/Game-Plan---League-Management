@@ -1,5 +1,8 @@
 package com.zizzle.cmpt370;
 
+import android.support.annotation.NonNull;
+import android.util.Pair;
+
 import java.util.ArrayList;
 
 
@@ -10,6 +13,9 @@ public class Team {
 
     /** Name of the team. */
     private String name;
+
+    /** Sport the team is playing */
+    private String sport;
 
     /** Members of the team */
     private ArrayList<User> members;
@@ -41,11 +47,13 @@ public class Team {
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
      * @param owner: User object, owner/creator of the team
+     * @param sport: String sport the team plays
      */
-    public Team(String name, User owner){
+    public Team(String name, User owner, String sport){
         //TODO check if new team name is unique for the league the team is in
         this.name = name;
         this.owner = owner;
+        this.sport = sport;
         this.members = new ArrayList<>();
         // assume the owner is always a player on the team
         this.members.add(owner);
@@ -126,20 +134,6 @@ public class Team {
     }
 
     /**
-     * Increases the number of wins the team has by 1
-     */
-    public void incrementWins(){
-        this.wins++;
-    }
-
-    /**
-     * Increases the number of losses the team has by 1
-     */
-    public void incrementLosses(){
-        this.losses++;
-    }
-
-    /**
      * Returns the number of ties the team has
      * @return int number of ties the team has
      */
@@ -147,12 +141,6 @@ public class Team {
         return this.ties;
     }
 
-    /**
-     * Increases the number of ties the team has by 1
-     */
-    public void incrementTies(){
-        this.ties++;
-    }
 
     /**
      * Returns an array of the members of the team
@@ -254,14 +242,82 @@ public class Team {
         return (Game[]) this.scheduledGames.toArray();
     }
 
+    public void scheduleNewGame(Game newGame) throws IllegalStateException{
+        // game must not have already been started
+        if(newGame.hasGameStarted() || newGame.hasBeenPlayed()){
+            throw new IllegalStateException("Team: new game scheduled has already started");
+        }
+        // TODO insert newGame into list of upcoming games in sorted order
+        this.scheduledGames.add(newGame);
+    }
 
 
+    public void markGameAsPlayed(Game playedGame){
+        // make sure that playedGame involves our team
+        Pair<Team,Team> gameTeams = playedGame.getTeams();
+        if((! gameTeams.first.equals(this)) && (! gameTeams.second.equals(this))){
+            // neither team of the game is this team
+            throw new IllegalArgumentException("Team: Game input to markGameAsPlayed doesn't involve this team");
+        }
+        // make sure input game has been played
+        if(! playedGame.hasBeenPlayed()){
+            throw new IllegalArgumentException("Team: Game input ot markGameAsPlayed hasn't yet been played");
+        }
+        if(playedGame.gameTied()){
+            this.ties++;
+        }
+        else if(playedGame.getWinner().equals(this)){
+            this.wins++;
+        }
+        else{
+            this.losses++;
+        }
+        // TODO insert playedGame into list of played games in sorted order
+        this.gamesPlayed.add(playedGame);
+    }
 
+    /**
+     * Cancels a game that the team was scheduled to play
+     * @param gameToCancel: Game object that the team is scheduled to play
+     * @throws IllegalArgumentException if the team isn't scheduled to play gameToCancel
+     */
+    public void cancelGame(Game gameToCancel) throws IllegalArgumentException{
+        boolean removedSuccessfully = this.scheduledGames.remove(gameToCancel);
+        // true is returned if gameToCancel is found and removed
+        if(! removedSuccessfully){
+            throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
+        }
+    }
 
+    /**
+     * Returns a String representation of the team including team name, sport, and win/loss/tie record
+     * @return String described above
+     */
+    @Override
+    @NonNull
+    public String toString(){
+        String teamString = "Team: " + this.name;
+        teamString += "\nSport: " + this.sport;
+        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
+        return teamString;
+    }
 
+    /**
+     * Checks where this Team is equal to the input parameter
+     * @param other: Object to see if equal to this Team
+     * @return true if other is equal to this, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof Team){
+            Team otherTeam = (Team) other;
+            // TODO compare leagues also
+            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport);
+        }
+        // other isn't a Team, cannot be equal to this
+        return false;
 
-    //TODO methods to schedule new games, assert the times of these games are after now
-    // TODO method to set a game as played, require scores etc, can move game from scheduled to played, assert the game's start time has passed
+    }
 
 
 

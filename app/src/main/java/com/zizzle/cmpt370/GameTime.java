@@ -40,12 +40,30 @@ public class GameTime {
         this.time.set(year,month,day,hour,minutes,0);
 
         // make sure game isn't scheduled to occur in the past
-        Calendar now = Calendar.getInstance();
-        if(this.time.before(now)){
-            // Game is scheduled before now and so is scheduled for the past
-            throw new IllegalArgumentException("GameTime: date specified is in the past");
+        if(! this.isInFuture()){
+            throw new IllegalArgumentException("GameTime: date specified isn't in the future");
         }
 
+    }
+
+    /**
+     * Compares this GameTime to another GameTime
+     * @param other: other GameTime object to compare this GameTime to
+     * @return 0 if this and other represent the same time, < 0 if this represent a time before the time
+     * represented by other, > 0 if this represents a time later than other
+     */
+    public int compareTo(GameTime other){
+        // compare underlying calendars
+        return this.time.compareTo(other.time);
+    }
+
+    /**
+     * Checks if the GameTime object specifies a time that is in the future
+     * @return true if the GameTime specifies a time in the future, false otherwise
+     */
+    public boolean isInFuture(){
+        Calendar now = Calendar.getInstance();
+        return this.time.after(now);
     }
 
 
