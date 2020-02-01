@@ -18,14 +18,14 @@ public class LeagueTest {
                 ""
         };
         // Owner for league.
-        User testUser =  new User("Brayden", "b@mail.com", "1234567890");
+        Member testMember =  new Member("Brayden", "b@mail.com", "1234567890");
         // Leagues for testing.
         League[] testLeagues = {
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description")
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description")
         };
         // Changing the name of the leagues.
         testLeagues[1].setName("Kid's Summer Soccer");
@@ -45,32 +45,32 @@ public class LeagueTest {
     @Test
     public void testSetOwner() {
         // Owners for league.
-        User[] testUsers = {
-                new User("Brayden", "b@mail.com", "1234567890"),
-                new User("Tod", "t@m.ca", "123"),
-                new User("Jill", "jillybean@email.com", "321")
+        Member[] testMembers = {
+                new Member("Brayden", "b@mail.com", "1234567890"),
+                new Member("Tod", "t@m.ca", "123"),
+                new Member("Jill", "jillybean@email.com", "321")
         };
         // Expected owners.
-        User[] expected = {
-                testUsers[0],
-                testUsers[0],
-                testUsers[1],
-                testUsers[2],
-                testUsers[1],
+        Member[] expected = {
+                testMembers[0],
+                testMembers[0],
+                testMembers[1],
+                testMembers[2],
+                testMembers[1],
         };
         // Leagues for testing.
         League[] testLeagues = {
-                new League("UofS", testUsers[0], "sport", "description"),
-                new League("UofS", testUsers[1], "sport", "description"),
-                new League("UofS", testUsers[2], "sport", "description"),
-                new League("UofS", testUsers[1], "sport", "description"),
-                new League("UofS", testUsers[0], "sport", "description")
+                new League("UofS", testMembers[0], "sport", "description"),
+                new League("UofS", testMembers[1], "sport", "description"),
+                new League("UofS", testMembers[2], "sport", "description"),
+                new League("UofS", testMembers[1], "sport", "description"),
+                new League("UofS", testMembers[0], "sport", "description")
         };
         // Changing the name of the leagues.
-        testLeagues[1].setOwner(testUsers[0]);
-        testLeagues[2].setOwner(testUsers[1]);
-        testLeagues[3].setOwner(testUsers[2]);
-        testLeagues[4].setOwner(testUsers[1]);
+        testLeagues[1].setOwner(testMembers[0]);
+        testLeagues[2].setOwner(testMembers[1]);
+        testLeagues[3].setOwner(testMembers[2]);
+        testLeagues[4].setOwner(testMembers[1]);
         // Checking if the league names have been changed.
         for (int i = 0; i < testLeagues.length; i++) {
             assertEquals(expected[i], testLeagues[i].getOwner());
@@ -91,14 +91,14 @@ public class LeagueTest {
                 "Tennis"
         };
         // Owner for league.
-        User testUser = new User("Brayden", "b@mail.com", "1234567890");
+        Member testMember = new Member("Brayden", "b@mail.com", "1234567890");
         // Leagues for testing.
         League[] testLeagues = {
-                new League("UofS", testUser, "Football", "description"),
-                new League("UofS", testUser, "Football", "description"),
-                new League("UofS", testUser, "Soccer", "description"),
-                new League("UofS", testUser, "Soccer", "description"),
-                new League("UofS", testUser, "Hockey", "description")
+                new League("UofS", testMember, "Football", "description"),
+                new League("UofS", testMember, "Football", "description"),
+                new League("UofS", testMember, "Soccer", "description"),
+                new League("UofS", testMember, "Soccer", "description"),
+                new League("UofS", testMember, "Hockey", "description")
         };
         // Changing the name of the leagues.
         testLeagues[1].setSport("Soccer");
@@ -125,14 +125,14 @@ public class LeagueTest {
                 "       31  3fd"
         };
         // Owner for league.
-        User testUser = new User("Brayden", "b@mail.com", "1234567890");
+        Member testMember = new Member("Brayden", "b@mail.com", "1234567890");
         // Leagues for testing.
         League[] testLeagues = {
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description"),
-                new League("UofS", testUser, "sport", "description")
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description"),
+                new League("UofS", testMember, "sport", "description")
         };
         // Changing the name of the leagues.
         testLeagues[1].setDescription("new description");
@@ -179,20 +179,20 @@ public class LeagueTest {
                         "Teams:"
         };
         // Owners for league.
-        User[] testUsers = {
-                new User("Brayden", "b@mail.com", "1234567890"),
-                new User("Tod", "t@m.ca", "123"),
-                new User("Jill", "jillybean@email.com", "321"),
-                new User("Joe", "joeybean@email.com", "1q2w3e4r5t6y7u8i9o0p"),
-                new User("Ted", "t@email.com", "0987654321")
+        Member[] testMembers = {
+                new Member("Brayden", "b@mail.com", "1234567890"),
+                new Member("Tod", "t@m.ca", "123"),
+                new Member("Jill", "jillybean@email.com", "321"),
+                new Member("Joe", "joeybean@email.com", "1q2w3e4r5t6y7u8i9o0p"),
+                new Member("Ted", "t@email.com", "0987654321")
         };
         // Leagues for testing.
         League[] testLeagues = {
-                new League("UofS", testUsers[0], "Volley Ball", "Bump, Set, Spike!"),
-                new League("Kids Soccer", testUsers[1], "Soccer", "Tykes"),
-                new League("Senior Squash", testUsers[2], "Squash", "Laid back squash"),
-                new League("Joe's Dodgeball", testUsers[3], "Dodgeball", "If you can dodge a wrench, you can dodge a ball"),
-                new League("test", testUsers[4], "test", "test")
+                new League("UofS", testMembers[0], "Volley Ball", "Bump, Set, Spike!"),
+                new League("Kids Soccer", testMembers[1], "Soccer", "Tykes"),
+                new League("Senior Squash", testMembers[2], "Squash", "Laid back squash"),
+                new League("Joe's Dodgeball", testMembers[3], "Dodgeball", "If you can dodge a wrench, you can dodge a ball"),
+                new League("test", testMembers[4], "test", "test")
         };
         // Checking if the league names have been changed.
         for (int i = 0; i < testLeagues.length; i++) {
