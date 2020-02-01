@@ -19,16 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-<!--        &lt;!&ndash;"homepage" wording (temporary)&ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/homepage"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:text="Homepage"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textSize="24sp" />-->
-
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
