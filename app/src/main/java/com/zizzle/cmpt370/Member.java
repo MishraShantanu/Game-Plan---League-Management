@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 
 /**
- * User class for holding information about a user.
+ * Member class for holding information about a user.
  */
-public class User {
+public class Member {
 
     /** Name of the user. */
     private String name;
@@ -28,11 +28,11 @@ public class User {
 
 
     /**
-     * Constructor for User object.
+     * Constructor for Member object.
      * @param name: Name of the user.
      * @param email E-mail of the user.
      */
-    public User(String name, String email, String phoneNumber) {
+    public Member(String name, String email, String phoneNumber) {
         this.name = name;
         this.email = email;
         setPhoneNumber(phoneNumber);
@@ -106,7 +106,7 @@ public class User {
         if (!this.teams.contains(team)) {
             this.teams.add(team);
         } else {
-            System.out.println("Error in addTeam(): User is already part of " + team.getName());
+            System.out.println("Error in addTeam(): Member is already part of " + team.getName());
         }
     }
 
@@ -123,7 +123,7 @@ public class User {
                 return;
             }
         }
-        System.out.println("Error in removeTeam(): User isn't part of team " + teamName);
+        System.out.println("Error in removeTeam(): Member isn't part of team " + teamName);
     }
 
 
