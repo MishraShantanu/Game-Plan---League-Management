@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Actual Menu Options and display-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <!--Above two lines are only to see sidebar preview properly, instead of dropdown menu style-->
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home" />
+
+        <item
+            android:id="@+id/nav_leagues"
+            android:icon="@drawable/baseline_sports_tennis_24"
+            android:title="All Leagues" />
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="Profile" />
+
+        <item
+            android:id="@+id/nav_aboutUs"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="About Us" />
+
+        <item
+            android:id="@+id/nav_logOut"
+            android:icon="@drawable/ic_arrow_back_black_24dp"
+            android:title="Log Out" />
+
+    </group>
+
+
+</menu>
