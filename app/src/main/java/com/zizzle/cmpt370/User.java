@@ -10,8 +10,12 @@ import java.util.ArrayList;
  */
 public class User {
 
-    /** Name of the user. */
-    private String name;
+    /** First Name of the user. */
+    private String fname;
+
+    /** Last name of the user */
+
+    private String lname;
 
     /** Email of the user. */
     private String email;
@@ -29,11 +33,12 @@ public class User {
 
     /**
      * Constructor for User object.
-     * @param name: Name of the user.
+     * @param fname: Name of the user.
      * @param email E-mail of the user.
      */
-    public User(String name, String email, String phoneNumber) {
-        this.name = name;
+    public User(String fname,String lname,String email, String phoneNumber) {
+        this.fname = fname;
+        this.lname = lname;
         this.email = email;
         setPhoneNumber(phoneNumber);
     }
@@ -43,7 +48,7 @@ public class User {
      * Retrieves the name of the user.
      * @return name of the user.
      */
-    public String getName() { return name; }
+    public String getName() { return fname; }
 
 
     /**
@@ -71,7 +76,7 @@ public class User {
      * Sets the name of the user to the given name.
      * @param name: new name for the user.
      */
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) { this.fname = name; }
 
 
     /**
@@ -134,7 +139,8 @@ public class User {
     @NonNull
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: " + this.name + "\n");
+        sb.append("First Name: " + this.fname + "\n");
+        sb.append("Last Name: " + this.lname + "\n");
         sb.append("Email: " + this.email + "\n");
         sb.append("Phone Number: " + this.phoneNumber + "\n");
         sb.append("Teams:");
