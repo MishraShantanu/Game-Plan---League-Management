@@ -14,17 +14,38 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
-     EditText emailId,password;
+     EditText emailId,password,firstName,lastName;
      Button buttonSignup;
      TextView tvSignIn;
      FirebaseAuth mFirebaseAuth ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+
+
+
+
+
+
+
+//        System.out.println(root.setValue(user).isSuccessful());
+//        root.setValue(user1);
+//        System.out.println(root.child("user").push());
+       // root.child("test").push();
+
+
+
+
+
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId  = findViewById(R.id.editText);
@@ -32,10 +53,14 @@ public class SignupActivity extends AppCompatActivity {
         buttonSignup = findViewById(R.id.button);
         tvSignIn = findViewById(R.id.textView2);
 
+        firstName = findViewById(R.id.firstName);
+        lastName = findViewById(R.id.lastName);
+
+
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = emailId.getText().toString();
+                final String email = emailId.getText().toString();
                 String pass = password.getText().toString();
 
                 if(email.isEmpty()){
@@ -56,7 +81,15 @@ public class SignupActivity extends AppCompatActivity {
                             if(!task.isSuccessful()){
                                 Toast.makeText(SignupActivity.this,"SignUp Unsucessful,plz try again",Toast.LENGTH_SHORT).show();
                             }else{
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                //System.out.println("hhhhhhhhhhhhhh"+);
+                                DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                Member member = new Member(firstName.getText().toString(),lastName.getText().toString(),emailId.getText().toString(),"987654321");
+                                root.setValue(member);
+                                root.push();
                                 startActivity(new Intent(SignupActivity.this,homepageWithMenu.class));
+
                             }
                         }
                     });
