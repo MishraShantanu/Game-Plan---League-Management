@@ -60,8 +60,10 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
                         new HomeFragment()).commit();
                 break;
             case R.id.nav_leagues:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new LeaguesFragment()).commit();
+                Intent intent = new Intent(homepageWithMenu.this, LeagueActivity.class);
+                startActivity(intent);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new LeaguesFragment()).commit();
                 break;
             case R.id.nav_profile:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
