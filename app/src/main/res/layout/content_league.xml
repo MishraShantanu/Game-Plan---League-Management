@@ -11,35 +11,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <ListView
             android:id="@+id/leagues_list"
-            android:background="@drawable/round_card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_height="305dp"
             android:layout_margin="15dp"/>
 
-        <TextView
-            android:id="@+id/league_rec"
-            android:background="@drawable/round_card"
-            android:padding="15dp"
-            android:textSize="25dp"
-            android:textColor="@color/colorText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@string/large_text" />
-        <TextView
-            android:background="@drawable/round_card"
-            android:padding="15dp"
-            android:textSize="25dp"
-            android:textColor="@color/colorText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:text="@string/large_text" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
