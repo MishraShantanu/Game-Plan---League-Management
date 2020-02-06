@@ -85,8 +85,8 @@ public class SignupActivity extends AppCompatActivity {
                                 //System.out.println("hhhhhhhhhhhhhh"+);
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                User user = new User(firstName.getText().toString(),lastName.getText().toString(),emailId.getText().toString(),"987654321");
-                                root.setValue(user);
+                                Member member = new Member(firstName.getText().toString(),lastName.getText().toString(),emailId.getText().toString(),"987654321");
+                                root.setValue(member);
                                 root.push();
                                 startActivity(new Intent(SignupActivity.this,homepageWithMenu.class));
 

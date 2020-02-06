@@ -10,14 +10,14 @@ import java.util.ArrayList;
  */
 public class Member {
 
-    /** Name of the user. */
-    private String name;
+    /** First name of the user. */
+    private String firstName;
+
+    /** Last name of the user. */
+    private String lastName;
 
     /** Email of the user. */
     private String email;
-
-    /** Password of the user. */
-    // TODO 15/01/2020 Add Password field.
 
     /** Phone number of the user. */
     private long phoneNumber;
@@ -26,25 +26,33 @@ public class Member {
     private ArrayList<Team> teams = new ArrayList<>();
 
 
-
     /**
-     * Constructor for Member object.
-     * @param name: Name of the user.
-     * @param email E-mail of the user.
+     * Constructor for the Member object.
+     * @param firstName: First name
+     * @param lastName: Last name
+     * @param email: email of member
+     * @param phoneNumber: phone number of memeber
      */
-    public Member(String fname, String lname, String email, String phoneNumber) {
-        this.fname = fname;
-        this.lname = lname;
+    public Member(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         setPhoneNumber(phoneNumber);
     }
 
 
     /**
-     * Retrieves the name of the user.
-     * @return name of the user.
+     * Retrieves the first name of the user.
+     * @return First name of the user.
      */
-    public String getName() { return fname; }
+    public String getFirstName() { return firstName; }
+
+
+    /**
+     * Retrieves the last name of the user.
+     * @return Last name of the user.
+     */
+    public String getLastName() { return lastName; }
 
 
     /**
@@ -69,10 +77,17 @@ public class Member {
 
 
     /**
-     * Sets the name of the user to the given name.
-     * @param name: new name for the user.
+     * Sets the first name of the user to the given name.
+     * @param firstName: new first name for the user.
      */
-    public void setName(String name) { this.fname = name; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+
+
+    /**
+     * Sets the last name of the user to the given name.
+     * @param lastName: new last name for the user.
+     */
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
 
     /**
@@ -135,8 +150,8 @@ public class Member {
     @NonNull
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("First Name: " + this.fname + "\n");
-        sb.append("Last Name: " + this.lname + "\n");
+        sb.append("First Name: " + this.firstName + "\n");
+        sb.append("Last Name: " + this.lastName + "\n");
         sb.append("Email: " + this.email + "\n");
         sb.append("Phone Number: " + this.phoneNumber + "\n");
         sb.append("Teams:");
