@@ -6,16 +6,12 @@ import java.util.ArrayList;
 
 
 /**
- * User class for holding information about a user.
+ * Member class for holding information about a user.
  */
-public class User {
+public class Member {
 
-    /** First Name of the user. */
-    private String fname;
-
-    /** Last name of the user */
-
-    private String lname;
+    /** Name of the user. */
+    private String name;
 
     /** Email of the user. */
     private String email;
@@ -32,11 +28,11 @@ public class User {
 
 
     /**
-     * Constructor for User object.
-     * @param fname: Name of the user.
+     * Constructor for Member object.
+     * @param name: Name of the user.
      * @param email E-mail of the user.
      */
-    public User(String fname,String lname,String email, String phoneNumber) {
+    public Member(String fname, String lname, String email, String phoneNumber) {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
@@ -111,7 +107,7 @@ public class User {
         if (!this.teams.contains(team)) {
             this.teams.add(team);
         } else {
-            System.out.println("Error in addTeam(): User is already part of " + team.getName());
+            System.out.println("Error in addTeam(): Member is already part of " + team.getName());
         }
     }
 
@@ -128,7 +124,7 @@ public class User {
                 return;
             }
         }
-        System.out.println("Error in removeTeam(): User isn't part of team " + teamName);
+        System.out.println("Error in removeTeam(): Member isn't part of team " + teamName);
     }
 
 

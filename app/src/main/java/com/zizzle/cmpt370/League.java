@@ -14,7 +14,7 @@ public class League {
     private String name;
 
     /** Owner of the league. */
-    private User owner;
+    private Member owner;
 
     /** Sport played in the league. */
     private String sport;
@@ -32,11 +32,11 @@ public class League {
     /**
      * Constructor for league object.
      * @param name: Name of the league.
-     * @param owner: User that owns the league.
+     * @param owner: Member that owns the league.
      * @param sport: Type of the sport that the league plays.
      * @param description: Description of the league.
      */
-    public League(String name, User owner, String sport, String description) {
+    public League(String name, Member owner, String sport, String description) {
         this.name = name;
         this.owner = owner;
         this.sport = sport;
@@ -56,7 +56,7 @@ public class League {
      * Retrieves the owner of the league.
      * @return owner of the league.
      */
-    public User getOwner() { return owner; }
+    public Member getOwner() { return owner; }
 
 
     /**
@@ -91,7 +91,7 @@ public class League {
      * Transfer ownership to the new owner provided.
      * @param owner: New owner of the league.
      */
-    public void setOwner(User owner) { this.owner = owner; }
+    public void setOwner(Member owner) { this.owner = owner; }
 
 
     /**
