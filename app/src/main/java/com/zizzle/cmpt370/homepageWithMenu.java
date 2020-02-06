@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class homepageWithMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private DrawerLayout mDrawerLayout; //main layout ID of homepageWithMenu.xml
+    private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
 
     private Toolbar mToolBar; //Added for overlay effect of menu
@@ -33,7 +33,7 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = findViewById(R.id.nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
 
-        //four parameters: the activity, drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
+        //four parameters: the activity, drawer roundedCorners, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.sidebar_navigation_open, R.string.sidebar_navigation_close); //added "menu button" which automatically animates icon for open/close
         mDrawerLayout.addDrawerListener(mToggle);
