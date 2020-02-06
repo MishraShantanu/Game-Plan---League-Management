@@ -13,7 +13,8 @@ import java.util.ArrayList;
 
 public class LeagueActivity extends AppCompatActivity {
 
-    String[] leagues = {"TEST1", "TEST2"};
+    // values inside ListView.
+    ArrayList<String> leagues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +23,16 @@ public class LeagueActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ArrayAdapter leagueArrayAdapter = new ArrayAdapter<String>(this, R.layout.league_listview, leagues);
-//        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, mobileArray);
+        // ListView
+        leagues = new ArrayList<>();
+        leagues.add("League 1");
+        leagues.add("League 2");
+        leagues.add("League 3");
 
+        // Display ListView contents.
+        ArrayAdapter leagueArrayAdapter = new ArrayAdapter<String>(
+                this, R.layout.league_listview, leagues);
         ListView leagueList = findViewById(R.id.leagues_list);
-//        ListView listView = (ListView) findViewById(R.id.mobile_list);
-
         leagueList.setAdapter(leagueArrayAdapter);
-//        listView.setAdapter(adapter);
     }
 }
