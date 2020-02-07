@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <item android:top="0dp">
+        <shape>
+            <solid android:color="@android:color/transparent"/>
+            <stroke android:dashGap="10dp"
+                android:dashWidth="10dp"/>
+        </shape>
+    </item>
+
     <!-- "shadow" -->
-    <item android:top="8dp"
+    <item android:top="18dp"
         android:left="8dp">
         <shape android:shape="rectangle">
             <solid android:color="@color/colorPrimaryDark"/>
@@ -11,8 +19,9 @@
     </item>
 
 
-    <item android:bottom="8dp"
-          android:right="8dp">
+    <item android:top="10dp"
+        android:bottom="8dp"
+        android:right="8dp">
         <shape android:shape="rectangle">
             <solid android:color="@color/colorAccent"/>
             <corners android:radius="10dp" />

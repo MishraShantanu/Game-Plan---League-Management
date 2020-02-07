@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -28,6 +29,15 @@ public class LeagueActivity extends AppCompatActivity {
         leagues.add("League 1");
         leagues.add("League 2");
         leagues.add("League 3");
+        leagues.add("League 4");
+        leagues.add("League 5");
+        leagues.add("League 6");
+        leagues.add("League 1");
+        leagues.add("League 2");
+        leagues.add("League 3");
+        leagues.add("League 4");
+        leagues.add("League 5");
+        leagues.add("League 6");
 
         // Display ListView contents.
         ArrayAdapter leagueArrayAdapter = new ArrayAdapter<String>(

@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/background_colour"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
     tools:context=".LeagueActivity"
     tools:showIn="@layout/activity_league">
 
-    <LinearLayout
+<!--    searchbar-->
+    <EditText
+        android:id="@+id/league_search_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorText"
+        android:padding="8dp"
+        android:hint="search leagues"/>
+
+
+<!--        list of leagues-->
+    <ListView
+        android:id="@+id/leagues_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <ListView
-            android:id="@+id/leagues_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:padding="15dp" />
-
-    </LinearLayout>
-
-</android.support.v4.widget.NestedScrollView>
+        android:divider="@null"
+        android:padding="15dp" />
+    
+</LinearLayout>

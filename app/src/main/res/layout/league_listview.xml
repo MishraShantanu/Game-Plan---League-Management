@@ -2,8 +2,8 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/leagues_item_text"
     android:textColor="@color/colorText"
-    android:padding="16dp"
-    android:textSize="20sp"
+    android:padding="22dp"
+    android:textSize="24sp"
     android:background="@drawable/round_card"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
