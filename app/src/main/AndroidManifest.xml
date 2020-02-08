@@ -9,34 +9,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name=".SigninActivity" />
+        <activity android:name=".SignupActivity" />
+
+        <activity android:name=".homepageWithMenu">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <!--Below Line hides the warning given by Android Studio-->
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".LeagueActivity"
             android:label="@string/title_activity_league"
             android:parentActivityName=".homepageWithMenu"
             android:theme="@style/AppTheme.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zizzle.cmpt370.homepageWithMenu" />
         </activity>
-        <activity android:name=".SigninActivity">
-<!--            Moved defualt launcher-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-        <activity android:name=".SignupActivity" />
+
+        <!--Below Activity is not used-->
         <activity android:name=".MainActivity" />
-        <activity android:name=".homepageWithMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

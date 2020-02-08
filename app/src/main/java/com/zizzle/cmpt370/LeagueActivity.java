@@ -38,8 +38,6 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_league);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.top_bar);
-//        setSupportActionBar(toolbar);
 
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
@@ -100,8 +98,6 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_leagues:
                 Intent intent = new Intent(this, LeagueActivity.class);
                 startActivity(intent);
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new LeaguesFragment()).commit();
                 break;
             case R.id.nav_profile:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
