@@ -57,7 +57,6 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-
         // ListView
         // TESTING. fills the array with example leagues.
         leagues = new ArrayList<>();
@@ -68,7 +67,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
         // TESTING. gathers the league names from the leagues in system.
         ArrayList<String> league_names = new ArrayList<>();
-        for (League l :leagues) {
+        for (League l : leagues) {
             league_names.add(l.getName());
         }
 

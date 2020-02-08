@@ -1,4 +1,5 @@
 package com.zizzle.cmpt370;
+
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -33,10 +34,11 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
         NavigationView navigationView = findViewById(R.id.nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
 
-        //four parameters: the activity, drawer roundedCorners, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
+        //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
+        // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.sidebar_navigation_open, R.string.sidebar_navigation_close); //added "menu button" which automatically animates icon for open/close
-        mDrawerLayout.addDrawerListener(mToggle);
+        mDrawerLayout.addDrawerListener(mToggle); //Connects ActionBarDrawerToggle to DrawerLayout
         mToggle.syncState(); //takes care of rotating the menu icon
 
 
@@ -51,7 +53,7 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
 
     }
 
-    //When item is selected in the menu, open the respective fragment
+    //When item is selected in the menu, open the respective element (fragment or activity)
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -60,7 +62,7 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
                         new HomeFragment()).commit();
                 break;
             case R.id.nav_leagues:
-                Intent intent = new Intent(homepageWithMenu.this, LeagueActivity.class);
+                Intent intent = new Intent(this, LeagueActivity.class);
                 startActivity(intent);
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
 //                        new LeaguesFragment()).commit();
@@ -75,7 +77,7 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                Intent tolog = new Intent(homepageWithMenu.this, SigninActivity.class);
+                Intent tolog = new Intent(this, SigninActivity.class);
                 startActivity(tolog);
         }
         //close drawer
