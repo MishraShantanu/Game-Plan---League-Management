@@ -24,8 +24,8 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepagewithmenu); //content to open
 
-        //add top bar from navigation_action as action bar
-        mToolBar = (Toolbar) findViewById(R.id.nav_action);
+        //add top bar from top_bar as action bar
+        mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
         //MENU (button & drawer)

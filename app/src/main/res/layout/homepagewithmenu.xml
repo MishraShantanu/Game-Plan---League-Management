@@ -13,9 +13,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--Added to make menu overlap the main page (adding navigation_action.xml)-->
+<!--        Added to make menu overlap the main page (adding top_bar)-->
         <include
-            layout="@layout/navigation_action"
+            layout="@layout/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
