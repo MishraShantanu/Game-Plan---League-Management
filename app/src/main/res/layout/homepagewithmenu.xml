@@ -15,7 +15,7 @@
 
         <!--        Adding the top bar of the app -->
         <include
-            layout="@layout/top_bar"
+            layout="@menu/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_layout"
+        app:headerLayout="@menu/navigation_layout"
         app:menu="@menu/navigation_menu">
 
 
