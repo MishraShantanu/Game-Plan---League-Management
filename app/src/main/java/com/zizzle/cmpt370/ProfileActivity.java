@@ -63,10 +63,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 Intent intent3 = new Intent(this, ProfileActivity.class);
                 startActivity(intent3);
                 break;
-//            case R.id.nav_aboutUs:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new AboutUsFragment()).commit();
-//                break;
+            case R.id.nav_aboutUs:
+                Intent intent4 = new Intent(this, AboutUsActivity.class);
+                startActivity(intent4);
+                break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
                 Intent tolog = new Intent(this, SigninActivity.class);
