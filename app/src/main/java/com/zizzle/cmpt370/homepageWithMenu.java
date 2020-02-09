@@ -33,6 +33,7 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_home); //Highlight respective option in the navigation menu
 
         //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
@@ -73,17 +74,15 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
             case R.id.nav_home:
                 Intent intent1 = new Intent(this, HomeActivity.class);
                 startActivity(intent1);
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new HomeFragment()).commit();
                 break;
             case R.id.nav_leagues:
                 Intent intent2 = new Intent(this, LeagueActivity.class);
                 startActivity(intent2);
                 break;
-//            case R.id.nav_profile:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new ProfileFragment()).commit();
-//                break;
+            case R.id.nav_profile:
+                Intent intent3 = new Intent(this, ProfileActivity.class);
+                startActivity(intent3);
+                break;
 //            case R.id.nav_aboutUs:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
 //                        new AboutUsFragment()).commit();
