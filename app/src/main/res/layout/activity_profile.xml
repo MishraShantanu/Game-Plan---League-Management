@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".ProfileActivity"
-    android:background="@color/cardview_shadow_start_color">
+    android:background="@drawable/background_colour">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Profile ACTIVITY"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorText"
             android:textSize="30sp"
             android:textAlignment="center"/>
 
