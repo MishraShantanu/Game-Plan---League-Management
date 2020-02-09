@@ -150,8 +150,7 @@ public class Member {
     @NonNull
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("First Name: " + this.firstName + "\n");
-        sb.append("Last Name: " + this.lastName + "\n");
+        sb.append("Name: " + this.firstName + " " + this.lastName + "\n");
         sb.append("Email: " + this.email + "\n");
         sb.append("Phone Number: " + this.phoneNumber + "\n");
         sb.append("Teams:");
