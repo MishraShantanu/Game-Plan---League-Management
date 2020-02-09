@@ -31,8 +31,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zizzle.cmpt370.homepageWithMenu" />
-        </activity> <!-- Below Activity is not used -->
-        <activity android:name=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>
