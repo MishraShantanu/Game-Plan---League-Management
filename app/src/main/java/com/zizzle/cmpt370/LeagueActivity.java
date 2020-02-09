@@ -91,22 +91,31 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+//            case R.id.nav_home:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_leagues:
+//                Intent intent = new Intent(this, LeagueActivity.class);
+//                startActivity(intent);
+//                break;
+
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new HomeFragment()).commit();
+                Intent intent1 = new Intent(this, HomeActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.nav_leagues:
-                Intent intent = new Intent(this, LeagueActivity.class);
-                startActivity(intent);
+                Intent intent2 = new Intent(this, LeagueActivity.class);
+                startActivity(intent2);
                 break;
-            case R.id.nav_profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
-                break;
-            case R.id.nav_aboutUs:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AboutUsFragment()).commit();
-                break;
+//            case R.id.nav_profile:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ProfileFragment()).commit();
+//                break;
+//            case R.id.nav_aboutUs:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new AboutUsFragment()).commit();
+//                break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
                 Intent tolog = new Intent(this, SigninActivity.class);

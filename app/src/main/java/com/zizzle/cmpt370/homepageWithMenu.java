@@ -44,8 +44,10 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
 
         //Open Home Fragment when app is first opened
         if (savedInstanceState == null) { //savedInstanceState is from onCreateMethod (null if activity started for first time); not null when device is rotates or something else
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new HomeFragment()).commit();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                    new HomeFragment()).commit();
+            Intent intent1 = new Intent(this, HomeActivity.class);
+            startActivity(intent1);
             navigationView.setCheckedItem(R.id.nav_home); //Make "Home" option selected in the menu when app opens
         }
 
@@ -57,24 +59,35 @@ public class homepageWithMenu extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+//            case R.id.nav_home:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new HomeFragment()).commit();
+//                break;
+//            case R.id.nav_leagues:
+//                Intent intent = new Intent(this, LeagueActivity.class);
+//                startActivity(intent);
+////                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+////                        new LeaguesFragment()).commit();
+//                break;
+
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new HomeFragment()).commit();
+                Intent intent1 = new Intent(this, HomeActivity.class);
+                startActivity(intent1);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new HomeFragment()).commit();
                 break;
             case R.id.nav_leagues:
-                Intent intent = new Intent(this, LeagueActivity.class);
-                startActivity(intent);
+                Intent intent2 = new Intent(this, LeagueActivity.class);
+                startActivity(intent2);
+                break;
+//            case R.id.nav_profile:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new LeaguesFragment()).commit();
-                break;
-            case R.id.nav_profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
-                break;
-            case R.id.nav_aboutUs:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AboutUsFragment()).commit();
-                break;
+//                        new ProfileFragment()).commit();
+//                break;
+//            case R.id.nav_aboutUs:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new AboutUsFragment()).commit();
+//                break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
                 Intent tolog = new Intent(this, SigninActivity.class);
