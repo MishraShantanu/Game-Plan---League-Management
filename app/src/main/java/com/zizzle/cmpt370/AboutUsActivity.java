@@ -79,6 +79,16 @@ public class AboutUsActivity extends AppCompatActivity implements NavigationView
         return true;
     }
 
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed(); //close activity (as usual)
+        }
+    }
+
     //Button to open menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
