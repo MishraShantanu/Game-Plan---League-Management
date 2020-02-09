@@ -1,4 +1,4 @@
-package com.zizzle.cmpt370;
+package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zizzle.cmpt370.R;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

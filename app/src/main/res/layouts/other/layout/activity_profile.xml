@@ -2,11 +2,11 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/home_layout"
+    android:id="@+id/profile_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".HomeActivity"
+    tools:context=".Activities.ProfileActivity"
     android:background="@drawable/background_colour">
 
     <LinearLayout
@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Home ACTIVITY"
+            android:text="Profile ACTIVITY"
             android:textColor="@color/colorText"
             android:textSize="30sp"
             android:textAlignment="center"/>
@@ -32,7 +32,7 @@
 
     <!--Navigation menu-->
     <android.support.design.widget.NavigationView
-        android:id="@+id/home_nav_view"
+        android:id="@+id/profile_nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

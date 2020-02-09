@@ -1,4 +1,4 @@
-package com.zizzle.cmpt370;
+package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -15,6 +15,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.zizzle.cmpt370.R;
+import com.zizzle.cmpt370.Useless.homepageWithMenu;
 
 public class SigninActivity extends AppCompatActivity {
     EditText emailId,password;
@@ -43,7 +45,7 @@ public class SigninActivity extends AppCompatActivity {
 
                 if(mfirebaseUser != null){
                     Toast.makeText(SigninActivity.this," You are  logged in",Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(SigninActivity.this,homepageWithMenu.class);
+                    Intent i = new Intent(SigninActivity.this, homepageWithMenu.class);
                     startActivity(i);
                 }else {
                     Toast.makeText(SigninActivity.this,"Please Login",Toast.LENGTH_SHORT).show();

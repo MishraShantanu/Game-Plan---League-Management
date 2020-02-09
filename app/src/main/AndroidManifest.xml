@@ -9,12 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AboutUsActivity"></activity>
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".SigninActivity" />
-        <activity android:name=".SignupActivity" /> <!-- NOW HOMEPAGEWITHMENU IS NOT USED!!!!! (DELETE LATER IF NOT NEEDED) -->
-        <activity android:name=".homepageWithMenu" />
-        <activity android:name=".HomeActivity">
+        <activity android:name=".Activities.AboutUsActivity"></activity>
+        <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.SigninActivity" />
+        <activity android:name=".Activities.SignupActivity" /> <!-- NOW HOMEPAGEWITHMENU IS NOT USED!!!!! (DELETE LATER IF NOT NEEDED) -->
+        <activity android:name=".Useless.homepageWithMenu" />
+        <activity android:name=".Activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,13 +24,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LeagueActivity"
+            android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
-            android:parentActivityName=".homepageWithMenu"
+            android:parentActivityName=".Useless.homepageWithMenu"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zizzle.cmpt370.homepageWithMenu" />
+                android:value="com.zizzle.cmpt370.Useless.homepageWithMenu" />
         </activity>
     </application>
 
