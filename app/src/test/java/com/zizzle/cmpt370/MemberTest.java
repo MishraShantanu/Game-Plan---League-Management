@@ -139,23 +139,28 @@ public class MemberTest {
                 "Name: a a\n" +
                         "Email: a@mail.com\n" +
                         "Phone Number: 1-234-567-8901\n" +
-                        "Teams:",
+                        "Teams:\n" +
+                        "Leagues:",
                 "Name: Shantanu Mishra\n" +
                         "Email: shantanu@mail.com\n" +
                         "Phone Number: 1-987-654-3211\n" +
-                        "Teams:",
+                        "Teams:\n" +
+                        "Leagues:",
                 "Name: Lee Cadotte\n" +
                         "Email: lee@mail.gov\n" +
                         "Phone Number: 1-234-567-8901\n" +
-                        "Teams:",
+                        "Teams:\n" +
+                        "Leagues:",
                 "Name: Jay Shah\n" +
                         "Email: jay@mail.com\n" +
                         "Phone Number: 0-987-654-3210\n" +
-                        "Teams:",
+                        "Teams:\n" +
+                        "Leagues:",
                 "Name: Brayden Martin\n" +
                         "Email: bkm257@usask.ca\n" +
                         "Phone Number: 1-306-681-4380\n" +
-                        "Teams:"
+                        "Teams:\n" +
+                        "Leagues:"
         };
         // Setting up test cases.
         Member[] testMembers = {
