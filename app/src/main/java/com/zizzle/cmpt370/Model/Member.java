@@ -10,27 +10,38 @@ import java.util.ArrayList;
  */
 public class Member {
 
-    /** First name of the user. */
+    /**
+     * First name of the user.
+     */
     private String firstName;
 
-    /** Last name of the user. */
+    /**
+     * Last name of the user.
+     */
     private String lastName;
 
-    /** Email of the user. */
+    /**
+     * Email of the user.
+     */
     private String email;
 
-    /** Phone number of the user. */
-    private long phoneNumber;
+    /**
+     * Phone number of the user.
+     */
+    private String phoneNumber;
 
-    /** Teams the user belongs to. */
+    /**
+     * Teams the user belongs to.
+     */
     private ArrayList<Team> teams = new ArrayList<>();
 
 
     /**
      * Constructor for the Member object.
-     * @param firstName: First name
-     * @param lastName: Last name
-     * @param email: email of member
+     *
+     * @param firstName:   First name
+     * @param lastName:    Last name
+     * @param email:       email of member
      * @param phoneNumber: phone number of memeber
      */
     public Member(String firstName, String lastName, String email, String phoneNumber) {
@@ -43,78 +54,109 @@ public class Member {
 
     /**
      * Retrieves the first name of the user.
+     *
      * @return First name of the user.
      */
-    public String getFirstName() { return firstName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
 
     /**
      * Retrieves the last name of the user.
+     *
      * @return Last name of the user.
      */
-    public String getLastName() { return lastName; }
+    public String getLastName() {
+        return lastName;
+    }
 
 
     /**
      * Retrieves the email of the user.
+     *
      * @return email of the user.
      */
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
 
     /**
      * Retrieves the phone number of the user.
+     *
      * @return phone number of the user.
      */
-    public long getPhoneNumber() { return phoneNumber; }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
 
     /**
      * Retrieves the teams the user belongs to.
+     *
      * @return ArrayList of teams user belongs to.
      */
-    public ArrayList<Team> getTeams() { return teams; }
+    public ArrayList<Team> getTeams() {
+        return teams;
+    }
 
 
     /**
      * Sets the first name of the user to the given name.
+     *
      * @param firstName: new first name for the user.
      */
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
 
     /**
      * Sets the last name of the user to the given name.
+     *
      * @param lastName: new last name for the user.
      */
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
 
     /**
      * Set the email of the user to the given email.
+     *
      * @param email: new email for the user.
      */
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 
     /**
      * Set the phone number of a user to new phone number.
+     *
      * @param phoneNumber: String value of the phone number.
      */
     public void setPhoneNumber(String phoneNumber) {
         // Strip non-numeric characters from phone number.
         phoneNumber = phoneNumber.replaceAll("\\D", "");
-        // Parse String of numeric characters to long (int too small for phone numbers).
-        try {
-            this.phoneNumber = Long.parseLong(phoneNumber);
-        } catch (NumberFormatException e) {
+
+        if (phoneNumber.length() != 11)
             System.out.println("Error in setPhoneNumber(): Invalid phone number: " + phoneNumber);
+        else {
+            StringBuilder sb = new StringBuilder();
+            sb.append(phoneNumber.substring(0, 1)).append("-");
+            sb.append(phoneNumber.substring(1, 4)).append("-");
+            sb.append(phoneNumber.substring(4, 7)).append("-");
+            sb.append(phoneNumber.substring(7, 11));
+            this.phoneNumber = sb.toString();
         }
     }
 
 
     /**
      * Adds a team to the list of teams user belongs to.
+     *
      * @param team: Team object to add to list of teams.
      */
     public void addTeam(Team team) {
@@ -129,6 +171,7 @@ public class Member {
 
     /**
      * Removes a team from the list of teams the user belongs to.
+     *
      * @param teamName: Name of the team to remove.
      */
     public void removeTeam(String teamName) {
@@ -145,6 +188,7 @@ public class Member {
 
     /**
      * Return information about user in String format.
+     *
      * @return String of user information.
      */
     @NonNull
