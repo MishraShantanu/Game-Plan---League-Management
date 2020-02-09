@@ -1,5 +1,7 @@
 package com.zizzle.cmpt370;
 
+import com.zizzle.cmpt370.Model.Member;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

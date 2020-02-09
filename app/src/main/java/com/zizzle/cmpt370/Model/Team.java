@@ -1,4 +1,4 @@
-package com.zizzle.cmpt370;
+package com.zizzle.cmpt370.Model;
 
 /**
  * Team class for holding information of the team.
