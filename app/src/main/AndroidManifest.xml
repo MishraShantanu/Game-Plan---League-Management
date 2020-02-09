@@ -9,22 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SigninActivity">
+        <activity android:name=".AboutUsActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".SigninActivity" />
+        <activity android:name=".SignupActivity" /> <!-- NOW HOMEPAGEWITHMENU IS NOT USED!!!!! (DELETE LATER IF NOT NEEDED) -->
+        <activity android:name=".homepageWithMenu" />
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <!-- Below Line hides the warning given by Android Studio -->
+                <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity">
-
-        </activity>
-
-        <activity android:name=".MainActivity">
-
-        </activity>
-
-        <activity android:name=".homepageWithMenu"></activity>
+        <activity
+            android:name=".LeagueActivity"
+            android:label="@string/title_activity_league"
+            android:parentActivityName=".homepageWithMenu"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zizzle.cmpt370.homepageWithMenu" />
+        </activity> <!-- Below Activity is not used -->
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
