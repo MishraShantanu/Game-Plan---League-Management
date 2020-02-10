@@ -21,7 +21,7 @@ public class LeagueTest {
                 ""
         };
         // Owner for league.
-        Member testMember =  new Member("Brayden", "b@mail.com", "1234567890");
+        Member testMember =  new Member("Brayden", "Martin", "b@mail.com", "12345678901");
         // Leagues for testing.
         League[] testLeagues = {
                 new League("UofS", testMember, "sport", "description"),
@@ -49,9 +49,9 @@ public class LeagueTest {
     public void testSetOwner() {
         // Owners for league.
         Member[] testMembers = {
-                new Member("Brayden", "b@mail.com", "1234567890"),
-                new Member("Tod", "t@m.ca", "123"),
-                new Member("Jill", "jillybean@email.com", "321")
+                new Member("Brayden", "Martin", "b@mail.com", "12345678901"),
+                new Member("Tod", "Bushel", "t@m.ca", "12345678901"),
+                new Member("Jill", "Bean", "jillybean@email.com", "12345678901")
         };
         // Expected owners.
         Member[] expected = {
@@ -94,7 +94,7 @@ public class LeagueTest {
                 "Tennis"
         };
         // Owner for league.
-        Member testMember = new Member("Brayden", "b@mail.com", "1234567890");
+        Member testMember = new Member("Brayden", "Martin" , "b@mail.com", "12345678901");
         // Leagues for testing.
         League[] testLeagues = {
                 new League("UofS", testMember, "Football", "description"),
@@ -128,7 +128,7 @@ public class LeagueTest {
                 "       31  3fd"
         };
         // Owner for league.
-        Member testMember = new Member("Brayden", "b@mail.com", "1234567890");
+        Member testMember = new Member("Brayden", "Martin", "b@mail.com", "12345678901");
         // Leagues for testing.
         League[] testLeagues = {
                 new League("UofS", testMember, "sport", "description"),
@@ -156,38 +156,38 @@ public class LeagueTest {
     public void testToString() {
         String[] expected = {
                 "League Name: UofS\n" +
-                        "Owner: Brayden\n" +
+                        "Owner: Brayden Martin\n" +
                         "Sport: Volley Ball\n" +
                         "Description: Bump, Set, Spike!\n" +
                         "Teams:",
                 "League Name: Kids Soccer\n" +
-                        "Owner: Tod\n" +
+                        "Owner: Tod Bushel\n" +
                         "Sport: Soccer\n" +
                         "Description: Tykes\n" +
                         "Teams:",
                 "League Name: Senior Squash\n" +
-                        "Owner: Jill\n" +
+                        "Owner: Jill Bean\n" +
                         "Sport: Squash\n" +
                         "Description: Laid back squash\n" +
                         "Teams:",
                 "League Name: Joe's Dodgeball\n" +
-                        "Owner: Joe\n" +
+                        "Owner: Joe Dirt\n" +
                         "Sport: Dodgeball\n" +
                         "Description: If you can dodge a wrench, you can dodge a ball\n" +
                         "Teams:",
                 "League Name: test\n" +
-                        "Owner: Ted\n" +
+                        "Owner: Ted Hatchet\n" +
                         "Sport: test\n" +
                         "Description: test\n" +
                         "Teams:"
         };
         // Owners for league.
         Member[] testMembers = {
-                new Member("Brayden", "b@mail.com", "1234567890"),
-                new Member("Tod", "t@m.ca", "123"),
-                new Member("Jill", "jillybean@email.com", "321"),
-                new Member("Joe", "joeybean@email.com", "1q2w3e4r5t6y7u8i9o0p"),
-                new Member("Ted", "t@email.com", "0987654321")
+                new Member("Brayden", "Martin", "b@mail.com", "12345678901"),
+                new Member("Tod", "Bushel", "t@m.ca", "12345678901"),
+                new Member("Jill", "Bean", "jillybean@email.com", "12345678901"),
+                new Member("Joe", "Dirt", "joeybean@email.com", "12345678901"),
+                new Member("Ted", "Hatchet", "t@email.com", "12345678901")
         };
         // Leagues for testing.
         League[] testLeagues = {
