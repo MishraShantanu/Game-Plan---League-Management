@@ -1,8 +1,6 @@
 package com.zizzle.cmpt370;
 
 import org.junit.Test;
-
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,8 +31,7 @@ public class GameTimeTest {
 
         exceptionThrown = false;
         // create GameTimes with fields that are out of bounds
-        // TODO test for negative inputs
-        int[][] invalidInputs = {{2019,12,15,23,59},{2030,13,3,4,14},};
+        int[][] invalidInputs = {{2019,12,15,23,59},{2030,13,3,4,14}};
         for(int i=0;i<invalidInputs.length;i++){
             try{
                 int[] currentInput = invalidInputs[i];

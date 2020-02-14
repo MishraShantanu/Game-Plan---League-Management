@@ -141,6 +141,27 @@ public class Team {
         return this.ties;
     }
 
+    /**
+     * Determines if the input member is on the team
+     * @param member: Member to determine if on the team
+     * @return true if member is on the team, false otherwise
+     */
+    public boolean teamHasMember(User member){
+        return this.members.contains(member);
+    }
+
+    /**
+     * Adds the input member to the team
+     * @param newMember: member to be added to the team
+     * @throws IllegalStateException if the input member is already on the team
+     */
+    public void addMember(User newMember) throws IllegalStateException{
+        if(this.teamHasMember(newMember)){
+            throw new IllegalStateException("Member: " + newMember.toString() + " is already on this team");
+        }
+        this.members.add(newMember);
+    }
+
 
     /**
      * Returns an array of the members of the team
@@ -247,8 +268,21 @@ public class Team {
         if(newGame.hasGameStarted() || newGame.hasBeenPlayed()){
             throw new IllegalStateException("Team: new game scheduled has already started");
         }
-        // TODO insert newGame into list of upcoming games in sorted order
-        this.scheduledGames.add(newGame);
+        boolean foundPosition = false;
+        for(int i=0;i<this.scheduledGames.size();i++){
+            // linear search for a position to add this item, could binary search
+            GameTime otherGameTime = this.scheduledGames.get(i).getGameTime();
+            if(newGame.getGameTime().compareTo(otherGameTime)<0){
+                // new game is scheduled to occur before the other game, place this in the list first
+                this.scheduledGames.add(i,newGame);
+                foundPosition = true;
+                break;
+            }
+        }
+        if(! foundPosition){
+            // newGame must occur later than all other scheduled games, insert at the end of the list
+            this.scheduledGames.add(newGame);
+        }
     }
 
 
@@ -272,8 +306,21 @@ public class Team {
         else{
             this.losses++;
         }
-        // TODO insert playedGame into list of played games in sorted order
-        this.gamesPlayed.add(playedGame);
+        boolean foundPosition = false;
+        // linear search, could binary search
+        for(int i=0;i<this.gamesPlayed.size();i++){
+            GameTime otherGameTime = this.gamesPlayed.get(i).getGameTime();
+            if(playedGame.getGameTime().compareTo(otherGameTime)<0){
+                // played game was scheduled before otherGame, insert played game before other game
+                this.gamesPlayed.add(i,playedGame);
+                foundPosition = true;
+                break;
+            }
+        }
+        if(!foundPosition){
+            // playedGame was scheduled after every other game, insert this at the end of the list
+            this.gamesPlayed.add(playedGame);
+        }
     }
 
     /**
