@@ -85,5 +85,23 @@ public class GameTime {
         return this.time.after(now);
     }
 
+    /**
+     * determines if another object is equal to this
+     * @param other: Object being compared against this
+     * @return true if other is equal to this game time, ie both other and this represent the same time
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof GameTime){
+            GameTime otherGameTime = (GameTime) other;
+            return this.compareTo(otherGameTime)==0;
+        }
+        else{
+            // other isn't a gameTime
+            return false;
+        }
+
+    }
+
 
 }

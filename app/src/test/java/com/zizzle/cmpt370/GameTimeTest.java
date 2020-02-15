@@ -3,6 +3,7 @@ package com.zizzle.cmpt370;
 import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class GameTimeTest {
@@ -97,6 +98,34 @@ public class GameTimeTest {
             assertTrue(testTime.compareTo(expectedLesser[i])<0);
             assertTrue(testTime.compareTo(expectedGreater[i])>0);
             assertEquals(testTime.compareTo(expectedEquals),0);
+        }
+
+    }
+
+    /**
+     * Tests the equals() method of the GameTime class
+     */
+    @Test
+    public void testEquals(){
+        GameTime[] testTimes = {
+                new GameTime(2030,12,3,16,33),
+                new GameTime(2025,5,22,23,0),
+                new GameTime(2030,11,29,0,59)
+        };
+        GameTime[] equalTimes = {
+                new GameTime(2030,12,3,16,33),
+                new GameTime(2025,5,22,23,0),
+                new GameTime(2030,11,29,0,59)
+        };
+        GameTime[] unequalTimes = {
+                new GameTime(2031,12,3,16,33),
+                new GameTime(2025,2,22,23,0),
+                new GameTime(2030,11,29,3,59)
+        };
+
+        for(int i=0;i<testTimes.length;i++){
+            assertEquals(testTimes[i],equalTimes[i]);
+            assertNotEquals(testTimes[i],unequalTimes[i]);
         }
 
     }

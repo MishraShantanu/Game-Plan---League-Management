@@ -168,7 +168,7 @@ public class Team {
      * @return User[], array of members of the team
      */
     public User[] getTeamMembers(){
-        return (User[]) this.members.toArray();
+        return this.members.toArray(new User[this.members.size()]);
     }
 
     /**
@@ -260,7 +260,7 @@ public class Team {
         if(! this.hasGamesScheduled()){
             throw new IllegalStateException("Team: team '" + this.name + "' doesn't have any games scheduled");
         }
-        return (Game[]) this.scheduledGames.toArray();
+        return this.scheduledGames.toArray(new Game[this.scheduledGames.size()]);
     }
 
     public void scheduleNewGame(Game newGame) throws IllegalStateException{
@@ -288,8 +288,7 @@ public class Team {
 
     public void markGameAsPlayed(Game playedGame){
         // make sure that playedGame involves our team
-        Pair<Team,Team> gameTeams = playedGame.getTeams();
-        if((! gameTeams.first.equals(this)) && (! gameTeams.second.equals(this))){
+        if((! playedGame.getTeamOne().equals(this)) && (! playedGame.getTeamTwo().equals(this))){
             // neither team of the game is this team
             throw new IllegalArgumentException("Team: Game input to markGameAsPlayed doesn't involve this team");
         }

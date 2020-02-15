@@ -9,8 +9,11 @@ import android.util.Pair;
  */
 public class Game {
 
-    /** teams who are in the game */
-    private Pair<Team,Team> teams;
+    /** first team in the game */
+    private Team team1;
+
+    /** second team in the game */
+    private Team team2;
 
     /** date (year, month, day, hour, minute) the game is being/was played */
     private GameTime date;
@@ -40,7 +43,8 @@ public class Game {
      */
     public Game(Team team1, Team team2, GameTime gameDate, String location, String sport) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
-        this.teams = new Pair<>(team1,team2);
+        this.team1 = team1;
+        this.team2 = team2;
         if(!gameDate.isInFuture()){
             throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
         }
@@ -51,11 +55,19 @@ public class Game {
     }
 
     /**
-     * Returns the teams playing in the game
-     * @return Pair object of the teams playing
+     * Returns the first team playing in the game
+     * @return Team object of the first team playing
      */
-    public Pair<Team, Team> getTeams(){
-        return this.teams;
+    public Team getTeamOne(){
+        return this.team1;
+    }
+
+    /**
+     * Returns the second team playing in the game
+     * @return Team object the second team in the game
+     */
+    public Team getTeamTwo(){
+        return this.team2;
     }
 
     /**
@@ -152,10 +164,10 @@ public class Game {
         // the winner is the team with higher score
         if(this.finalScores.first.compareTo(this.finalScores.second) > 0){
             // team 1 has a higher score and is winner
-            return this.teams.first;
+            return this.team1;
         }
         else{
-            return this.teams.second;
+            return this.team2;
         }
     }
 
@@ -176,10 +188,10 @@ public class Game {
         // the loser is the team with lower score
         if(this.finalScores.first.compareTo(this.finalScores.second) < 0){
             // team 1 has a lower score and is loser
-            return this.teams.first;
+            return this.team1;
         }
         else{
-            return this.teams.second;
+            return this.team2;
         }
     }
 
@@ -214,7 +226,7 @@ public class Game {
     @NonNull
     public String toString(){
         String gameString = "Sport: " + this.sport;
-        gameString += "\nTeams: " + this.teams.first + " vs " + this.teams.second;
+        gameString += "\nTeams: " + this.team1 + " vs " + this.team2;
         gameString += "\nFinal Score: ";
         if(this.hasBeenPlayed()){
             gameString += this.finalScores.first + " to " + this.finalScores.second;
@@ -224,6 +236,24 @@ public class Game {
             gameString += "TBD";
         }
         return gameString;
+    }
+
+    /**
+     * Determines if another object is equal to this
+     * @param other: Object to determine if equal to this
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof Game){
+            // compare fields
+            Game otherGame = (Game) other;
+            return otherGame.getGameTime().equals(this.getGameTime()) && otherGame.team1.equals(this.team1) &&
+                    otherGame.team2.equals(this.team2) && otherGame.location.equals(this.location) && otherGame.sport.equals(this.sport);
+        }
+        // Other isn't a game and can't be equal
+        return false;
+
     }
 
 
