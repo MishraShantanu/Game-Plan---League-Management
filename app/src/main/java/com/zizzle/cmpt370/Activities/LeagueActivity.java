@@ -62,7 +62,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // ListView
         // TESTING. fills the array with example leagues.
         leagues = new ArrayList<>();
-        Member owner = new Member("Tom", "Holland", "e@mail.gov", "1234567890");
+        Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
         for (int i = 0; i < 20; i++) {
             leagues.add(new League("League " + i, owner, "SQUASH", "description"));
         }
