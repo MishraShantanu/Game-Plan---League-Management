@@ -18,7 +18,7 @@ public class Team {
     private String sport;
 
     /** Members of the team */
-    private ArrayList<User> members;
+    private ArrayList<Member> members;
 
     /** Games previously played by the team, this list is ordered so games towards the front of the
      * list are more recent than those at the back */
@@ -27,7 +27,7 @@ public class Team {
     // TODO add league field
 
     /** Owner of the team */
-    private User owner;
+    private Member owner;
 
     /** List of games the team is scheduled to play, this list is ordered such that closer games are
      * towards the front of the list and further away games are towards the end of the list */
@@ -46,10 +46,10 @@ public class Team {
     /**
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
-     * @param owner: User object, owner/creator of the team
+     * @param owner: Member object, owner/creator of the team
      * @param sport: String sport the team plays
      */
-    public Team(String name, User owner, String sport){
+    public Team(String name, Member owner, String sport){
         //TODO check if new team name is unique for the league the team is in
         this.name = name;
         this.owner = owner;
@@ -74,19 +74,19 @@ public class Team {
 
     /**
      * Returns the owner of the team
-     * @return User object owner of the team
+     * @return Member object owner of the team
      */
-    public User getOwner(){
+    public Member getOwner(){
         return this.owner;
     }
 
     /**
-     * Sets the owner of the team to the user specified, if the new owner isn't part of the team,
+     * Sets the owner of the team to the Member specified, if the new owner isn't part of the team,
      * they will be added to the members of the team, the old owner still remains part of the team
      * and can be removed using removeMember
-     * @param newOwner: User object, new owner of the team
+     * @param newOwner: Member object, new owner of the team
      */
-    public void setOwner(User newOwner){
+    public void setOwner(Member newOwner){
         // if newOwner isn't on the team, add them to the team members
         if(! members.contains(newOwner)){
             members.add(newOwner);
@@ -95,23 +95,23 @@ public class Team {
     }
 
     /**
-     * Removes the input User from the team
-     * @param memberToRemove: User object to be removed from the team, this User must be on the team
+     * Removes the input Member from the team
+     * @param memberToRemove: Member object to be removed from the team, this Member must be on the team
      *        and cannot be the owner of the team, a new owner of the team must be
      *        set before the old owner can be removed
      * @throws IllegalStateException if memberToRemove is the owner of the team
      * @throws IllegalArgumentException if memberToRemove isn't on the team
      */
-    public void removeMember(User memberToRemove) throws IllegalStateException, IllegalArgumentException{
+    public void removeMember(Member memberToRemove) throws IllegalStateException, IllegalArgumentException{
         // make sure memberToRemove is on the team
         if(! this.members.contains(memberToRemove)){
-            throw new IllegalArgumentException("Team: User: " + memberToRemove.getName() + " to remove from team: "
+            throw new IllegalArgumentException("Team: Member: " + memberToRemove.getFirstName() + " to remove from team: "
                     + this.name + " isn't a member of the team");
         }
         // make sure memberToRemove isn't the owner
         if(memberToRemove.equals(this.owner)){
-            throw new IllegalStateException("Team: User: " + memberToRemove.getName() + " cannot be removed from team " +
-                    this.name + " as this user is the owner of the team");
+            throw new IllegalStateException("Team: Member: " + memberToRemove.getFirstName() + " cannot be removed from team " +
+                    this.name + " as this Member is the owner of the team");
         }
 
         this.members.remove(memberToRemove);
@@ -146,7 +146,7 @@ public class Team {
      * @param member: Member to determine if on the team
      * @return true if member is on the team, false otherwise
      */
-    public boolean teamHasMember(User member){
+    public boolean teamHasMember(Member member){
         return this.members.contains(member);
     }
 
@@ -155,7 +155,7 @@ public class Team {
      * @param newMember: member to be added to the team
      * @throws IllegalStateException if the input member is already on the team
      */
-    public void addMember(User newMember) throws IllegalStateException{
+    public void addMember(Member newMember) throws IllegalStateException{
         if(this.teamHasMember(newMember)){
             throw new IllegalStateException("Member: " + newMember.toString() + " is already on this team");
         }
@@ -165,28 +165,28 @@ public class Team {
 
     /**
      * Returns an array of the members of the team
-     * @return User[], array of members of the team
+     * @return Member[], array of members of the team
      */
-    public User[] getTeamMembers(){
-        return this.members.toArray(new User[this.members.size()]);
+    public Member[] getTeamMembers(){
+        return this.members.toArray(new Member[this.members.size()]);
     }
 
     /**
-     * Returns the User who has the specified name from the team
-     * @param username: String name of a user on the team, this name must belong to a user on the team
-     * @return User with the name input
-     * @throws IllegalArgumentException if username doesn't belong to any user on the team
+     * Returns the Member who has the specified name from the team
+     * @param MemberFirstName: String name of a Member on the team, this name must belong to a Member on the team
+     * @return Member with the name input
+     * @throws IllegalArgumentException if Membername doesn't belong to any Member on the team
      */
-    public User getMemberByName(String username) throws IllegalArgumentException{
+    public Member getMemberByFirstName(String MemberFirstName) throws IllegalArgumentException{
         // linear search the list of team members for the input name
-        for(User currentUser : this.members){
-            if(currentUser.getName().equals(username)){
-                // user found
-                return currentUser;
+        for(Member currentMember : this.members){
+            if(currentMember.getFirstName().equals(MemberFirstName)){
+                // Member found
+                return currentMember;
             }
         }
-        // user not found
-        throw new IllegalArgumentException("Team: User with name '" + username + "' not on team: " + this.name);
+        // Member not found
+        throw new IllegalArgumentException("Team: Member with name '" + MemberFirstName + "' not on team: " + this.name);
     }
 
     /**

@@ -1,8 +1,11 @@
 package com.zizzle.cmpt370;
 
-import org.junit.Test;
+import com.zizzle.cmpt370.Model.Game;
+import com.zizzle.cmpt370.Model.GameTime;
+import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Team;
 
-import java.util.Arrays;
+import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -16,7 +19,7 @@ public class TeamTest {
      */
     @Test
     public void testGetters(){
-        User testOwner = new User("owner1","owner@own.com","9726489999");
+        Member testOwner = new Member("owner1","lname","owner@own.com","19726489999");
         Team[] testTeams = {
                 new Team("team1",testOwner,"soccer"),
                 new Team("team2",testOwner,"baseball"),
@@ -24,7 +27,7 @@ public class TeamTest {
                 new Team("team4",testOwner,"tennis"),
         };
         String[] expectedNames = {"team1","team2","team3","team4"};
-        User expectedOwner = testOwner;
+        Member expectedOwner = testOwner;
         for(int i=0;i<testTeams.length;i++){
             assertEquals(expectedNames[i],testTeams[i].getName());
             assertEquals(expectedOwner,testTeams[i].getOwner());
@@ -36,26 +39,26 @@ public class TeamTest {
      */
     @Test
     public void testTeamMembers(){
-        User owner = new User("owner","email","1111111111");
+        Member owner = new Member("owner","lname","email","11111111111");
         Team testTeam = new Team("team1",owner,"dodgeball");
-        User newOwner = new User("new owner","email","2222222222");
+        Member newOwner = new Member("new owner","lname","email","22222222222");
         testTeam.setOwner(newOwner);
         assertEquals(testTeam.getOwner(),newOwner);
 
-        User[] testUsers = {owner, newOwner, new User("user1","email","3333333333"), new User("user2","email","4444444444")};
-        // add extra users to the team
-        testTeam.addMember(testUsers[2]);
-        testTeam.addMember(testUsers[3]);
-        assertArrayEquals(testTeam.getTeamMembers(),testUsers);
+        Member[] testMembers = {owner, newOwner, new Member("Member1","lname","email","33333333333"), new Member("Member2","lname","email","44444444444")};
+        // add extra Members to the team
+        testTeam.addMember(testMembers[2]);
+        testTeam.addMember(testMembers[3]);
+        assertArrayEquals(testTeam.getTeamMembers(),testMembers);
 
-        for(int i=0;i<testUsers.length;i++){
-            assertTrue(testTeam.teamHasMember(testUsers[i]));
-            assertEquals(testTeam.getMemberByName(testUsers[i].getName()),testUsers[i]);
+        for(int i=0;i<testMembers.length;i++){
+            assertTrue(testTeam.teamHasMember(testMembers[i]));
+            assertEquals(testTeam.getMemberByFirstName(testMembers[i].getFirstName()),testMembers[i]);
         }
 
         // remove a member
-        testTeam.removeMember(testUsers[0]);
-        assertFalse(testTeam.teamHasMember(testUsers[0]));
+        testTeam.removeMember(testMembers[0]);
+        assertFalse(testTeam.teamHasMember(testMembers[0]));
     }
 
     /**
@@ -63,7 +66,7 @@ public class TeamTest {
      */
     @Test
     public void testTeamGames(){
-        Team testTeam = new Team("team1",new User("owner","email","1111111111"),"dodgeball");
+        Team testTeam = new Team("team1",new Member("owner","lname","email","11111111111"),"dodgeball");
         // check team's record
         assertEquals(testTeam.getWins(),0);
         assertEquals(testTeam.getLosses(),0);
