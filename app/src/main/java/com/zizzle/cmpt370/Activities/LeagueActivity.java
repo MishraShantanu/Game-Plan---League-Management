@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,6 +66,22 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         mToggle.syncState(); //takes care of rotating the menu icon
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
+
+
+        // add league button =======================================================================
+
+        FloatingActionButton addLeague = findViewById(R.id.add_league_button);
+        addLeague.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // bring to create league page to make a new league.
+                // TODO 18/02/2020 - Give 'Add League' button functionality
+
+                // this was used for testing. can b removed later.
+                Toast.makeText(LeagueActivity.this, "You have clicked LEAGUE BUTTON", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         // list of leagues =========================================================================
