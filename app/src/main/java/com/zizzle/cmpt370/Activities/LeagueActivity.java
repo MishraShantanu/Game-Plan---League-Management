@@ -28,11 +28,12 @@ import java.util.ArrayList;
 
 public class LeagueActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    // values inside ListView.
+    /** Values inside ListView. */
     ArrayList<League> leagues;
 
-    // adapter for search bar.
+    /** Adapter for search bar. */
     ArrayAdapter leagueArrayAdapter;
+
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
