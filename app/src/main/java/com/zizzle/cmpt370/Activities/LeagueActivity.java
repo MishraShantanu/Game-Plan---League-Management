@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -39,7 +38,6 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
-    private Toolbar mToolBar; //Added for overlay effect of menu
 
 
     @Override
@@ -49,8 +47,9 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         setContentView(R.layout.activity_league);
 
         //add top bar from top_bar as action bar
-        mToolBar = (Toolbar) findViewById(R.id.top_bar);
+        Toolbar mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
+        getSupportActionBar().setTitle("Leagues");
 
         //MENU (button & drawer)
         mDrawerLayout = (DrawerLayout) findViewById(R.id.league_layout);
@@ -74,12 +73,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         addLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // bring to create league page to make a new league.
-                // TODO 18/02/2020 - Give 'Add League' button functionality
-
-                // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You have clicked LEAGUE BUTTON", Toast.LENGTH_SHORT).show();
+                startActivity( new Intent(LeagueActivity.this, Pop.class));
             }
         });
 

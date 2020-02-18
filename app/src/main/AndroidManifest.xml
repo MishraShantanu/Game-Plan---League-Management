@@ -9,10 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.AboutUsActivity"></activity>
+        <activity android:name=".Activities.AboutUsActivity"/>
         <activity android:name=".Activities.ProfileActivity" />
         <activity android:name=".Activities.SigninActivity" />
-        <activity android:name=".Activities.SignupActivity" /> <!-- NOW HOMEPAGEWITHMENU IS NOT USED!!!!! (DELETE LATER IF NOT NEEDED) -->
+        <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Useless.homepageWithMenu" />
         <activity android:name=".Activities.HomeActivity">
             <intent-filter>
@@ -32,6 +32,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zizzle.cmpt370.Useless.homepageWithMenu" />
         </activity>
+        <activity android:name=".Activities.Pop"
+            android:theme="@style/AppTheme.PopUp"/>
     </application>
 
 </manifest>
