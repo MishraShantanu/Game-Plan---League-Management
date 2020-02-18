@@ -9,11 +9,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +30,9 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
     // values inside ListView.
     ArrayList<League> leagues;
+
+    // adapter for search bar.
+    ArrayAdapter leagueArrayAdapter;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -59,34 +65,71 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // ListView
-        // TESTING. fills the array with example leagues.
+        // list of leagues =========================================================================
+
+        // TESTING - generates a list of leagues for testing the displaying functionality.
+        // TODO 18/02/2020 - remove this and replace with leagues from datebase.
         leagues = new ArrayList<>();
         Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
         for (int i = 0; i < 20; i++) {
             leagues.add(new League("League " + i, owner, "SQUASH", "description"));
         }
 
-        // TESTING. gathers the league names from the leagues in system.
+
+        // creates a ArrayList<String> from ArrayList<League> in order to display the names
+        // to user.
+        // TODO 18/02/2020 - replace leagues with the the one from the database.
         ArrayList<String> league_names = new ArrayList<>();
         for (League l : leagues) {
             league_names.add(l.getName());
         }
 
+
         // Display ListView contents.
-        ArrayAdapter leagueArrayAdapter = new ArrayAdapter<>(
-                this, R.layout.league_listview, league_names);
+        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, league_names);
         ListView leagueList = findViewById(R.id.leagues_list);
         leagueList.setAdapter(leagueArrayAdapter);
 
-        // clicking on a league.
+
+        // clicking on a league in the ListView is handled in here.
         leagueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             * @param listItemPosition the index of position for the item in the ListView
+             */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(LeagueActivity.this, "You just clicked " + i, Toast.LENGTH_SHORT).show();
+            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+
+                // listItemPosition is the array index for the leagues array. can be used such as:
+                // leagues.get(listItemPosition)
+                // TODO 18/02/2020 - Give ListView items functionality
+
+                // this was used for testing. can b removed later.
+                Toast.makeText(LeagueActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
             }
         });
+
+
+        // functionality for search bar.
+        EditText leagueSearchBar = findViewById(R.id.league_search_bar);
+        leagueSearchBar.addTextChangedListener(new TextWatcher() {
+
+            // changes the shown list items based on characters in search bar.
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                (LeagueActivity.this).leagueArrayAdapter.getFilter().filter(charSequence);
+            }
+
+            // these two are not needed for search but must be override.
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
     }
+
+
 
     //When item is selected in the menu, open the respective element (fragment or activity)
     @Override
