@@ -1,4 +1,4 @@
-package com.zizzle.cmpt370;
+package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 
@@ -148,7 +148,7 @@ public class League {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("League Name: " + this.name + "\n");
-        sb.append("Owner: " + this.owner.getName() + "\n");
+        sb.append("Owner: " + this.owner.getFirstName() + " " + this.owner.getLastName() + "\n");
         sb.append("Sport: " + this.sport + "\n");
         sb.append("Description: " + this.description + "\n");
         sb.append("Teams:");

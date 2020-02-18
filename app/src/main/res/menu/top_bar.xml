@@ -2,10 +2,10 @@
 
 <!--Added for "menu overlay" effect-->
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/nav_action"
+    android:id="@+id/top_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
     <!--Theme changes the colors (wanted to change title text to white), but since color is set in line before, only text is changed-->

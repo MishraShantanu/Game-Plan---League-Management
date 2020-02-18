@@ -1,5 +1,7 @@
 package com.zizzle.cmpt370;
 
+import com.zizzle.cmpt370.Model.Member;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,24 +16,50 @@ public class MemberTest {
      * Tests the setName() function from the Member class.
      */
     @Test
-    public void testSetName() {
-        String[] expected = {"a", "b", "JOHN BYER", "123", ""};
+    public void testSetFirstName() {
+        String[] expected = {"a", "b", "JOHN", "123", ""};
         // Setting up test cases.
         Member[] testMembers = {
-                new Member("a", "a", "1"),
-                new Member("a", "a", "1"),
-                new Member("a", "a", "1"),
-                new Member("a", "a", "1"),
-                new Member("a", "a", "1")
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901")
         };
         // Setting user names to another name.
-        testMembers[1].setName("b");
-        testMembers[2].setName("JOHN BYER");
-        testMembers[3].setName("123");
-        testMembers[4].setName("");
+        testMembers[1].setFirstName("b");
+        testMembers[2].setFirstName("JOHN");
+        testMembers[3].setFirstName("123");
+        testMembers[4].setFirstName("");
         // Checking to see if setName() changed the name of the user.
         for (int i = 0; i < testMembers.length; i++) {
-            assertEquals(expected[i], testMembers[i].getName());
+            assertEquals(expected[i], testMembers[i].getFirstName());
+        }
+    }
+
+
+    /**
+     * Tests the setName() function from the Member class.
+     */
+    @Test
+    public void testSetLastName() {
+        String[] expected = {"a", "b", "JOHN", "123", ""};
+        // Setting up test cases.
+        Member[] testMembers = {
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901"),
+                new Member("a", "a","a", "12345678901")
+        };
+        // Setting user names to another name.
+        testMembers[1].setLastName("b");
+        testMembers[2].setLastName("JOHN");
+        testMembers[3].setLastName("123");
+        testMembers[4].setLastName("");
+        // Checking to see if setName() changed the name of the user.
+        for (int i = 0; i < testMembers.length; i++) {
+            assertEquals(expected[i], testMembers[i].getLastName());
         }
     }
 
@@ -49,11 +77,11 @@ public class MemberTest {
                 "bar@mail.ca"};
         // Setting up test cases.
         Member[] testMembers = {
-                new Member("a", "a@mail.com", "1"),
-                new Member("a", "b@mail.com", "1"),
-                new Member("a", "c@mail.com", "1"),
-                new Member("a", "d@mail.com", "1"),
-                new Member("a", "e@mail.com", "1")
+                new Member("a", "a","a@mail.com", "12345678901"),
+                new Member("a", "a","b@mail.com", "12345678901"),
+                new Member("a", "a","c@mail.com", "12345678901"),
+                new Member("a", "a","d@mail.com", "12345678901"),
+                new Member("a", "a","e@mail.com", "12345678901")
         };
         // Changing the email of the users.
         testMembers[0].setEmail("tom@mail.com");
@@ -74,29 +102,30 @@ public class MemberTest {
      */
     @Test
     public void testSetPhoneNumber() {
-        int expected = 1234567890;
-        int[] secondExpected = {1, 1234567890, 3, 4, 5};
+        String expected = "1-234-567-8901";
+        String secondExpected = "0-987-654-3211";
         // Setting up test cases.
         Member[] testMembers = {
-                new Member("a", "a", "(123) 456 - 7890"),
-                new Member("a", "a", "1234567890"),
-                new Member("a", "a", "123-456-7890"),
-                new Member("a", "a", "(123)    45 6  - 7890"),
-                new Member("a", "a", "123.456.7890")
+                new Member("a", "a","a", "(123) 456 - 78901"),
+                new Member("b", "b","a", "12345678901"),
+                new Member("c", "c","a", "123-456-78901"),
+                new Member("d", "d","a", "(123) 45 6  - 78901"),
+                new Member("e", "e","a", "123.456.78901")
         };
         // Checking if setPhoneNumber() stripped non-numeric character from Phone Number.
         for (Member member : testMembers) {
+            System.out.println(member.getFirstName() + " " + member.getPhoneNumber());
             assertEquals(expected, member.getPhoneNumber());
         }
         // Changing the phone number of the users.
-        testMembers[0].setPhoneNumber("1");
-        testMembers[1].setPhoneNumber("q1w2e3r4t5y6u7i8o9p0");
-        testMembers[2].setPhoneNumber("3");
-        testMembers[3].setPhoneNumber("(((4)))");
-        testMembers[4].setPhoneNumber("nijvnlfbavlfsbl5");
+        testMembers[0].setPhoneNumber("09876543211");
+        testMembers[1].setPhoneNumber("0f987d6543g211");
+        testMembers[2].setPhoneNumber("0f9876a543g211");
+        testMembers[3].setPhoneNumber("(((098a76d543d211)))");
+        testMembers[4].setPhoneNumber("098f765g4321g1");
         // Checking if setPhoneNumber() stripped non-numeric character from Phone Number.
-        for (int i = 0; i < testMembers.length; i++) {
-            assertEquals(secondExpected[i], testMembers[i].getPhoneNumber());
+        for (Member member : testMembers) {
+            assertEquals(secondExpected, member.getPhoneNumber());
         }
     }
 
@@ -107,34 +136,39 @@ public class MemberTest {
     @Test
     public void testToString() {
         String[] expected = {
-                "Name: a\n" +
+                "Name: a a\n" +
                         "Email: a@mail.com\n" +
-                        "Phone Number: 1234567890\n" +
-                        "Teams:",
-                "Name: Shantanu\n" +
+                        "Phone Number: 1-234-567-8901\n" +
+                        "Teams:\n" +
+                        "Leagues:",
+                "Name: Shantanu Mishra\n" +
                         "Email: shantanu@mail.com\n" +
-                        "Phone Number: 1987654321\n" +
-                        "Teams:",
-                "Name: Lee\n" +
+                        "Phone Number: 1-987-654-3211\n" +
+                        "Teams:\n" +
+                        "Leagues:",
+                "Name: Lee Cadotte\n" +
                         "Email: lee@mail.gov\n" +
-                        "Phone Number: 123\n" +
-                        "Teams:",
+                        "Phone Number: 1-234-567-8901\n" +
+                        "Teams:\n" +
+                        "Leagues:",
                 "Name: Jay Shah\n" +
                         "Email: jay@mail.com\n" +
-                        "Phone Number: 321\n" +
-                        "Teams:",
-                "Name: Brayden\n" +
+                        "Phone Number: 0-987-654-3210\n" +
+                        "Teams:\n" +
+                        "Leagues:",
+                "Name: Brayden Martin\n" +
                         "Email: bkm257@usask.ca\n" +
-                        "Phone Number: 3066814380\n" +
-                        "Teams:"
+                        "Phone Number: 1-306-681-4380\n" +
+                        "Teams:\n" +
+                        "Leagues:"
         };
         // Setting up test cases.
         Member[] testMembers = {
-                new Member("a", "a@mail.com", "1234567890"),
-                new Member("Shantanu", "shantanu@mail.com", "1987654321"),
-                new Member("Lee", "lee@mail.gov", "1q2w3"),
-                new Member("Jay Shah", "jay@mail.com", "number:321"),
-                new Member("Brayden", "bkm257@usask.ca", "3066814380")
+                new Member("a", "a","a@mail.com", "12345678901"),
+                new Member("Shantanu", "Mishra","shantanu@mail.com", "19876543211"),
+                new Member("Lee", "Cadotte","lee@mail.gov", "1q2w3p4p5p6p7p8p9p0p1"),
+                new Member("Jay", "Shah","jay@mail.com", "number:09876543210"),
+                new Member("Brayden", "Martin","bkm257@usask.ca", "1-306-681--gfh4380")
         };
         // Checking if toString() outputs information on Member object in expected format.
         for (int i = 0; i < testMembers.length; i++) {

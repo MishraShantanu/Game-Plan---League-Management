@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_colour"
+    android:orientation="vertical"
+    tools:context=".Activities.LeagueActivity"
+    tools:showIn="@layout/activity_league">
+
+<!--    searchbar-->
+    <EditText
+        android:id="@+id/league_search_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorText"
+        android:singleLine="true"
+        android:padding="8dp"
+        android:hint="Search leagues"/>
+
+
+<!--        list of leagues-->
+    <ListView
+        android:id="@+id/leagues_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:padding="15dp" />
+    
+</LinearLayout>

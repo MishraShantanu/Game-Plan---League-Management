@@ -1,5 +1,14 @@
 <resources>
-    <string name="app_name">CMPT370</string>
+    <string name="app_name">StatAttack</string>
     <string name="sidebar_navigation_open">Open navigation drawer</string>
     <string name="sidebar_navigation_close">Close navigation drawer</string>
+    <string name="title_activity_league">LeagueActivity</string>
+    <string name="large_text">
+        "Material is the metaphor.\n\n"
+
+        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
+        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
+
+    </string>
+    <string name="action_settings">Settings</string>
 </resources>

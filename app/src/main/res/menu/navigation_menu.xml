@@ -15,7 +15,7 @@
         <item
             android:id="@+id/nav_leagues"
             android:icon="@drawable/baseline_sports_tennis_24"
-            android:title="All Leagues" />
+            android:title="Leagues" />
 
         <item
             android:id="@+id/nav_profile"

@@ -6,16 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".homepageWithMenu">
+    tools:context=".Useless.homepageWithMenu">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--Added to make menu overlap the main page (adding navigation_action.xml)-->
+        <!--        Adding the top bar of the app -->
         <include
-            layout="@layout/navigation_action"
+            layout="@menu/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_layout"
+        app:headerLayout="@menu/navigation_layout"
         app:menu="@menu/navigation_menu">
 
 
