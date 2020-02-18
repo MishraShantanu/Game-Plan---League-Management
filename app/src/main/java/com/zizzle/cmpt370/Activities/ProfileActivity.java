@@ -55,23 +55,28 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_home:
                 Intent intent1 = new Intent(this, HomeActivity.class);
                 startActivity(intent1);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
                 Intent intent2 = new Intent(this, LeagueActivity.class);
                 startActivity(intent2);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
                 Intent intent3 = new Intent(this, ProfileActivity.class);
                 startActivity(intent3);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
                 Intent intent4 = new Intent(this, AboutUsActivity.class);
                 startActivity(intent4);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
                 Intent tolog = new Intent(this, SigninActivity.class);
                 startActivity(tolog);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
