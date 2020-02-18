@@ -46,7 +46,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_league);
 
-        //add top bar from top_bar as action bar
+        // add top bar with title 'Leagues'
         Toolbar mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
         getSupportActionBar().setTitle("Leagues");
@@ -69,11 +69,13 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
         // add league button =======================================================================
 
+        // launches a pop-up for adding a new class.
         FloatingActionButton addLeague = findViewById(R.id.add_league_button);
         addLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity( new Intent(LeagueActivity.this, Pop.class));
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
 
@@ -82,6 +84,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
         // TESTING - generates a list of leagues for testing the displaying functionality.
         // TODO 18/02/2020 - remove this and replace with leagues from datebase.
+
         leagues = new ArrayList<>();
         Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
         for (int i = 0; i < 20; i++) {
@@ -92,6 +95,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // creates a ArrayList<String> from ArrayList<League> in order to display the names
         // to user.
         // TODO 18/02/2020 - replace leagues with the the one from the database.
+
         ArrayList<String> league_names = new ArrayList<>();
         for (League l : leagues) {
             league_names.add(l.getName());
