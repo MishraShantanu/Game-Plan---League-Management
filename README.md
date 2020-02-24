@@ -3,6 +3,9 @@
 
 
 ## How to Run
-1. Head to [Online VM](https://www.apkonline.net/osessionx03/#/client/REVGQVVMVABjAGRlZmF1bHQ=?username=guest05&password=server0105)
-2. If you are unable to run, Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store
-
+1. Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store 
+2. Download app APK from [APK folder]()
+3. Click on the extension in the top right of chrome
+4. Click 'My APK Manager & APK Upload'
+5. Upload app APK
+6. Select Run_APK
