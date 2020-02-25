@@ -36,8 +36,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     /** Adapter for search bar. */
     ArrayAdapter teamArrayAdapter;
 
-
-    private DrawerLayout menuDrawer; //main roundedCorners ID of homepageWithMenu.xml
+    //main roundedCorners ID of homepageWithMenu.xml
+    private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
 
 
