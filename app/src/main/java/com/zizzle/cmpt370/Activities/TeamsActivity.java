@@ -36,9 +36,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     /** Adapter for search bar. */
     ArrayAdapter teamArrayAdapter;
 
-
-    private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
-    private ActionBarDrawerToggle mToggle;
+    //main roundedCorners ID of homepageWithMenu.xml
+    private DrawerLayout menuDrawer;
+    private ActionBarDrawerToggle toggleDrawer;
 
 
     @Override
@@ -48,24 +48,24 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         setContentView(R.layout.activity_teams);
 
         // add top bar with title 'Teams'
-        Toolbar mToolBar = findViewById(R.id.top_bar);
-        setSupportActionBar(mToolBar); //sets toolbar as action bar
+        Toolbar toolbar = findViewById(R.id.top_bar);
+        setSupportActionBar(toolbar); //sets toolbar as action bar
 
         // TODO 24/02/2020 - Set title to the current team.
         getSupportActionBar().setTitle("Teams");
 
         //MENU (button & drawer)
-        mDrawerLayout = findViewById(R.id.teams_layout);
-        NavigationView navigationView = findViewById(R.id.league_nav_view); //ADDED FOR CLICK
+        menuDrawer = findViewById(R.id.teams_layout);
+        NavigationView navigationView = findViewById(R.id.teams_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
 
         //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+        toggleDrawer = new ActionBarDrawerToggle(this, menuDrawer,
                 R.string.sidebar_navigation_open, R.string.sidebar_navigation_close); //added "menu button" which automatically animates icon for open/close
-        mDrawerLayout.addDrawerListener(mToggle); //Connects ActionBarDrawerToggle to DrawerLayout
-        mToggle.syncState(); //takes care of rotating the menu icon
+        menuDrawer.addDrawerListener(toggleDrawer); //Connects ActionBarDrawerToggle to DrawerLayout
+        toggleDrawer.syncState(); //takes care of rotating the menu icon
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
@@ -156,33 +156,28 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                Intent intent1 = new Intent(this, HomeActivity.class);
-                startActivity(intent1);
+                startActivity(new Intent(this, HomeActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
-                Intent intent2 = new Intent(this, LeagueActivity.class);
-                startActivity(intent2);
+                startActivity(new Intent(this, LeagueActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                Intent intent3 = new Intent(this, ProfileActivity.class);
-                startActivity(intent3);
+                startActivity(new Intent(this, ProfileActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
-                Intent intent4 = new Intent(this, AboutUsActivity.class);
-                startActivity(intent4);
+                startActivity(new Intent(this, AboutUsActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                Intent tolog = new Intent(this, SigninActivity.class);
-                startActivity(tolog);
+                startActivity(new Intent(this, SigninActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         //close drawer
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        menuDrawer.closeDrawer(GravityCompat.START);
 
         return true;
     }
@@ -190,8 +185,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     //When back button is pressed, we want to just close the menu, not close the activity
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (menuDrawer.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
+            menuDrawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed(); //close activity (as usual)
         }
@@ -200,7 +195,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     //Button to open menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
-        if (mToggle.onOptionsItemSelected(item)) {
+        if (toggleDrawer.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
