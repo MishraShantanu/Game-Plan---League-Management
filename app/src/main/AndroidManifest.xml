@@ -26,13 +26,24 @@
         <activity
             android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
-            android:parentActivityName=".Useless.homepageWithMenu"
+            android:parentActivityName=".Activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zizzle.cmpt370.Useless.homepageWithMenu" />
+                android:value="com.zizzle.cmpt370.Activities.HomeActivity" />
         </activity>
-        <activity android:name=".Activities.Pop"
+        <activity
+            android:name=".Activities.TeamsActivity"
+            android:label="@string/title_activity_league"
+            android:parentActivityName=".Activities.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zizzle.cmpt370.Activities.HomeActivity" />
+        </activity>
+        <activity android:name=".Activities.LeaguePop"
+            android:theme="@style/AppTheme.PopUp"/>
+        <activity android:name=".Activities.TeamsPop"
             android:theme="@style/AppTheme.PopUp"/>
     </application>
 

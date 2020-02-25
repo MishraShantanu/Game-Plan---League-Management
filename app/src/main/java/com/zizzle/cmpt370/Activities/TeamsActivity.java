@@ -20,20 +20,21 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
 
-public class LeagueActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class TeamsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<League> leagues;
+    ArrayList<Team> teams;
 
     /** Adapter for search bar. */
-    ArrayAdapter leagueArrayAdapter;
+    ArrayAdapter teamArrayAdapter;
 
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
@@ -44,15 +45,17 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
-        setContentView(R.layout.activity_league);
+        setContentView(R.layout.activity_teams);
 
         // add top bar with title 'Leagues'
-        Toolbar mToolBar = (Toolbar) findViewById(R.id.top_bar);
+        Toolbar mToolBar = findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
-        getSupportActionBar().setTitle("Leagues");
+
+        // TODO 24/02/2020 - Set title to the current league.
+        getSupportActionBar().setTitle("Teams");
 
         //MENU (button & drawer)
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.league_layout);
+        mDrawerLayout = findViewById(R.id.teams_layout);
         NavigationView navigationView = findViewById(R.id.league_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
@@ -70,11 +73,11 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // add league button =======================================================================
 
         // launches a pop-up for adding a new class.
-        FloatingActionButton addLeague = findViewById(R.id.add_league_button);
-        addLeague.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addTeam = findViewById(R.id.add_team_button);
+        addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity( new Intent(LeagueActivity.this, LeaguePop.class));
+                startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
@@ -83,12 +86,12 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // list of leagues =========================================================================
 
         // TESTING - generates a list of leagues for testing the displaying functionality.
-        // TODO 18/02/2020 - remove this and replace with leagues from datebase.
+        // TODO 18/02/2020 - remove this and replace with leagues from database.
 
-        leagues = new ArrayList<>();
+        teams = new ArrayList<>();
         Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
         for (int i = 0; i < 20; i++) {
-            leagues.add(new League("League " + i, owner, "SQUASH", "description"));
+            teams.add(new Team("Team " + i, owner, "SQUASH"));
         }
 
 
@@ -96,20 +99,20 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // to user.
         // TODO 18/02/2020 - replace leagues with the the one from the database.
 
-        ArrayList<String> league_names = new ArrayList<>();
-        for (League l : leagues) {
-            league_names.add(l.getName());
+        ArrayList<String> team_names = new ArrayList<>();
+        for (Team t : teams) {
+            team_names.add(t.getName());
         }
 
 
         // Display ListView contents.
-        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, league_names);
-        ListView leagueList = findViewById(R.id.leagues_list);
-        leagueList.setAdapter(leagueArrayAdapter);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, team_names);
+        ListView teamList = findViewById(R.id.teams_list);
+        teamList.setAdapter(teamArrayAdapter);
 
 
-        // clicking on a league in the ListView is handled in here.
-        leagueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // clicking on a team in the ListView is handled in here.
+        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             /**
              * performs an action when a ListView item is clicked.
@@ -118,27 +121,24 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
 
-                // listItemPosition is the array index for the leagues array. can be used such as:
-                // leagues.get(listItemPosition)
+                // listItemPosition is the array index for the teams array. can be used such as:
+                // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
 
-                startActivity(new Intent(LeagueActivity.this, TeamsActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                 // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeamsActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
             }
         });
 
 
         // functionality for search bar.
-        EditText leagueSearchBar = findViewById(R.id.league_search_bar);
-        leagueSearchBar.addTextChangedListener(new TextWatcher() {
+        EditText teamsSearchBar = findViewById(R.id.teams_search_bar);
+        teamsSearchBar.addTextChangedListener(new TextWatcher() {
 
             // changes the shown list items based on characters in search bar.
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                (LeagueActivity.this).leagueArrayAdapter.getFilter().filter(charSequence);
+                (TeamsActivity.this).teamArrayAdapter.getFilter().filter(charSequence);
             }
 
             // these two are not needed for search but must be override.
