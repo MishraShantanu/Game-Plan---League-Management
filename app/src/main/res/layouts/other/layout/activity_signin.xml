@@ -37,7 +37,7 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +52,7 @@
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:textColor="@color/colorText"
-        android:textColorHint="@color/colorText"
+        android:textColorHint="@color/colorTextHint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
