@@ -74,7 +74,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         addLeague.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity( new Intent(LeagueActivity.this, LeaguePop.class));
+                startActivity( new Intent(LeagueActivity.this, Pop.class));
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
@@ -121,9 +121,6 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 // listItemPosition is the array index for the leagues array. can be used such as:
                 // leagues.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
-
-                startActivity(new Intent(LeagueActivity.this, TeamsActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can b removed later.
                 Toast.makeText(LeagueActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
