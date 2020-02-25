@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.zizzle.cmpt370.Model.*;
 import com.zizzle.cmpt370.R;
 
-public class Pop extends Activity {
+public class LeaguePop extends Activity {
 
     EditText leagueName, typeOfSport, description;
     Button submitButton;
@@ -22,7 +22,7 @@ public class Pop extends Activity {
         super.onCreate(savedInstanceState);
 
         // Creating the pop-up =====================================================================
-        setContentView(R.layout.popup_window);
+        setContentView(R.layout.league_popup);
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
@@ -46,15 +46,15 @@ public class Pop extends Activity {
                 String descriptionOfLeague = description.getText().toString();
 
                 if (nameOfLeague.isEmpty() && sportForLeague.isEmpty()) {
-                    Toast.makeText(Pop.this, "Fields are empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LeaguePop.this, "Fields are empty", Toast.LENGTH_SHORT).show();
                 }
 
                 else if (nameOfLeague.isEmpty()) {
-                    Toast.makeText(Pop.this, "League name is required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LeaguePop.this, "League name is required", Toast.LENGTH_SHORT).show();
                 }
 
                 else if (sportForLeague.isEmpty()) {
-                    Toast.makeText(Pop.this, "Type of sport is required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LeaguePop.this, "Type of sport is required", Toast.LENGTH_SHORT).show();
                 }
 
                 else {
