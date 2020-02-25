@@ -29,7 +29,7 @@
             <include layout="@layout/content_teams" />
         </LinearLayout>
 
-        <!-- add league button -->
+        <!-- add team button -->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_team_button"
             app:fabCustomSize="75dp"

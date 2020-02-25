@@ -21,7 +21,7 @@
         android:hint="Search teams"/>
 
 
-<!-- list of leagues-->
+<!-- list of teams-->
     <ListView
         android:id="@+id/teams_list"
         android:layout_width="match_parent"

@@ -61,7 +61,7 @@ public class TeamsPop extends Activity {
                     Member currentUser = new Member("Mike", "Tyson", "bigmike@punchface.gov", "12312312312");
                     Team newTeam = new Team(nameOfTeam, currentUser, sportForTeam);
 
-                    // TODO 24/02/2020 - Insert new team into league list, send to database.
+                    // TODO 24/02/2020 - Insert new team into team list, send to database.
 
                     finish();
                 }

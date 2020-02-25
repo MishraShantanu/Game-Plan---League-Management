@@ -47,11 +47,11 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_teams);
 
-        // add top bar with title 'Leagues'
+        // add top bar with title 'Teams'
         Toolbar mToolBar = findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
-        // TODO 24/02/2020 - Set title to the current league.
+        // TODO 24/02/2020 - Set title to the current team.
         getSupportActionBar().setTitle("Teams");
 
         //MENU (button & drawer)
@@ -70,7 +70,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // add league button =======================================================================
+        // add team button =======================================================================
 
         // launches a pop-up for adding a new class.
         FloatingActionButton addTeam = findViewById(R.id.add_team_button);
@@ -83,10 +83,10 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         });
 
 
-        // list of leagues =========================================================================
+        // list of teams =========================================================================
 
-        // TESTING - generates a list of leagues for testing the displaying functionality.
-        // TODO 18/02/2020 - remove this and replace with leagues from database.
+        // TESTING - generates a list of teams for testing the displaying functionality.
+        // TODO 18/02/2020 - remove this and replace with teams from database.
 
         teams = new ArrayList<>();
         Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
@@ -95,9 +95,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         }
 
 
-        // creates a ArrayList<String> from ArrayList<League> in order to display the names
+        // creates a ArrayList<String> from ArrayList<Team> in order to display the names
         // to user.
-        // TODO 18/02/2020 - replace leagues with the the one from the database.
+        // TODO 18/02/2020 - replace teams with the the one from the database.
 
         ArrayList<String> team_names = new ArrayList<>();
         for (Team t : teams) {
