@@ -10,11 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    /** Values inside ListView. */
+    ArrayList<Team> teams;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -44,6 +54,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
+
+        // list of teams =========================================================================
+
+        // TESTING - generates a list of teams for testing the displaying functionality.
+        // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
+
+        teams = new ArrayList<>();
+        Member user = new Member("Elon", "Musk", "ironman@xyz.com", "1231231234");
+        for (int i = 0; i < 20; i++) {
+            teams.add(new Team("Team-Name", user, "Tennis"));
+        }
+
+
+        // creates a ArrayList<String> from ArrayList<Team> in order to display the names to user.
+        // TODO Feb. 26, 2020 - replace teams with the the ones from the database.
+
+        ArrayList<String> team_names = new ArrayList<>();
+        for (Team team : teams) {
+            team_names.add(team.getName());
+        }
 
 
 
