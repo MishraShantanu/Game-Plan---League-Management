@@ -66,8 +66,7 @@ public class AboutUsActivity extends AppCompatActivity implements NavigationView
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
-                startActivity(new Intent(this, AboutUsActivity.class));
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                // already on about us page, do nothing
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
