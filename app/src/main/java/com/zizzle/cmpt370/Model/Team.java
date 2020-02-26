@@ -49,7 +49,7 @@ public class Team {
      * @param name: String name of the new team, team names must be unique for the league the team is in
      * @param owner: Member object, owner/creator of the team
      * @param sport: String sport the team plays, must match the sport of the league
-     * @param league: League object, league the team is a part of
+     * @param league: League object, league the team is a part of, this adds the Team object to the league
      * @throws IllegalArgumentException if team name isn't unique for this league, or if league sport doesn't
      * match team sport
      */
@@ -77,6 +77,8 @@ public class Team {
         this.ties = 0;
         this.gamesPlayed = new ArrayList<>();
         this.scheduledGames = new ArrayList<>();
+        // add team to league
+        this.league.addTeam(this);
     }
 
     /**
@@ -241,6 +243,7 @@ public class Team {
     @NonNull
     public String toString(){
         String teamString = "Team: " + this.name;
+        teamString += "\nLeague: " + this.league.getName();
         teamString += "\nSport: " + this.sport;
         teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
         return teamString;
@@ -255,8 +258,7 @@ public class Team {
     public boolean equals(Object other){
         if(other instanceof Team){
             Team otherTeam = (Team) other;
-            // TODO compare leagues also
-            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport);
+            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.league.equals(otherTeam.league);
         }
         // other isn't a Team, cannot be equal to this
         return false;
