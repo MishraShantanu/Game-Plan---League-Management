@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
@@ -90,8 +91,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
         teams = new ArrayList<>();
         Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
+        League league = new League("league",owner,"SQUASH","fun league"); // stub league
         for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team " + i, owner, "SQUASH"));
+            teams.add(new Team("Team " + i, owner, "SQUASH",league));
         }
 
 

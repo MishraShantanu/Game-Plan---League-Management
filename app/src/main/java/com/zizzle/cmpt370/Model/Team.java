@@ -258,7 +258,7 @@ public class Team {
     public boolean equals(Object other){
         if(other instanceof Team){
             Team otherTeam = (Team) other;
-            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.league.equals(otherTeam.league);
+            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.league.equals(otherTeam.league) && this.owner.equals(otherTeam.getOwner());
         }
         // other isn't a Team, cannot be equal to this
         return false;
