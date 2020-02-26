@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
@@ -25,6 +24,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     /** Values inside ListView. */
     ArrayList<Team> teams;
+
+    /** Adapter for displaying teams */
+    ArrayAdapter teamArrayAdapter;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -61,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
 
         teams = new ArrayList<>();
-        Member user = new Member("Elon", "Musk", "ironman@xyz.com", "1231231234");
+        Member user = new Member("Elon", "Musk", "ironman@xyz.com", "12312312341");
         for (int i = 0; i < 20; i++) {
             teams.add(new Team("Team-Name", user, "Tennis"));
         }
@@ -75,6 +77,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             team_names.add(team.getName());
         }
 
+
+        // Display ListView contents.
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, team_names);
+        ListView teamList = findViewById(R.id.user_individual_teams_list);
+        teamList.setAdapter(teamArrayAdapter);
 
 
     }
