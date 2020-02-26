@@ -190,6 +190,58 @@ public class Team {
     }
 
     /**
+     * increases the number of wins the team has by 1
+     */
+    public void incrementWins(){
+        this.wins++;
+    }
+
+    /**
+     * increases the number of losses the team has by 1
+     */
+    public void incrementLosses(){
+        this.losses++;
+    }
+
+    /**
+     * increases the number of ties the team has by 1
+     */
+    public void incrementTies(){
+        this.ties++;
+    }
+
+    /**
+     * Returns a String representation of the team including team name, sport, and win/loss/tie record
+     * @return String described above
+     */
+    @Override
+    @NonNull
+    public String toString(){
+        String teamString = "Team: " + this.name;
+        teamString += "\nSport: " + this.sport;
+        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
+        return teamString;
+    }
+
+    /**
+     * Checks where this Team is equal to the input parameter
+     * @param other: Object to see if equal to this Team
+     * @return true if other is equal to this, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof Team){
+            Team otherTeam = (Team) other;
+            // TODO compare leagues also
+            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport);
+        }
+        // other isn't a Team, cannot be equal to this
+        return false;
+    }
+
+    // below methods involve games
+
+    /**
      * Checks if the team has at least 1 game scheduled in the future
      * @return true if the team has at least 1 game scheduled in the future, false otherwise
      */
@@ -333,36 +385,6 @@ public class Team {
         if(! removedSuccessfully){
             throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
         }
-    }
-
-    /**
-     * Returns a String representation of the team including team name, sport, and win/loss/tie record
-     * @return String described above
-     */
-    @Override
-    @NonNull
-    public String toString(){
-        String teamString = "Team: " + this.name;
-        teamString += "\nSport: " + this.sport;
-        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
-        return teamString;
-    }
-
-    /**
-     * Checks where this Team is equal to the input parameter
-     * @param other: Object to see if equal to this Team
-     * @return true if other is equal to this, false otherwise
-     */
-    @Override
-    public boolean equals(Object other){
-        if(other instanceof Team){
-            Team otherTeam = (Team) other;
-            // TODO compare leagues also
-            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport);
-        }
-        // other isn't a Team, cannot be equal to this
-        return false;
-
     }
 
 
