@@ -160,8 +160,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
-                startActivity(new Intent(this, LeagueActivity.class));
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                // already on league page do nothing
                 break;
             case R.id.nav_profile:
                 startActivity(new Intent(this, ProfileActivity.class));

@@ -54,8 +54,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                startActivity(new Intent(this, HomeActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                // already on home page, do nothing
                 break;
             case R.id.nav_leagues:
                 startActivity(new Intent(this, LeagueActivity.class));
