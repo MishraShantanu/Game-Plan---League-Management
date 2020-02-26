@@ -24,7 +24,8 @@ public class Team {
      * list are more recent than those at the back */
     private ArrayList<Game> gamesPlayed;
 
-    // TODO add league field
+    /** The league the team is a part of */
+    private League league;
 
     /** Owner of the team */
     private Member owner;
@@ -47,10 +48,24 @@ public class Team {
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
      * @param owner: Member object, owner/creator of the team
-     * @param sport: String sport the team plays
+     * @param sport: String sport the team plays, must match the sport of the league
+     * @param league: League object, league the team is a part of
+     * @throws IllegalArgumentException if team name isn't unique for this league, or if league sport doesn't
+     * match team sport
      */
-    public Team(String name, Member owner, String sport){
-        //TODO check if new team name is unique for the league the team is in
+    public Team(String name, Member owner, String sport, League league) throws IllegalArgumentException{
+        this.league = league;
+        // make sure the team name is unique to this league
+        for (Team team : this.league.getTeams()){
+            if(team.getName().equals(name)){
+                // new name isn't unique for the league
+                throw new IllegalArgumentException("Team name: " + name + " isn't unique in league: " + league);
+            }
+        }
+        // make sure team and league sport match
+        if(!this.league.getSport().equals(sport)){
+            throw new IllegalArgumentException("Team sport: " + sport + " doesn't match league sport: " + league.getSport());
+        }
         this.name = name;
         this.owner = owner;
         this.sport = sport;
@@ -78,6 +93,14 @@ public class Team {
      */
     public Member getOwner(){
         return this.owner;
+    }
+
+    /**
+     * Retrieves the league the team is a part of
+     * @return League the team is a part of
+     */
+    public League getLeague(){
+        return this.league;
     }
 
     /**
@@ -239,7 +262,13 @@ public class Team {
         return false;
     }
 
-    // below methods involve games
+
+
+
+
+    ////////////////////////////////////////////////////////
+    // below methods involve games, keep these just in case
+    ////////////////////////////////////////////////////////
 
     /**
      * Checks if the team has at least 1 game scheduled in the future
