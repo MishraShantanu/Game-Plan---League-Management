@@ -10,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.Model.Member;
@@ -82,6 +85,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, team_names);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
+
+
+        /////////////////////////////SET IT SO THAT IT GOES TO THE INDIVIDUAL TEAM PAGE, NOT ALL TEAMS PAGE!!!!!
+        // clicking on a team in the ListView is handled in here.
+        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * performs an action when a ListView item is clicked.
+             *
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+
+                // listItemPosition is the array index for the teams array. can be used such as:
+                // teams.get(listItemPosition)
+                // TODO Feb. 26, 2020 - Give ListView items functionality
+
+                startActivity(new Intent(HomeActivity.this, TeamsActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                // this was used for testing. can be removed later.
+                Toast.makeText(HomeActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
     }
