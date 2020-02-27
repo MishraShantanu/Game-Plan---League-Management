@@ -49,7 +49,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // add top bar with title 'Leagues'
         Toolbar mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
-        getSupportActionBar().setTitle("Leagues");
+        getSupportActionBar().setTitle("All Leagues");
 
         //MENU (button & drawer)
         mDrawerLayout = (DrawerLayout) findViewById(R.id.league_layout);

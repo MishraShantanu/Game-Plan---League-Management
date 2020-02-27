@@ -53,7 +53,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
         // TODO 24/02/2020 - Set title to the current team.
-        getSupportActionBar().setTitle("Teams");
+        getSupportActionBar().setTitle("Cool League");
 
         //MENU (button & drawer)
         menuDrawer = findViewById(R.id.teams_layout);
