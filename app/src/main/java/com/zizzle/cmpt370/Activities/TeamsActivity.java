@@ -126,9 +126,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
-
-                // this was used for testing. can b removed later.
-                Toast.makeText(TeamsActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(TeamsActivity.this, TeamActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
