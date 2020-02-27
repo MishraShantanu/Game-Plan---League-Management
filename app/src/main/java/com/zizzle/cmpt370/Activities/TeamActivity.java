@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.NonScrollableListView;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         // Display ListView contents.
         memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, member_names);
-        ListView teamList = findViewById(R.id.members_list);
+        NonScrollableListView teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
 

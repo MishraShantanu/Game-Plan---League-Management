@@ -15,31 +15,22 @@ tools:context=".Activities.TeamActivity">
     android:fitsSystemWindows="true"
     tools:context=".Activities.TeamActivity">
 
-    <!-- search bar and ListView -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--    top bar    -->
         <include
             layout="@menu/top_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <!--    list    -->
         <include layout="@layout/content_team" />
+
     </LinearLayout>
 
-<!--    &lt;!&ndash; add team button &ndash;&gt;-->
-<!--    <android.support.design.widget.FloatingActionButton-->
-<!--        android:id="@+id/add_member_button"-->
-<!--        app:fabCustomSize="75dp"-->
-<!--        app:backgroundTint="@color/colorFAB"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/ic_plus"-->
-<!--        android:elevation="6dp"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_margin="25dp"/>-->
 </android.support.design.widget.CoordinatorLayout>
 
 <!--Navigation menu-->

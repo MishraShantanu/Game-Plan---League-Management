@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     tools:context=".Activities.TeamActivity"
-    tools:showIn="@layout/activity_team">
+    tools:showIn="@layout/activity_team"
+    android:fillViewport="true"
+    android:scrollbars="none"
+    android:overScrollMode="never">
 
-<!--&lt;!&ndash; search bar&ndash;&gt;-->
-<!--    <EditText-->
-<!--        android:id="@+id/member_search_bar"-->
-<!--        android:layout_width="fill_parent"-->
-<!--        android:layout_height="fill_parent"-->
-<!--        android:layout_marginLeft="14dp"-->
-<!--        android:layout_marginRight="14dp"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:background="@color/colorText"-->
-<!--        android:singleLine="true"-->
-<!--        android:padding="8dp"-->
-<!--        android:hint="Search members"/>-->
-
-
-<!-- list of teams-->
-    <ListView
-        android:id="@+id/members_list"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:divider="@null"
-        android:padding="15dp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HELLO"
+            android:textColor="@color/colorText"
+            android:textSize="50dp"/>
+
+    <!-- list of teams-->
+        <com.zizzle.cmpt370.NonScrollableListView
+            android:id="@+id/members_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:divider="@null"
+            android:padding="15dp">
+        </com.zizzle.cmpt370.NonScrollableListView>
+    </LinearLayout>
     
-</LinearLayout>
+</ScrollView>
