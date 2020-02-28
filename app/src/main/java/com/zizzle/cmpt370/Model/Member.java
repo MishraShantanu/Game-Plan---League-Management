@@ -53,7 +53,8 @@ public class Member {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        setPhoneNumber(phoneNumber);
+        this.phoneNumber = phoneNumber;
+        //setPhoneNumber(phoneNumber);
     }
 
 
@@ -154,14 +155,14 @@ public class Member {
      */
     public void setPhoneNumber(String phoneNumber) throws IllegalArgumentException {
         // Strip non-numeric characters from phone number.
-        phoneNumber = phoneNumber.replaceAll("\\D", "");
-
-        // Check the number is a full length phone number.
-        if (phoneNumber.length() != 11) throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
-
-        // convert into a formatted number.
-        this.phoneNumber = phoneNumber.substring(0, 1) + "-" + phoneNumber.substring(1, 4) + "-" +
-                phoneNumber.substring(4, 7) + "-" + phoneNumber.substring(7, 11);
+//        phoneNumber = phoneNumber.replaceAll("\\D", "");
+//
+//        // Check the number is a full length phone number.
+//        if (phoneNumber.length() != 11) throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
+//
+//        // convert into a formatted number.
+//        this.phoneNumber = phoneNumber.substring(0, 1) + "-" + phoneNumber.substring(1, 4) + "-" +
+//                phoneNumber.substring(4, 7) + "-" + phoneNumber.substring(7, 11);
     }
 
 
