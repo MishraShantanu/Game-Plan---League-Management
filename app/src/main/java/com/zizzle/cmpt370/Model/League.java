@@ -44,6 +44,13 @@ public class League {
         this.teams = new ArrayList<>();
     }
 
+    /**
+     * Blank constructor required for reassembling leagues when read in from database
+     */
+    public League(){
+
+    }
+
 
     /**
      * Retrieves the name of the league.

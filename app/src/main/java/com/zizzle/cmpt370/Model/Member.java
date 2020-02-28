@@ -56,6 +56,13 @@ public class Member {
         setPhoneNumber(phoneNumber);
     }
 
+    /**
+     * Blank constructor required for reassembling members read in from the database
+     */
+    public Member(){
+
+    }
+
 
     /**
      * Retrieves the first name of the user.
