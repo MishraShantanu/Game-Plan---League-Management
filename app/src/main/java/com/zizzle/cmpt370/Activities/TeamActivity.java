@@ -25,17 +25,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.NonScrollableListView;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
 
-public class TeamsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<Team> teams;
+    ArrayList<Member> members;
 
     /** Adapter for search bar. */
-    ArrayAdapter teamArrayAdapter;
+    ArrayAdapter memberArrayAdapter;
 
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
@@ -46,18 +47,18 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
-        setContentView(R.layout.activity_teams);
+        setContentView(R.layout.activity_team);
 
         // add top bar with title 'Teams'
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
         // TODO 24/02/2020 - Set title to the current team.
-        getSupportActionBar().setTitle("Cool League");
+        getSupportActionBar().setTitle("Cool Team");
 
         //MENU (button & drawer)
-        menuDrawer = findViewById(R.id.teams_layout);
-        NavigationView navigationView = findViewById(R.id.teams_nav_view); //ADDED FOR CLICK
+        menuDrawer = findViewById(R.id.team_layout);
+        NavigationView navigationView = findViewById(R.id.team_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
 
@@ -72,16 +73,16 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
 
         // add team button =======================================================================
-
-        // launches a pop-up for adding a new class.
-        FloatingActionButton addTeam = findViewById(R.id.add_team_button);
-        addTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            }
-        });
+//
+//        // launches a pop-up for adding a new class.
+//        FloatingActionButton addTeam = findViewById(R.id.add_team_button);
+//        addTeam.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
+//                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+//            }
+//        });
 
 
         // list of teams =========================================================================
@@ -89,11 +90,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         // TESTING - generates a list of teams for testing the displaying functionality.
         // TODO 18/02/2020 - remove this and replace with teams from database.
 
-        teams = new ArrayList<>();
-        Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
-        League league = new League("league",owner,"SQUASH","fun league"); // stub league
+        members = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team " + i, owner, "SQUASH",league));
+            members.add(new Member("Tod", "Manter", "mail", "12345678901"));
         }
 
 
@@ -101,16 +100,16 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         // to user.
         // TODO 18/02/2020 - replace teams with the the one from the database.
 
-        ArrayList<String> team_names = new ArrayList<>();
-        for (Team t : teams) {
-            team_names.add(t.getName());
+        ArrayList<String> member_names = new ArrayList<>();
+        for (Member m : members) {
+            member_names.add(m.getFirstName() + " " + m.getLastName());
         }
 
 
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, team_names);
-        ListView teamList = findViewById(R.id.teams_list);
-        teamList.setAdapter(teamArrayAdapter);
+        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, member_names);
+        NonScrollableListView teamList = findViewById(R.id.members_list);
+        teamList.setAdapter(memberArrayAdapter);
 
 
         // clicking on a team in the ListView is handled in here.
@@ -126,27 +125,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
-                startActivity(new Intent(TeamsActivity.this, TeamActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-        });
-
-
-        // functionality for search bar.
-        EditText teamsSearchBar = findViewById(R.id.teams_search_bar);
-        teamsSearchBar.addTextChangedListener(new TextWatcher() {
-
-            // changes the shown list items based on characters in search bar.
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                (TeamsActivity.this).teamArrayAdapter.getFilter().filter(charSequence);
-            }
-
-            // these two are not needed for search but must be override.
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void afterTextChanged(Editable editable) {}
         });
     }
 

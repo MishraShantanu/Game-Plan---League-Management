@@ -59,7 +59,8 @@ public class TeamsPop extends Activity {
                 else {
                     // TODO 24/02/2020 - Replace tempUser with the current user of the app.
                     Member currentUser = new Member("Mike", "Tyson", "bigmike@punchface.gov", "12312312312");
-                    Team newTeam = new Team(nameOfTeam, currentUser, sportForTeam);
+                    // TODO get league from previous activity
+                    //Team newTeam = new Team(nameOfTeam, currentUser, sportForTeam);
 
                     // TODO 24/02/2020 - Insert new team into team list, send to database.
 

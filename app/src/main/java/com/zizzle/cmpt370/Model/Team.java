@@ -24,7 +24,8 @@ public class Team {
      * list are more recent than those at the back */
     private ArrayList<Game> gamesPlayed;
 
-    // TODO add league field
+    /** The league the team is a part of */
+    private League league;
 
     /** Owner of the team */
     private Member owner;
@@ -47,10 +48,24 @@ public class Team {
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
      * @param owner: Member object, owner/creator of the team
-     * @param sport: String sport the team plays
+     * @param sport: String sport the team plays, must match the sport of the league
+     * @param league: League object, league the team is a part of, this adds the Team object to the league
+     * @throws IllegalArgumentException if team name isn't unique for this league, or if league sport doesn't
+     * match team sport
      */
-    public Team(String name, Member owner, String sport){
-        //TODO check if new team name is unique for the league the team is in
+    public Team(String name, Member owner, String sport, League league) throws IllegalArgumentException{
+        this.league = league;
+        // make sure the team name is unique to this league
+        for (Team team : this.league.getTeams()){
+            if(team.getName().equals(name)){
+                // new name isn't unique for the league
+                throw new IllegalArgumentException("Team name: " + name + " isn't unique in league: " + league);
+            }
+        }
+        // make sure team and league sport match
+        if(!this.league.getSport().equals(sport)){
+            throw new IllegalArgumentException("Team sport: " + sport + " doesn't match league sport: " + league.getSport());
+        }
         this.name = name;
         this.owner = owner;
         this.sport = sport;
@@ -62,6 +77,8 @@ public class Team {
         this.ties = 0;
         this.gamesPlayed = new ArrayList<>();
         this.scheduledGames = new ArrayList<>();
+        // add team to league
+        this.league.addTeam(this);
     }
 
     /**
@@ -78,6 +95,14 @@ public class Team {
      */
     public Member getOwner(){
         return this.owner;
+    }
+
+    /**
+     * Retrieves the league the team is a part of
+     * @return League the team is a part of
+     */
+    public League getLeague(){
+        return this.league;
     }
 
     /**
@@ -188,6 +213,64 @@ public class Team {
         // Member not found
         throw new IllegalArgumentException("Team: Member with name '" + MemberFirstName + "' not on team: " + this.name);
     }
+
+    /**
+     * increases the number of wins the team has by 1
+     */
+    public void incrementWins(){
+        this.wins++;
+    }
+
+    /**
+     * increases the number of losses the team has by 1
+     */
+    public void incrementLosses(){
+        this.losses++;
+    }
+
+    /**
+     * increases the number of ties the team has by 1
+     */
+    public void incrementTies(){
+        this.ties++;
+    }
+
+    /**
+     * Returns a String representation of the team including team name, sport, and win/loss/tie record
+     * @return String described above
+     */
+    @Override
+    @NonNull
+    public String toString(){
+        String teamString = "Team: " + this.name;
+        teamString += "\nLeague: " + this.league.getName();
+        teamString += "\nSport: " + this.sport;
+        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
+        return teamString;
+    }
+
+    /**
+     * Checks where this Team is equal to the input parameter
+     * @param other: Object to see if equal to this Team
+     * @return true if other is equal to this, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof Team){
+            Team otherTeam = (Team) other;
+            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.league.equals(otherTeam.league) && this.owner.equals(otherTeam.getOwner());
+        }
+        // other isn't a Team, cannot be equal to this
+        return false;
+    }
+
+
+
+
+
+    ////////////////////////////////////////////////////////
+    // below methods involve games, keep these just in case
+    ////////////////////////////////////////////////////////
 
     /**
      * Checks if the team has at least 1 game scheduled in the future
@@ -333,36 +416,6 @@ public class Team {
         if(! removedSuccessfully){
             throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
         }
-    }
-
-    /**
-     * Returns a String representation of the team including team name, sport, and win/loss/tie record
-     * @return String described above
-     */
-    @Override
-    @NonNull
-    public String toString(){
-        String teamString = "Team: " + this.name;
-        teamString += "\nSport: " + this.sport;
-        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
-        return teamString;
-    }
-
-    /**
-     * Checks where this Team is equal to the input parameter
-     * @param other: Object to see if equal to this Team
-     * @return true if other is equal to this, false otherwise
-     */
-    @Override
-    public boolean equals(Object other){
-        if(other instanceof Team){
-            Team otherTeam = (Team) other;
-            // TODO compare leagues also
-            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport);
-        }
-        // other isn't a Team, cannot be equal to this
-        return false;
-
     }
 
 

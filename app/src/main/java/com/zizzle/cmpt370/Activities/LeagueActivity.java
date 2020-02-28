@@ -49,7 +49,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // add top bar with title 'Leagues'
         Toolbar mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
-        getSupportActionBar().setTitle("Leagues");
+        getSupportActionBar().setTitle("All Leagues");
 
         //MENU (button & drawer)
         mDrawerLayout = (DrawerLayout) findViewById(R.id.league_layout);
@@ -160,8 +160,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
-                startActivity(new Intent(this, LeagueActivity.class));
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                // already on league page do nothing
                 break;
             case R.id.nav_profile:
                 startActivity(new Intent(this, ProfileActivity.class));
