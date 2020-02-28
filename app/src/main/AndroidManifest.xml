@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.AboutUsActivity"></activity>
+        <activity android:name=".Activities.TeamActivity"/>
+        <activity android:name=".Activities.AboutUsActivity" />
         <activity android:name=".Activities.ProfileActivity" />
         <activity android:name=".Activities.SigninActivity" />
-        <activity android:name=".Activities.SignupActivity" /> <!-- NOW HOMEPAGEWITHMENU IS NOT USED!!!!! (DELETE LATER IF NOT NEEDED) -->
+        <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Useless.homepageWithMenu" />
         <activity android:name=".Activities.HomeActivity">
             <intent-filter>
@@ -26,12 +27,27 @@
         <activity
             android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
-            android:parentActivityName=".Useless.homepageWithMenu"
+            android:parentActivityName=".Activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zizzle.cmpt370.Useless.homepageWithMenu" />
+                android:value="com.zizzle.cmpt370.Activities.HomeActivity" />
         </activity>
+        <activity
+            android:name=".Activities.TeamsActivity"
+            android:label="@string/title_activity_league"
+            android:parentActivityName=".Activities.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zizzle.cmpt370.Activities.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.LeaguePop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.TeamsPop"
+            android:theme="@style/AppTheme.PopUp" />
     </application>
 
 </manifest>

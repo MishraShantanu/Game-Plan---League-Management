@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/background_colour"
-    android:id="@+id/league_layout"
+    android:id="@+id/teams_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".Activities.LeagueActivity">
+    tools:context=".Activities.TeamsActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".Activities.LeagueActivity">
+        tools:context=".Activities.TeamActivity">
 
         <!-- search bar and ListView -->
         <LinearLayout
@@ -26,12 +26,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <include layout="@layout/content_league" />
+            <include layout="@layout/content_teams" />
         </LinearLayout>
 
-        <!-- add league button -->
+        <!-- add team button -->
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add_league_button"
+            android:id="@+id/add_team_button"
             app:fabCustomSize="75dp"
             app:backgroundTint="@color/colorFAB"
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
 
     <!--Navigation menu-->
     <android.support.design.widget.NavigationView
-        android:id="@+id/league_nav_view"
+        android:id="@+id/teams_nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

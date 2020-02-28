@@ -2,6 +2,7 @@ package com.zizzle.cmpt370;
 
 import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.GameTime;
+import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
 
@@ -18,8 +19,9 @@ public class GameTest {
      */
     @Test
     public void testGetters(){
-        Team teamOne = new Team("team1",new Member("owner1","lname","email1","77777777777"),"soccer");
-        Team teamTwo = new Team("team2",new Member("owner2","lname","email2","77777777777"),"soccer");
+        League testLeague = new League("league",new Member("f","l","e","77777777777"),"soccer","d");
+        Team teamOne = new Team("team1",new Member("owner1","lname","email1","77777777777"),"soccer",testLeague);
+        Team teamTwo = new Team("team2",new Member("owner2","lname","email2","77777777777"),"soccer",testLeague);
         GameTime date = new GameTime(2030,6,21,16,45);
         Game testGame = new Game(teamOne,teamTwo,date,"testlocation","soccer");
 
