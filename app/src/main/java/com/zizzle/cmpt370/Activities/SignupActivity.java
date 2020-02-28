@@ -89,6 +89,7 @@ public class SignupActivity extends AppCompatActivity {
 
                                 Member member = new Member(firstName.getText().toString(),lastName.getText().toString(),emailId.getText().toString(),"987654321");
                                 root.setValue(member);
+                                System.out.println(member.toString());
                                 root.push();
                                 startActivity(new Intent(SignupActivity.this, homepageWithMenu.class));
 
