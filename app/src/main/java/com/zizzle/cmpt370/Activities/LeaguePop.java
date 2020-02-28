@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -67,35 +68,23 @@ public class LeaguePop extends Activity {
 
                 else {
                     // TODO 24/02/2020 - Replace tempUser with the current user of the app.
-                    // determine if the new league name is unique in the database
-                    final DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                    Member tempUser = new Member("Mike","Tyson","BigMike@email.com","13066975541");
+                    League newLeague = new League(nameOfLeague,tempUser,sportForLeague,descriptionOfLeague);
+                    // add newLeague to the database
+                    try{
+                        Storage.writeLeague(newLeague);
+                    }
+                    catch (IllegalStateException e){
+                        // this exception is thrown if there is already a league with our new league's name, display error message
+                        Toast.makeText(LeaguePop.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    catch (DatabaseException e){
+                        // this exception is thrown if database operations fail, nothing we can do except try again
+                        Toast.makeText(LeaguePop.this, "Failed to create league, please try again", Toast.LENGTH_SHORT).show();
+                    }
+                    // TODO cannot add league to database if it has teams, probably an infinite nesting issue
 
-                    // addListenerForSingleValueEvent will read from the database exactly once when the listener is created
-                    // here we try to read a league with the name 'nameOfLeague' from the database
-                    database.child("Leagues").child(nameOfLeague).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()){
-                                // a league with name 'nameOfLeague' already exists, cannot create a new league with this name
-                                throw new IllegalStateException("League with name: " + nameOfLeague + " already exists");
-                            }
-                            else{
-                                // add this new league to the database, make the current user of the app the owner of the league
-                                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                                // currentUser only stores the user's email so long as they have signed in before
-                                /**
-                                League newLeague = new League(nameOfLeague, currentUser, sportForLeague, descriptionOfLeague);
-                                database.child("Leagues").child(nameOfLeague).setValue(newLeague);
-                                 */
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            // database read has failed for some reason, display error message
-                            Toast.makeText(LeaguePop.this, "Database read failed: " + databaseError.getMessage() , Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
 
                     // TODO 24/02/2020 - Insert new league into league list, send to database.

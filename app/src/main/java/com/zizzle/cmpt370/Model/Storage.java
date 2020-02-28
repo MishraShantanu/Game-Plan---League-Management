@@ -67,8 +67,8 @@ public class Storage {
 
     public static void addTeam(Team newTeam){
         // assume newTeam already has a unique name for the league it's in
-        // add team to database, this is added to Leagues/leaguename/Teams/teamname/
-        database.child("Leagues").child(newTeam.getLeague().getName()).child("Teams").child(newTeam.getName()).setValue(newTeam);
+        // add team to database, this is added to Leagues/leaguename/teams/teamname/
+        database.child("Leagues").child(newTeam.getLeague().getName()).child("teams").child(newTeam.getName()).setValue(newTeam);
     }
 
 }
