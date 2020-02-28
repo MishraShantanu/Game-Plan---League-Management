@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
@@ -43,6 +44,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
+        getSupportActionBar().setTitle("Home");
+
 
         //MENU (button & drawer)
         mDrawerLayout = (DrawerLayout) findViewById(R.id.home_layout);
@@ -67,8 +70,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         teams = new ArrayList<>();
         Member user = new Member("Elon", "Musk", "ironman@xyz.com", "12312312341");
+        Member owner = new Member("Pope", "Francis", "rome@popemobile.com", "15935774125");
+        League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
         for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team-Name", user, "Tennis"));
+            teams.add(new Team("Team-Name " + i, user, "Tennis", league));
         }
 
 
@@ -87,7 +92,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         teamList.setAdapter(teamArrayAdapter);
 
 
-        /////////////////////////////SET IT SO THAT IT GOES TO THE INDIVIDUAL TEAM PAGE, NOT ALL TEAMS PAGE!!!!!
         // clicking on a team in the ListView is handled in here.
         teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
@@ -102,7 +106,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // teams.get(listItemPosition)
                 // TODO Feb. 26, 2020 - Give ListView items functionality
 
-                startActivity(new Intent(HomeActivity.this, TeamsActivity.class));
+                startActivity(new Intent(HomeActivity.this, TeamActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can be removed later.
