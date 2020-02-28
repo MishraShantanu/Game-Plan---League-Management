@@ -84,7 +84,7 @@ public class LeaguePop extends Activity {
                                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                                 // currentUser only stores the user's email so long as they have signed in before
                                 /**
-                                League newLeague = new League(nameOfLeague, currentUser, sportForLeague, descriptionOfLeague); //TODO will probably crash due to final vars being written to
+                                League newLeague = new League(nameOfLeague, currentUser, sportForLeague, descriptionOfLeague);
                                 database.child("Leagues").child(nameOfLeague).setValue(newLeague);
                                  */
                             }
