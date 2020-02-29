@@ -1,7 +1,6 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import java.util.ArrayList;
 
