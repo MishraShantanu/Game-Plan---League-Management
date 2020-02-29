@@ -86,24 +86,15 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // TODO 18/02/2020 - remove this and replace with leagues from datebase.
 
         leagues = new ArrayList<>();
+
         Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901");
         for (int i = 0; i < 20; i++) {
             leagues.add(new League("League " + i, owner, "SQUASH", "description"));
         }
 
 
-        // creates a ArrayList<String> from ArrayList<League> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace leagues with the the one from the database.
-
-        ArrayList<String> league_names = new ArrayList<>();
-        for (League l : leagues) {
-            league_names.add(l.getName());
-        }
-
-
         // Display ListView contents.
-        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, league_names);
+        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, leagues);
         ListView leagueList = findViewById(R.id.leagues_list);
         leagueList.setAdapter(leagueArrayAdapter);
 
@@ -116,7 +107,10 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // League object that was clicked.
+                League clickedLeague = (League) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the leagues array. can be used such as:
                 // leagues.get(listItemPosition)
@@ -126,7 +120,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeague.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

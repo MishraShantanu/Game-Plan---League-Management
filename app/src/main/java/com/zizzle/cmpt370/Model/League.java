@@ -192,15 +192,6 @@ public class League {
      */
     @NonNull
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("League Name: " + this.name + "\n");
-        sb.append("Owner: " + this.ownerInfo.getName() + "\n");
-        sb.append("Sport: " + this.sport + "\n");
-        sb.append("Description: " + this.description + "\n");
-        sb.append("Teams:");
-        for (TeamInfo teamInfo : this.teamsInfo) {
-            sb.append("\n\t" + teamInfo.getName());
-        }
-        return sb.toString();
+        return this.getName();
     }
 }
