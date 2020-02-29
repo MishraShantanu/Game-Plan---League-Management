@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    tools:context=".Activities.ProfileActivity"
+    tools:showIn="@layout/activity_profile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <!--    Display Name    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_card"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Display Name"
+                android:textColor="@color/colorText"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/Profile_DisplayName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Text to Change"
+                android:textColor="@color/colorText"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+
+        <!--    Email    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_card"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Email"
+                android:textColor="@color/colorText"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/Profile_Email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Text to Change"
+                android:textColor="@color/colorText"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+        <!--    Phone Number    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_card"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Phone Number"
+                android:textColor="@color/colorText"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/Profile_PhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Text to Change"
+                android:textColor="@color/colorText"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText" />
+
+        <!--    Update Info Button    -->
+        <Button
+            android:id="@+id/updateInfoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/round_card_button"
+            android:gravity="center_horizontal"
+            android:padding="22dp"
+            android:text="Update Info"
+            android:textColor="@color/colorText"
+            android:textSize="24dp" />
+
+    </LinearLayout>
+</ScrollView>
