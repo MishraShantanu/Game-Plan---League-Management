@@ -148,12 +148,12 @@ public class Team {
         // make sure memberToRemove is on the team
         MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
         if(! this.membersInfo.contains(memberToRemoveInfo)){
-            throw new IllegalArgumentException("Team: Member: " + memberToRemove.getFirstName() + " to remove from team: "
+            throw new IllegalArgumentException("Team: Member: " + memberToRemove.getDisplayName() + " to remove from team: "
                     + this.name + " isn't a member of the team");
         }
         // make sure memberToRemove isn't the owner
         if(memberToRemoveInfo.equals(this.ownerInfo)){
-            throw new IllegalStateException("Team: Member: " + memberToRemove.getFirstName() + " cannot be removed from team " +
+            throw new IllegalStateException("Team: Member: " + memberToRemove.getDisplayName() + " cannot be removed from team " +
                     this.name + " as this Member is the owner of the team");
         }
 
@@ -287,8 +287,6 @@ public class Team {
         // other isn't a Team, cannot be equal to this
         return false;
     }
-
-
 
 
 
@@ -441,11 +439,4 @@ public class Team {
             throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
         }
     }
-
-
-
-
-
-
-
 }

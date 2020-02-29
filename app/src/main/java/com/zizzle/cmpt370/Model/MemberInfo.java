@@ -17,7 +17,7 @@ public class MemberInfo implements InfoInterface{
      * @param member: Member object to store information about
      */
     public MemberInfo(Member member){
-        memberName = member.getFirstName(); // use first names for now, could extend to first and last names
+        memberName = member.getDisplayName(); // use first names for now, could extend to first and last names
         // a user's email must be unique, use this as a key into the database
         memberKey = member.getEmail();
     }
