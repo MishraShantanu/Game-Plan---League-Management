@@ -46,6 +46,9 @@
             android:name=".Activities.LeaguePop"
             android:theme="@style/AppTheme.PopUp" />
         <activity
+            android:name=".Activities.ProfilePop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
             android:name=".Activities.TeamsPop"
             android:theme="@style/AppTheme.PopUp" />
     </application>

@@ -15,13 +15,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Create a team"
+            android:text="Update information"
             android:textColor="@color/colorText"
             android:textSize="30dp" />
 
 
         <EditText
-            android:id="@+id/teamName"
+            android:id="@+id/displayName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -29,10 +29,10 @@
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint"
             android:ems="10"
-            android:hint="Team Name"/>
+            android:hint="Display Name"/>
 
         <EditText
-            android:id="@+id/sportInput"
+            android:id="@+id/phoneNumberInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -40,7 +40,30 @@
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint"
             android:ems="10"
-            android:hint="Sport"/>
+            android:hint="Phone Number"/>
+
+        <EditText
+            android:id="@+id/emailInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/colorText"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint"
+            android:ems="10"
+            android:hint="Email"/>
+
+        <EditText
+            android:id="@+id/passwordInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/colorText"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:hint="Password"/>
 
         <Button
             android:id="@+id/submitButton"
