@@ -224,6 +224,6 @@ public class Member {
      */
     @NonNull
     public String toString() {
-        return this.getFirstName();
+        return this.getDisplayName();
     }
 }

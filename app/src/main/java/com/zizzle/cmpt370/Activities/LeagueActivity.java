@@ -86,6 +86,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // TODO 18/02/2020 - remove this and replace with leagues from datebase.
 
         leagues = new ArrayList<>();
+
         Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901");
         for (int i = 0; i < 20; i++) {
             leagues.add(new League("League " + i, owner, "SQUASH", "description"));

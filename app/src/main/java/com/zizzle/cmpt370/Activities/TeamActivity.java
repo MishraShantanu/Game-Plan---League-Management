@@ -133,7 +133,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
 
-                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getFirstName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getDisplayName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
