@@ -72,22 +72,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341");
         Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125");
         League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
+
         for (int i = 0; i < 20; i++) {
             teams.add(new Team("Team-Name " + i, user, "Tennis", league));
         }
 
 
-        // creates a ArrayList<String> from ArrayList<Team> in order to display the names to user.
-        // TODO Feb. 26, 2020 - replace teams with the the ones from the database.
-
-        ArrayList<String> team_names = new ArrayList<>();
-        for (Team team : teams) {
-            team_names.add(team.getName());
-        }
-
-
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, team_names);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teams);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
@@ -100,7 +92,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // Team object that was clicked.
+                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
@@ -109,8 +104,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(HomeActivity.this, TeamActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-                // this was used for testing. can be removed later.
-                Toast.makeText(HomeActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

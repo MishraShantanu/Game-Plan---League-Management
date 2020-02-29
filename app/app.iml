@@ -19,8 +19,8 @@
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res/layouts/leagues" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res/layouts/leagues;file://$MODULE_DIR$/src/main/res/layouts/other;file://$MODULE_DIR$/src/main/res/layouts/teams;file://$MODULE_DIR$/src/main/res/layouts/team;file://$MODULE_DIR$/src/main/res/layouts/home;file://$MODULE_DIR$/src/main/res/layouts/profile;file://$MODULE_DIR$/src/main/res/layouts;file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/google-services/debug;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
-        <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/debug" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res/layouts/leagues;file://$MODULE_DIR$/src/main/res/layouts/other;file://$MODULE_DIR$/src/main/res/layouts/teams;file://$MODULE_DIR$/src/main/res/layouts/team;file://$MODULE_DIR$/src/main/res/layouts/home;file://$MODULE_DIR$/src/main/res/layouts;file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/google-services/debug;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
+        <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
     </facet>
