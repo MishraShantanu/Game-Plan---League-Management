@@ -48,7 +48,7 @@ public class Storage {
 
     /**
      * Reads the League with the input name from the database
-     * @param leagueName: String, name of the database to read from the database
+     * @param leagueInfo: String, name of the database to read from the database
      * @return League object with the name input or null if no such league exists
      * @throws DatabaseException if the database read fails
      */
