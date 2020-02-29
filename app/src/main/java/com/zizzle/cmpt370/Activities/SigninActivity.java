@@ -19,36 +19,34 @@ import com.zizzle.cmpt370.R;
 import com.zizzle.cmpt370.Useless.homepageWithMenu;
 
 public class SigninActivity extends AppCompatActivity {
-    EditText emailId,password;
+    EditText emailId, password;
     Button buttonSignIn;
     TextView tvSignUp;
-    FirebaseAuth mFirebaseAuth ;
+    FirebaseAuth mFirebaseAuth;
 
-    private FirebaseAuth.AuthStateListener mAuthstatelistner ;
+    private FirebaseAuth.AuthStateListener mAuthstatelistner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         mFirebaseAuth = FirebaseAuth.getInstance();
-        emailId  = findViewById(R.id.editText3);
+        emailId = findViewById(R.id.editText3);
         password = findViewById(R.id.editText4);
         buttonSignIn = findViewById(R.id.button2);
         tvSignUp = findViewById(R.id.textView3);
 
         mAuthstatelistner = new FirebaseAuth.AuthStateListener() {
-
-
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser mfirebaseUser = mFirebaseAuth.getCurrentUser();
 
-                if(mfirebaseUser != null){
-                    Toast.makeText(SigninActivity.this," You are  logged in",Toast.LENGTH_SHORT).show();
+                if (mfirebaseUser != null) {
+                    Toast.makeText(SigninActivity.this, " You are  logged in", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(SigninActivity.this, homepageWithMenu.class);
                     startActivity(i);
-                }else {
-                    Toast.makeText(SigninActivity.this,"Please Login",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SigninActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -60,49 +58,43 @@ public class SigninActivity extends AppCompatActivity {
                 String email = emailId.getText().toString();
                 String pass = password.getText().toString();
 
-                if(email.isEmpty()){
-                    emailId.setError("Plz enter  email id");
+                if (email.isEmpty()) {
+                    emailId.setError("Please enter an email address");
                     emailId.requestApplyInsets();
-                }
-                else if(pass.isEmpty()){
+                } else if (pass.isEmpty()) {
                     password.setError("Enter a password");
                     password.requestFocus();
 
-                }else if(pass.isEmpty()&&email.isEmpty()){
-                    Toast.makeText(SigninActivity.this,"Fields are empty",Toast.LENGTH_SHORT).show();
-                }else if(!(pass.isEmpty()&&email.isEmpty())){
-                    mFirebaseAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {
+                } else if (pass.isEmpty() && email.isEmpty()) {
+                    Toast.makeText(SigninActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
+                } else if (!(pass.isEmpty() && email.isEmpty())) {
+                    mFirebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
-                                Toast.makeText(SigninActivity.this,"Login Error, Please try again..",Toast.LENGTH_SHORT).show();
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(SigninActivity.this, "Login Error, Please try again..", Toast.LENGTH_SHORT).show();
 
-                        }else{
-                                Intent intoMain = new Intent(SigninActivity.this,homepageWithMenu.class);
+                            } else {
+                                Intent intoMain = new Intent(SigninActivity.this, homepageWithMenu.class);
                                 startActivity(intoMain);
                             }
+                        }
 
-                    };
-                });
-
-            }
-                else{
-                    Toast.makeText(SigninActivity.this,"Error Occurred..!!,try again..!!",Toast.LENGTH_SHORT).show();
+                        ;
+                    });
+                } else {
+                    Toast.makeText(SigninActivity.this, "Error Occurred..!!,try again..!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent inSignUp = new Intent(SigninActivity.this, SignupActivity. class);
+                Intent inSignUp = new Intent(SigninActivity.this, SignupActivity.class);
                 startActivity(inSignUp);
             }
         });
-
-
-
     }
 
     @Override

@@ -21,10 +21,10 @@ import com.zizzle.cmpt370.R;
 import com.zizzle.cmpt370.Useless.homepageWithMenu;
 
 public class SignupActivity extends AppCompatActivity {
-     EditText emailId, password, displayName;
-     Button buttonSignup;
-     TextView tvSignIn;
-     FirebaseAuth mFirebaseAuth ;
+    EditText emailId, password, displayName;
+    Button buttonSignup;
+    TextView tvSignIn;
+    FirebaseAuth mFirebaseAuth;
 
 
     @Override
@@ -33,9 +33,8 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
 
-
         mFirebaseAuth = FirebaseAuth.getInstance();
-        emailId  = findViewById(R.id.Signup_Email);
+        emailId = findViewById(R.id.Signup_Email);
         password = findViewById(R.id.Signup_Password);
         buttonSignup = findViewById(R.id.Signup_Button);
         tvSignIn = findViewById(R.id.Signup_HaveAccount);
@@ -48,28 +47,27 @@ public class SignupActivity extends AppCompatActivity {
                 final String email = emailId.getText().toString();
                 String pass = password.getText().toString();
 
-                if(email.isEmpty()){
+                if (email.isEmpty()) {
                     emailId.setError("Please enter an email address");
                     emailId.requestApplyInsets();
-                }
-                else if(pass.isEmpty()){
+                } else if (pass.isEmpty()) {
                     password.setError("Enter a password");
                     password.requestFocus();
 
-                }else if(pass.isEmpty()&&email.isEmpty()){
-                    Toast.makeText(SignupActivity.this,"Fields are empty",Toast.LENGTH_SHORT).show();
-                }else if(!(pass.isEmpty()&&email.isEmpty())){
+                } else if (pass.isEmpty() && email.isEmpty()) {
+                    Toast.makeText(SignupActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
+                } else if (!(pass.isEmpty() && email.isEmpty())) {
                     System.out.println(email);
-                    mFirebaseAuth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+                    mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
-                                Toast.makeText(SignupActivity.this,"Sign up was unsuccessful, please try again",Toast.LENGTH_SHORT).show();
-                            }else{
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(SignupActivity.this, "Sign up was unsuccessful, please try again", Toast.LENGTH_SHORT).show();
+                            } else {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                Member member = new Member(displayName.getText().toString(),emailId.getText().toString(),"987654321");
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321");
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
@@ -78,19 +76,19 @@ public class SignupActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }else{
-                    Toast.makeText(SignupActivity.this,"ERROR occurred, please try again",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SignupActivity.this, "ERROR occurred, please try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-            tvSignIn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(SignupActivity.this,SigninActivity.class);
-                    startActivity(i);
-                }
-            });
+        tvSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(SignupActivity.this, SigninActivity.class);
+                startActivity(i);
+            }
+        });
 
 
     }
