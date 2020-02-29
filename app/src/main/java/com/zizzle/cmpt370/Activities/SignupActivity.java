@@ -21,7 +21,7 @@ import com.zizzle.cmpt370.R;
 import com.zizzle.cmpt370.Useless.homepageWithMenu;
 
 public class SignupActivity extends AppCompatActivity {
-     EditText emailId,password,firstName,lastName;
+     EditText emailId, password, displayName;
      Button buttonSignup;
      TextView tvSignIn;
      FirebaseAuth mFirebaseAuth ;
@@ -34,30 +34,13 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-//        System.out.println(root.setValue(user).isSuccessful());
-//        root.setValue(user1);
-//        System.out.println(root.child("user").push());
-       // root.child("test").push();
-
-
-
-
-
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId  = findViewById(R.id.editText);
         password = findViewById(R.id.editText2);
         buttonSignup = findViewById(R.id.button);
         tvSignIn = findViewById(R.id.textView2);
 
-        firstName = findViewById(R.id.firstName);
-        lastName = findViewById(R.id.lastName);
-
+        displayName = findViewById(R.id.displayName);
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +64,12 @@ public class SignupActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
-                                Toast.makeText(SignupActivity.this,"SignUp Unsucessful,plz try again",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this,"Sign up was unsuccessful, please try again",Toast.LENGTH_SHORT).show();
                             }else{
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                //System.out.println("hhhhhhhhhhhhhh"+);
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                Member member = new Member(firstName.getText().toString(),lastName.getText().toString(),emailId.getText().toString(),"987654321");
+                                Member member = new Member(displayName.getText().toString(),emailId.getText().toString(),"987654321");
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
@@ -97,7 +79,7 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    Toast.makeText(SignupActivity.this,"Error Occurred..!!,try again..!!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this,"ERROR occurred, please try again",Toast.LENGTH_SHORT).show();
                 }
             }
         });
