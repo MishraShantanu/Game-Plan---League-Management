@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 /**
@@ -11,14 +12,9 @@ import java.util.ArrayList;
 public class Member {
 
     /**
-     * First name of the user.
+     * Name of the user
      */
-    private String firstName;
-
-    /**
-     * Last name of the user.
-     */
-    private String lastName;
+    private String displayName;
 
     /**
      * Email of the user.
@@ -33,48 +29,42 @@ public class Member {
     /**
      * Teams the user belongs to.
      */
-    private ArrayList<Team> teams = new ArrayList<>();
+    private HashSet<TeamInfo> teamsInfo = new HashSet<>();
 
     /**
-     * Teams the user belongs to.
+     * Leagues the user belongs to.
      */
-    private ArrayList<League> leagues = new ArrayList<>();
+    private HashSet<LeagueInfo> leaguesInfo = new HashSet<>();
 
 
     /**
      * Constructor for the Member object.
      *
-     * @param firstName:   First name
-     * @param lastName:    Last name
+     * @param displayName: name of this user as displayed on the app
      * @param email:       email of member
      * @param phoneNumber: phone number of member
      */
-    public Member(String firstName, String lastName, String email, String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Member(String displayName, String email, String phoneNumber) {
+        this.displayName = displayName;
         this.email = email;
-        this.phoneNumber = phoneNumber;
-        //setPhoneNumber(phoneNumber);
+        setPhoneNumber(phoneNumber);
+    }
+
+    /**
+     * Blank constructor required for reassembling members read in from the database
+     */
+    public Member(){
+
     }
 
 
     /**
-     * Retrieves the first name of the user.
+     * Retrieves the display name of the user.
      *
-     * @return First name of the user.
+     * @return String display name of the user.
      */
-    public String getFirstName() {
-        return firstName;
-    }
-
-
-    /**
-     * Retrieves the last name of the user.
-     *
-     * @return Last name of the user.
-     */
-    public String getLastName() {
-        return lastName;
+    public String getDisplayName() {
+        return displayName;
     }
 
 
@@ -99,41 +89,33 @@ public class Member {
 
 
     /**
-     * Retrieves the teams the user belongs to.
+     * Retrieves info about the teams the user belongs to.
      *
-     * @return ArrayList of teams user belongs to.
+     * @return HashSet containing TeamInfo objects of the teams the user is a part of
      */
-    public ArrayList<Team> getTeams() {
-        return teams;
+    public HashSet<TeamInfo> getTeamsInfo() {
+        // TODO could convert this to an arraylist
+        return teamsInfo;
     }
 
 
     /**
-     * Retrieves the leagues the user belongs to.
-     * @return ArrayList of the leagues the user belongs to.
+     * Retrieves info about the leagues the user belongs to.
+     * @return HashSet containing LeagueInfo objects with infor about the leagues the user belongs to.
      */
-    public ArrayList<League> getLeagues() {
-        return leagues;
+    public HashSet<LeagueInfo> getLeaguesInfo() {
+        return leaguesInfo;
     }
 
 
     /**
-     * Sets the first name of the user to the given name.
+     * Sets the display name of the user to the given name.
      *
-     * @param firstName: new first name for the user.
+     * @param newName: new first name for the user.
      */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-
-    /**
-     * Sets the last name of the user to the given name.
-     *
-     * @param lastName: new last name for the user.
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFirstName(String newName) {
+        this.displayName = newName;
+        // TODO update this onto the database
     }
 
 
@@ -144,6 +126,7 @@ public class Member {
      */
     public void setEmail(String email) {
         this.email = email;
+        // TODO update email on database, may need to delete and recreate user
     }
 
 
@@ -155,14 +138,15 @@ public class Member {
      */
     public void setPhoneNumber(String phoneNumber) throws IllegalArgumentException {
         // Strip non-numeric characters from phone number.
-//        phoneNumber = phoneNumber.replaceAll("\\D", "");
-//
-//        // Check the number is a full length phone number.
-//        if (phoneNumber.length() != 11) throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
-//
-//        // convert into a formatted number.
-//        this.phoneNumber = phoneNumber.substring(0, 1) + "-" + phoneNumber.substring(1, 4) + "-" +
-//                phoneNumber.substring(4, 7) + "-" + phoneNumber.substring(7, 11);
+        phoneNumber = phoneNumber.replaceAll("\\D", "");
+
+        // Check the number is a full length phone number.
+        if (phoneNumber.length() != 11) throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
+
+        // convert into a formatted number.
+        this.phoneNumber = phoneNumber.substring(0, 1) + "-" + phoneNumber.substring(1, 4) + "-" +
+                phoneNumber.substring(4, 7) + "-" + phoneNumber.substring(7, 11);
+        // TODO update phone number on the database
     }
 
 
@@ -172,11 +156,13 @@ public class Member {
      * @throws IllegalArgumentException if they are already part of the team.
      */
     public void addTeam(Team teamToAdd) throws IllegalArgumentException {
+        TeamInfo newTeamInfo = new TeamInfo(teamToAdd);
         // Check if user is already part of this team.
-        if (this.teams.contains(teamToAdd)) throw new IllegalArgumentException("Error in addTeam(): " +
+        if (this.teamsInfo.contains(newTeamInfo)) throw new IllegalArgumentException("Error in addTeam(): " +
                 "Member is already part of " + teamToAdd.getName());
 
-        this.teams.add(teamToAdd);
+        this.teamsInfo.add(newTeamInfo);
+        // TODO update team and user on the database to reflect this new team
     }
 
 
@@ -186,13 +172,15 @@ public class Member {
      * @throws IllegalArgumentException if they are not part of this team.
      */
     public void removeTeam(Team teamToRemove) throws IllegalArgumentException {
+        TeamInfo removeTeamInfo = new TeamInfo(teamToRemove);
         // make sure teamToRemove is part of the member's teams.
-        if(! this.teams.contains(teamToRemove)){
+        if(! this.teamsInfo.contains(teamToRemove)){
             throw new IllegalArgumentException("Team: " + teamToRemove.getName() + " to remove from member: "
-                    + this.firstName + " " + this.lastName + " isn't a member of the team");
+                    + this.displayName + " isn't a member of the team");
         }
 
-        this.teams.remove(teamToRemove);
+        this.teamsInfo.remove(removeTeamInfo);
+        // TODO remove this member from teamToRemove on the database
     }
 
 
@@ -202,11 +190,13 @@ public class Member {
      * @throws IllegalArgumentException if league already is part of users league list.
      */
     public void addLeague(League leagueToAdd) throws IllegalArgumentException {
+        LeagueInfo leagueToAddInfo = new LeagueInfo(leagueToAdd);
         // Check if user is already part of this league.
-        if (this.leagues.contains(leagueToAdd)) throw new IllegalArgumentException("Error in addLeague(): " +
+        if (this.leaguesInfo.contains(leagueToAddInfo)) throw new IllegalArgumentException("Error in addLeague(): " +
                 "Member is already part of " + leagueToAdd.getName());
 
-        this.leagues.add(leagueToAdd);
+        this.leaguesInfo.add(leagueToAddInfo);
+        // TODO add this member to this league, add  this league to this member on the database
     }
 
 
@@ -216,13 +206,15 @@ public class Member {
      * @throws IllegalArgumentException if league is not part of the list.
      */
     public void removeLeague(League leagueToRemove) throws IllegalArgumentException {
+        LeagueInfo leagueToRemoveInfo = new LeagueInfo(leagueToRemove);
         // make sure leagueToRemove is part of the member's teams.
-        if(! this.leagues.contains(leagueToRemove)){
+        if(! this.leaguesInfo.contains(leagueToRemoveInfo)){
             throw new IllegalArgumentException("League: " + leagueToRemove.getName() + " to remove from member: "
-                    + this.firstName + " " + this.lastName + " isn't a member of the league.");
+                    + this.displayName + " isn't a member of the league.");
         }
 
-        this.leagues.remove(leagueToRemove);
+        this.leaguesInfo.remove(leagueToRemoveInfo);
+        // TODO remove this league from the member on the database
     }
 
 
@@ -233,13 +225,13 @@ public class Member {
     @NonNull
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: " + this.firstName + " " + this.lastName + "\n");
+        sb.append("Name: " + this.displayName + "\n");
         sb.append("Email: " + this.email + "\n");
         sb.append("Phone Number: " + this.phoneNumber + "\n");
         sb.append("Teams:");
-        for (Team team : this.teams) sb.append("\n\t" + team.getName());
+        for (TeamInfo teamInfo : this.teamsInfo) sb.append("\n\t" + teamInfo.getName());
         sb.append("\nLeagues:");
-        for (League league : this.leagues) sb.append("\n\t" + league.getName());
+        for (LeagueInfo leagueInfo : this.leaguesInfo) sb.append("\n\t" + leagueInfo.getName());
         return sb.toString();
     }
 }
