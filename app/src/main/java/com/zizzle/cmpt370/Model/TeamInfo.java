@@ -18,7 +18,7 @@ public class TeamInfo implements InfoInterface{
      */
     public TeamInfo(Team team){
         teamName = team.getName();
-        String leagueName = team.getLeague().getName();
+        String leagueName = team.getLeagueInfo().getName();
         // team names must be unique per league, so we use leagueName-teamName as our database key
         teamKey = leagueName + "-" + teamName;
     }
