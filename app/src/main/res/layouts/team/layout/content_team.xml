@@ -15,6 +15,7 @@
         android:orientation="vertical"
         android:padding="15dp">
 
+        <!--    Record    -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,6 +26,7 @@
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 
+        <!--    Next Game    -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,6 +37,7 @@
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 
+        <!--    divider    -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -42,8 +45,25 @@
             android:layout_marginBottom="15dp"
             android:background="@color/colorText" />
 
+        <!--    owner button    -->
+        <Button
+            android:id="@+id/owner_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/round_card_button"
+            android:drawableLeft="@drawable/ic_star"
+            android:padding="22dp"
+            android:text="Owner Dan"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/colorText"
+            android:textSize="24dp"
+            android:textStyle="normal" />
+
         <!-- list of teams-->
         <com.zizzle.cmpt370.NonScrollableListView
+            android:listSelector="@android:color/transparent"
             android:id="@+id/members_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
