@@ -35,12 +35,12 @@ public class SignupActivity extends AppCompatActivity {
 
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        emailId  = findViewById(R.id.editText);
-        password = findViewById(R.id.editText2);
-        buttonSignup = findViewById(R.id.button);
-        tvSignIn = findViewById(R.id.textView2);
+        emailId  = findViewById(R.id.Signup_Email);
+        password = findViewById(R.id.Signup_Password);
+        buttonSignup = findViewById(R.id.Signup_Button);
+        tvSignIn = findViewById(R.id.Signup_HaveAccount);
 
-        displayName = findViewById(R.id.displayName);
+        displayName = findViewById(R.id.Signup_Name);
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,7 @@ public class SignupActivity extends AppCompatActivity {
                 String pass = password.getText().toString();
 
                 if(email.isEmpty()){
-                    emailId.setError("Plz enter  email id");
+                    emailId.setError("Please enter an email address");
                     emailId.requestApplyInsets();
                 }
                 else if(pass.isEmpty()){
