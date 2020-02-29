@@ -4,7 +4,7 @@
     android:textColor="@color/colorText"
     android:padding="22dp"
     android:textSize="24sp"
-    android:background="@drawable/round_card"
+    android:background="@drawable/round_card_button"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 </TextView>

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -83,6 +84,19 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 //                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
 //            }
 //        });
+
+
+        // owner button ==========================================================================
+        Button ownerButton = findViewById(R.id.owner_button);
+        ownerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // TODO 29/02/2020 Take to the member page for owner.
+                Toast.makeText(TeamActivity.this, "YOU JUST GOT OWNED", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
 
         // list of teams =========================================================================
@@ -162,6 +176,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
     //When back button is pressed, we want to just close the menu, not close the activity
     @Override
     public void onBackPressed() {
@@ -171,6 +186,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed(); //close activity (as usual)
         }
     }
+
 
     //Button to open menu
     @Override

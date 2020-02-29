@@ -45,34 +45,25 @@
             android:layout_marginBottom="15dp"
             android:background="@color/colorText" />
 
-        <!--    owner    -->
-        <LinearLayout
+        <!--    owner button    -->
+        <Button
+            android:id="@+id/owner_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/round_card"
-            android:padding="22dp"
             android:layout_marginBottom="20dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:contentDescription="owner image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_star"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:text="Owner Dan"
-                android:textColor="@color/colorText"
-                android:textSize="24dp"/>
-
-        </LinearLayout>
+            android:background="@drawable/round_card_button"
+            android:drawableLeft="@drawable/ic_star"
+            android:padding="22dp"
+            android:text="Owner Dan"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/colorText"
+            android:textSize="24dp"
+            android:textStyle="normal" />
 
         <!-- list of teams-->
         <com.zizzle.cmpt370.NonScrollableListView
+            android:listSelector="@android:color/transparent"
             android:id="@+id/members_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
