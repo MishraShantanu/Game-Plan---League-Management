@@ -97,18 +97,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         }
 
 
-        // creates a ArrayList<String> from ArrayList<Team> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace teams with the the one from the database.
-
-        ArrayList<String> team_names = new ArrayList<>();
-        for (Team t : teams) {
-            team_names.add(t.getName());
-        }
-
-
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, team_names);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, teams);
         ListView teamList = findViewById(R.id.teams_list);
         teamList.setAdapter(teamArrayAdapter);
 

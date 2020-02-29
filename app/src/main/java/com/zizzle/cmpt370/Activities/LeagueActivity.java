@@ -92,18 +92,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         }
 
 
-        // creates a ArrayList<String> from ArrayList<League> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace leagues with the the one from the database.
-
-        ArrayList<String> league_names = new ArrayList<>();
-        for (League l : leagues) {
-            league_names.add(l.getName());
-        }
-
-
         // Display ListView contents.
-        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, league_names);
+        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, leagues);
         ListView leagueList = findViewById(R.id.leagues_list);
         leagueList.setAdapter(leagueArrayAdapter);
 

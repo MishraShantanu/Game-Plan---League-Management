@@ -232,14 +232,6 @@ public class Member {
      */
     @NonNull
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Name: " + this.firstName + " " + this.lastName + "\n");
-        sb.append("Email: " + this.email + "\n");
-        sb.append("Phone Number: " + this.phoneNumber + "\n");
-        sb.append("Teams:");
-        for (Team team : this.teams) sb.append("\n\t" + team.getName());
-        sb.append("\nLeagues:");
-        for (League league : this.leagues) sb.append("\n\t" + league.getName());
-        return sb.toString();
+        return this.getFirstName();
     }
 }

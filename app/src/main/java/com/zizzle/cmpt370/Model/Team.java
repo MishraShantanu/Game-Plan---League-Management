@@ -242,11 +242,7 @@ public class Team {
     @Override
     @NonNull
     public String toString(){
-        String teamString = "Team: " + this.name;
-        teamString += "\nLeague: " + this.league.getName();
-        teamString += "\nSport: " + this.sport;
-        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
-        return teamString;
+        return this.getName();
     }
 
     /**
