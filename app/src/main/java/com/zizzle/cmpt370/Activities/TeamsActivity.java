@@ -90,7 +90,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         // TODO 18/02/2020 - remove this and replace with teams from database.
 
         teams = new ArrayList<>();
-        Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
+        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901");
         League league = new League("league",owner,"SQUASH","fun league"); // stub league
         for (int i = 0; i < 20; i++) {
             teams.add(new Team("Team " + i, owner, "SQUASH",league));
