@@ -26,6 +26,7 @@ public class Storage {
 
     // constants to be used when updating fields of the database
 
+    // constants that should be used to update Leagues
     /** constant that should be used if the description of a league is being updated */
     public static final String LEAGUE_DESCRIPTION = "description";
 
@@ -40,6 +41,50 @@ public class Storage {
 
     /** constant that should be used if the teams of a league are being updated */
     public static final String LEAGUE_TEAMS = "teamsInfo";
+
+    // constants that should be used to update Teams
+    /** constant that should be used if the name of a team is being updated */
+    public static final String TEAM_NAME = "name";
+
+    /** constant that should be used if the sport of a team is being updated */
+    public static final String TEAM_SPORT = "sport";
+
+    /** constant that should be used if the members of a team are being updated */
+    public static final String TEAM_MEMBERS = "membersInfo";
+
+    /** constant that should be used if the owner of a team is being updated */
+    public static final String TEAM_OWNER = "ownerInfo";
+
+    /** constant that should be used if the wins of a team are being updated */
+    public static final String TEAM_WINS = "wins";
+
+    /** constant that should be used if the losses of a team are being updated */
+    public static final String TEAM_LOSSES = "losses";
+
+    /** constant that should be used if the ties of a team are being updated */
+    public static final String TEAM_TIES = "ties";
+
+    // TODO add fields that allow you to change games
+
+    // constants that should be used to update Members
+    /** constant that should be updated if the name of a member is being updated */
+    public static final String MEMBER_NAME = "displayName";
+
+    /** constant that should be updated if the email of a member is being updated */
+    public static final String MEMBER_EMAIL = "email";
+
+    /** constant that should be updated if the phone number of a member is being updated */
+    public static final String MEMBER_PHONE_NUMER = "phoneNumber";
+
+    /** constant that should be updated if the teams of a member are being updated */
+    public static final String MEMBER_TEAMS = "teamsInfo";
+
+    /** constant that should be updated if the leagues of a member are being updated */
+    public static final String MEMBER_LEAGUES = "leaguesInfo";
+
+
+
+
 
 
 

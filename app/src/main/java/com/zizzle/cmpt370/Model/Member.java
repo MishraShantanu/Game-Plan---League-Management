@@ -26,6 +26,9 @@ public class Member {
      */
     private String phoneNumber;
 
+    /** Unique ID identifying this user */
+    private String userID;
+
     /**
      * Teams the user belongs to.
      */
@@ -43,11 +46,13 @@ public class Member {
      * @param displayName: name of this user as displayed on the app
      * @param email:       email of member
      * @param phoneNumber: phone number of member
+     * @param userID:      unique identifier for this member
      */
-    public Member(String displayName, String email, String phoneNumber) {
+    public Member(String displayName, String email, String phoneNumber, String userID) {
         this.displayName = displayName;
         this.email = email;
         setPhoneNumber(phoneNumber);
+        this.userID = userID;
     }
 
     /**
@@ -77,6 +82,13 @@ public class Member {
         return email;
     }
 
+    /**
+     * Retrieves the user ID of this member
+     * @return String ID of this member
+     */
+    public String getUserID(){
+        return this.userID;
+    }
 
     /**
      * Retrieves the phone number of the user.

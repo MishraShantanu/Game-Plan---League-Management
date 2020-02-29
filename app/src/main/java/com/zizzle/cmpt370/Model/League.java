@@ -2,9 +2,7 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 
 /**
