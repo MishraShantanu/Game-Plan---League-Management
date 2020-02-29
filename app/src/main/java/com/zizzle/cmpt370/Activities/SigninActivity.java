@@ -31,10 +31,10 @@ public class SigninActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         mFirebaseAuth = FirebaseAuth.getInstance();
-        emailId = findViewById(R.id.editText3);
-        password = findViewById(R.id.editText4);
-        buttonSignIn = findViewById(R.id.button2);
-        tvSignUp = findViewById(R.id.textView3);
+        emailId = findViewById(R.id.Signin_Email);
+        password = findViewById(R.id.Signin_Password);
+        buttonSignIn = findViewById(R.id.Signin_Button);
+        tvSignUp = findViewById(R.id.Signin_HaveAccount);
 
         mAuthstatelistner = new FirebaseAuth.AuthStateListener() {
             @Override
