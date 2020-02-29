@@ -38,6 +38,9 @@ public class Storage {
     /** constant that should be used if the owner field of a league is being updated */
     public static final String LEAGUE_OWNER = "ownerInfo";
 
+    /** constant that should be used if the teams of a league are being updated */
+    public static final String LEAGUE_TEAMS = "teamsInfo";
+
 
 
 
@@ -49,10 +52,10 @@ public class Storage {
      * @return League object with the name input or null if no such league exists
      * @throws DatabaseException if the database read fails
      */
-    public static League readLeague(String leagueName) throws DatabaseException{
+    public static League readLeague(LeagueInfo leagueInfo) throws DatabaseException{
         // addListenerForSingleValueEvent reads from the database exactly once
 
-        database.child("Leagues").child(leagueName).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
@@ -77,15 +80,16 @@ public class Storage {
      * @throws DatabaseException if accessing the database fails
      */
     public static void writeLeague(final League newLeague) throws IllegalStateException, DatabaseException{
+        LeagueInfo newLeagueInfo = new LeagueInfo(newLeague);
         // determine if league name is unique in the database, try to read in a league with this name
-        if(readLeague(newLeague.getName())!=null){
+        if(readLeague(newLeagueInfo)!=null){
             // there is already a league with this league's name, cannot create a league with a duplicate name
             throw new IllegalStateException("League creation failed, league with name: " + newLeague.getName() + " already exists");
             // TODO: could also only enforce that a league name must be unique for a sport only, not globally
         }
         else{
             // this league has a unique name, write it to the database
-            database.child("Leagues").child(newLeague.getName()).setValue(newLeague);
+            database.child("Leagues").child(newLeagueInfo.getDatabaseKey()).setValue(newLeague);
         }
     }
 
@@ -203,6 +207,17 @@ public class Storage {
             database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newOwnerInfo);
             // also add this league to the new owner
             database.child("Users").child(newOwnerInfo.getDatabaseKey()).child("leagues").child(leagueInfo.getDatabaseKey()).setValue(leagueInfo);
+        }
+        else if(field.equals(LEAGUE_TEAMS)){
+            // expected input is a Team object
+            if(!(newValue instanceof Team)){
+                throw new InputMismatchException("Selected field requires a Team object input");
+            }
+            // update league on database to have this new team
+            TeamInfo newTeamInfo =  new TeamInfo((Team)newValue);
+            database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
+            // also add this league to the new team
+            database.child("Teams").child(newTeamInfo.getDatabaseKey()).child("leagueInfo").setValue(leagueInfo);
         }
         else{
             throw new IllegalArgumentException("Input field: " + field + " isn't recognized");

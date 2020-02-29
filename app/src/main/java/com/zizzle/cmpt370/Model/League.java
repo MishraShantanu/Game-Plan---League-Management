@@ -108,11 +108,12 @@ public class League {
 
     /**
      * Transfer ownership to the new owner provided.
-     * @param ownerInfo: Info object describing the new owner of the league.
+     * @param newOwner: Member object describing the new owner of the league.
      */
-    public void setOwner(MemberInfo ownerInfo) {
-        this.ownerInfo = ownerInfo;
-        // TODO update database to reflect this new owner
+    public void setOwner(Member newOwner) {
+        this.ownerInfo = new MemberInfo(newOwner);
+        // update database to reflect this new owner
+        Storage.updateLeagueField(this,Storage.LEAGUE_OWNER,newOwner);
     }
 
 
@@ -122,7 +123,8 @@ public class League {
      */
     public void setSport(String sport) {
         this.sport = sport;
-        // TODO update database to reflect new sport
+        // update database to reflect this new sport
+        Storage.updateLeagueField(this,Storage.LEAGUE_SPORT,sport);
     }
 
 
@@ -132,7 +134,8 @@ public class League {
      */
     public void setDescription(String description) {
         this.description = description;
-        // TODO update database to reflect new description
+        // update the database to reflect the new description
+        Storage.updateLeagueField(this,Storage.LEAGUE_DESCRIPTION,description);
     }
 
 
