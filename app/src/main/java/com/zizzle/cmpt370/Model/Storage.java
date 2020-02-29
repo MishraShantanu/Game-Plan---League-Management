@@ -164,6 +164,11 @@ public class Storage {
     }
 
 
+    /**
+     * Adds the input team to the database, this team is also added to its parent league, and any members
+     * present on this team have their database entries updated to reflect this new team
+     * @param newTeam: Team to be added to the database
+     */
     public static void writeTeam(Team newTeam){
         // assume newTeam already has a unique name for the league it's in
         // use a TeamInfo object to get the key to store the Team with
@@ -176,7 +181,7 @@ public class Storage {
 
         // add this new team to each member of the team on the database
         for(MemberInfo currentMemberInfo : newTeam.getTeamMembersInfo()){
-            database.child("Users").child("teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
+            database.child("users").child("teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
         }
     }
 
@@ -188,7 +193,7 @@ public class Storage {
     public static void writeMember(Member member){
         // new member is added at the path /Users/memberEmail/
         // assume the member being added has a unique email address
-        database.child("Users").child(member.getEmail()).setValue(member);
+        database.child("users").child(member.getUserID()).setValue(member);
         // TODO if member is part of any teams, add these to the new member on database
     }
 
@@ -202,7 +207,7 @@ public class Storage {
      */
     public static Member readMember(MemberInfo info) throws DatabaseException{
         // the singleValueEvent listener will read from the database exactly once
-        database.child("Users").child(info.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener(){
+        database.child("users").child(info.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
@@ -268,5 +273,20 @@ public class Storage {
             throw new IllegalArgumentException("Input field: " + field + " isn't recognized");
         }
     }
+
+    /**
+     * Updates the specified field of the input team on the database
+     * @param team: Team object, team to be updated on the database
+     * @param field: 
+     * @param newValue
+     * @throws InputMismatchException
+     * @throws IllegalArgumentException
+     */
+    public static void updateTeamField(Team team, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
+
+
+
+    }
+
 
 }
