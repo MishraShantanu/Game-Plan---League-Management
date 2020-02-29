@@ -111,13 +111,18 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // Team object that was clicked.
+                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
                 startActivity(new Intent(TeamsActivity.this, TeamActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                Toast.makeText(TeamsActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

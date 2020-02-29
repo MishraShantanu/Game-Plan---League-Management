@@ -106,7 +106,10 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // League object that was clicked.
+                League clickedLeague = (League) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the leagues array. can be used such as:
                 // leagues.get(listItemPosition)
@@ -116,7 +119,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeague.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
