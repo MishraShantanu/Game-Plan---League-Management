@@ -53,6 +53,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         //TODO Feb. 29, 2020: change this to get member from the database
         Member user = new Member("Larry Page", "larrypage@google.com", "18008008008");
 
+        // Set the title of the page to user name.
+        getSupportActionBar().setTitle(user.getDisplayName() + " Information");
 
         // DisplayName Text ==========================================================================
         TextView userName = (TextView) findViewById(R.id.Profile_DisplayName);
@@ -72,14 +74,12 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         updateInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO 29/02/2020 POPUP to change data (and update in database too)
-                Toast.makeText(ProfileActivity.this, "Info is Permanent, cannot change!", Toast.LENGTH_SHORT).show();
+                startActivity( new Intent(ProfileActivity.this, ProfilePop.class));
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
-
-
     }
+
 
     //When item is selected in the menu, open the respective element (fragment or activity)
     @Override
