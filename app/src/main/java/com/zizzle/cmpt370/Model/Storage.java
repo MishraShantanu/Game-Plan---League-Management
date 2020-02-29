@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.InputMismatchException;
+
 
 /**
  * Static class used to read/write from database
@@ -21,6 +23,24 @@ public class Storage {
     private static Member retrievedMember;
     /** Stores the team read in, we require this to overcome scoping issues */
     private static Team retrievedTeam;
+
+    // constants to be used when updating fields of the database
+
+    /** constant that should be used if the description of a league is being updated */
+    public static final String LEAGUE_DESCRIPTION = "description";
+
+    /** constant that should be used if the sport of a league is being updated */
+    public static final String LEAGUE_SPORT = "sport";
+
+    /** constant that should be used if the name field of a league is being updated */
+    public static final String LEAGUE_NAME = "name";
+
+    /** constant that should be used if the owner field of a league is being updated */
+    public static final String LEAGUE_OWNER = "ownerInfo";
+
+
+
+
 
 
     /**
@@ -151,5 +171,42 @@ public class Storage {
     }
 
     // TODO method to add a member to a team and league on the database, if a user joins a team, this team must also be added to the member on the database
+
+    /**
+     * Updates a League's data on the database
+     * @param league: league to update
+     * @param field: field or attribute of the league to update, these should be one of the constants defined above, LEAGUE_OWNER for example
+     * @param newValue: new value for this field or attribute to take, must be an appropriate type for the field being updated
+     * @throws InputMismatchException if newValue is an invalid type, for example if updating the owner field, a Member object is expected
+     * @throws IllegalArgumentException if field input isn't one of the defined constants
+     */
+    public static void updateLeagueField(League league, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
+        LeagueInfo leagueInfo = new LeagueInfo(league);
+        // ensure the input field is valid
+        if(field.equals(LEAGUE_NAME) || field.equals(LEAGUE_DESCRIPTION) || field.equals(LEAGUE_SPORT)){
+            // we want to update a String field, make sure newValue is a String
+            if(! (newValue instanceof String)){
+                // invalid input for these fields
+                throw new InputMismatchException("Selected field requires String input");
+            }
+            // add this new field to the database
+            database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newValue);
+        }
+        else if(field.equals(LEAGUE_OWNER)){
+            // expected input is a Member object
+            if(!(newValue instanceof Member)){
+                // invalid type of input for this field
+                throw new InputMismatchException("Selected field requires Member object input");
+            }
+            // update database to have this new member, add MemberInfo where required
+            MemberInfo newOwnerInfo = new MemberInfo((Member)newValue);
+            database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newOwnerInfo);
+            // also add this league to the new owner
+            database.child("Users").child(newOwnerInfo.getDatabaseKey()).child("leagues").child(leagueInfo.getDatabaseKey()).setValue(leagueInfo);
+        }
+        else{
+            throw new IllegalArgumentException("Input field: " + field + " isn't recognized");
+        }
+    }
 
 }

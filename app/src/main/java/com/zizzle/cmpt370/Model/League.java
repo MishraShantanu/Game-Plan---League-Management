@@ -3,6 +3,8 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -23,10 +25,9 @@ public class League {
     private String description;
 
     /**
-     * Teams involved in the league. This also acts as the standings for teams
-     * with the teams sorted from best to worst.
+     * Teams involved in the league.
      */
-    private ArrayList<TeamInfo> teamInfo; // TODO convert this to a set
+    private HashSet<TeamInfo> teamsInfo; // set is used so database fields can easily be updated
 
 
     /**
@@ -41,7 +42,7 @@ public class League {
         this.ownerInfo = new MemberInfo(owner);
         this.sport = sport;
         this.description = description;
-        this.infoList = new ArrayList<>();
+        this.teamsInfo = new HashSet<>();
     }
 
     /**
@@ -73,7 +74,7 @@ public class League {
      */
     public Member getOwner() {
         // read the owner in from the database using ownerInfo
-
+        return Storage.readMember(ownerInfo);
     }
 
 
@@ -95,7 +96,7 @@ public class League {
      * Retrieves a list of TeamInfo objects for the teams of the league
      * @return list of TeamInfo for the teams in the league.
      */
-    public ArrayList<TeamInfo> getTeamInfoList() { return infoList; }
+    public HashSet<TeamInfo> getTeamInfos() { return teamsInfo; }
 
 
     /**
@@ -107,40 +108,49 @@ public class League {
 
     /**
      * Transfer ownership to the new owner provided.
-     * @param owner: New owner of the league.
+     * @param ownerInfo: Info object describing the new owner of the league.
      */
-    public void setOwner(Member owner) { this.owner = owner; }
+    public void setOwner(MemberInfo ownerInfo) {
+        this.ownerInfo = ownerInfo;
+        // TODO update database to reflect this new owner
+    }
 
 
     /**
      * Set the sport the league plays to one provided.
      * @param sport: Name of the sport.
      */
-    public void setSport(String sport) { this.sport = sport; }
+    public void setSport(String sport) {
+        this.sport = sport;
+        // TODO update database to reflect new sport
+    }
 
 
     /**
      * Set the description to the one provided.
      * @param description: String of the new team description.
      */
-    public void setDescription(String description) { this.description = description; }
+    public void setDescription(String description) {
+        this.description = description;
+        // TODO update database to reflect new description
+    }
 
 
     /**
      * Add a team to the league.
      * @param team: Team to be added, team must have a unique name for this league
-     * @throws IllegalArgumentException if the input team doesn't have a unique name in this league
+     * @throws IllegalStateException if the input team doesn't have a unique name in this league
      */
-    public void addTeam(Team team) throws IllegalArgumentException{
+    public void addTeam(Team team) throws IllegalStateException, IllegalArgumentException{
         // represent this team with a TeamInfo object
         TeamInfo newTeamInfo = new TeamInfo(team);
         // ensure that the new team is unique in this league, if the TeamInfo for this new team is
         // unique, the team must be unique
-        if(this.infoList.contains(newTeamInfo)){
+        if(this.teamsInfo.contains(newTeamInfo)){
             // team name isn't unique
             throw new IllegalArgumentException("Team: " + team.getName() + " cannot be added to league: " + this.getName() + " another team with this name already exists");
         }
-        // TODO write team object to database, update league in database to contain this TeamInfo, use addChild() etc
+        // TODO write team object to database, update league in database to contain this TeamInfo
     }
 
 
@@ -154,9 +164,9 @@ public class League {
         // TODO make sure that team to be removed has no members except the owner, need to read in Team off the database
         // TODO could also remove all members from team once team is to be removed
         // delete TeamInfo from league locally
-        for (TeamInfo teamInfo : infoList) {
-            if (teamInfo.getName().equals(teamName)) {
-                infoList.remove(teamInfo);
+        for (TeamInfo currentInfo : teamsInfo) {
+            if (currentInfo.getName().equals(teamName)) {
+                teamsInfo.remove(currentInfo);
                 // TODO remove TeamInfo from league on the database
                 // TODO remove Team from the database
             }
@@ -181,11 +191,11 @@ public class League {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("League Name: " + this.name + "\n");
-        sb.append("Owner: " + this.owner.getFirstName() + " " + this.owner.getLastName() + "\n");
+        sb.append("Owner: " + this.ownerInfo.getName() + "\n");
         sb.append("Sport: " + this.sport + "\n");
         sb.append("Description: " + this.description + "\n");
         sb.append("Teams:");
-        for (TeamInfo teamInfo : this.infoList) {
+        for (TeamInfo teamInfo : this.teamsInfo) {
             sb.append("\n\t" + teamInfo.getName());
         }
         return sb.toString();

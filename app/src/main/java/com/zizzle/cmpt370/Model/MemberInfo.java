@@ -22,6 +22,17 @@ public class MemberInfo implements InfoInterface{
         memberKey = member.getEmail();
     }
 
+    /**
+     * Creates a MemberInfo object using the input fields
+     * @param name: String name of some Member
+     * @param email: String email address of this Member
+     */
+    public MemberInfo(String name, String email){
+        memberName = name;
+        memberKey = email;
+
+    }
+
     public String getName(){
         return memberName;
     }

@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 /**
@@ -17,7 +18,7 @@ public class Team {
     private String sport;
 
     /** Members of the team */
-    private ArrayList<Member> members;
+    private HashSet<Member> members;
 
     /** Games previously played by the team, this list is ordered so games towards the front of the
      * list are more recent than those at the back */
@@ -55,7 +56,7 @@ public class Team {
     public Team(String name, Member owner, String sport, League league) throws IllegalArgumentException{
         this.league = league;
         // make sure the team name is unique to this league
-        for (Team team : this.league.getTeams()){
+        for (TeamInfo team : this.league.getTeamInfos()){
             if(team.getName().equals(name)){
                 // new name isn't unique for the league
                 throw new IllegalArgumentException("Team name: " + name + " isn't unique in league: " + league);
@@ -102,6 +103,10 @@ public class Team {
      */
     public League getLeague(){
         return this.league;
+    }
+
+    public LeagueInfo getLeagueInfo(){
+        return this.leagueInfo;
     }
 
     /**
@@ -191,7 +196,7 @@ public class Team {
      * Returns an array of the members of the team
      * @return Member[], array of members of the team
      */
-    public Member[] getTeamMembers(){
+    public Member[] getTeamMembersInfo(){
         return this.members.toArray(new Member[this.members.size()]);
     }
 
