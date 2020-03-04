@@ -2,9 +2,9 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 
 /**
@@ -27,7 +27,7 @@ public class League {
     /**
      * Teams involved in the league.
      */
-    private HashSet<TeamInfo> teamsInfo; // set is used so database fields can easily be updated
+    private ArrayList<TeamInfo> teamsInfo;
 
 
     /**
@@ -42,7 +42,7 @@ public class League {
         this.ownerInfo = new MemberInfo(owner);
         this.sport = sport;
         this.description = description;
-        this.teamsInfo = new HashSet<>();
+        this.teamsInfo = new ArrayList<>();
     }
 
     /**
@@ -96,7 +96,7 @@ public class League {
      * Retrieves a list of TeamInfo objects for the teams of the league
      * @return list of TeamInfo for the teams in the league.
      */
-    public HashSet<TeamInfo> getTeamInfos() { return teamsInfo; }
+    public ArrayList<TeamInfo> getTeamInfos() { return teamsInfo; }
 
 
     /**
