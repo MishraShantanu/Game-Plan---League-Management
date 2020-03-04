@@ -87,7 +87,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
         leagues = new ArrayList<>();
 
-        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901");
+        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901","UID8947293809");
         for (int i = 0; i < 20; i++) {
             leagues.add(new League("League " + i, owner, "SQUASH", "description"));
         }

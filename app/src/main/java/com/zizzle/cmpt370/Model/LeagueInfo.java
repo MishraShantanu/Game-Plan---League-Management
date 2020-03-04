@@ -16,6 +16,13 @@ public class LeagueInfo implements InfoInterface{
         leagueName = league.getName();
     }
 
+    /**
+     * Blank constructor required for database
+     */
+    public LeagueInfo(){
+
+    }
+
     public String getName(){
         return leagueName;
     }

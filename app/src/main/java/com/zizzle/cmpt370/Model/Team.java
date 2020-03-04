@@ -18,7 +18,7 @@ public class Team {
     private String sport;
 
     /** Info about Members of the team */
-    private HashSet<MemberInfo> membersInfo;
+    private ArrayList<MemberInfo> membersInfo;
 
     /** Games previously played by the team, this list is ordered so games towards the front of the
      * list are more recent than those at the back */
@@ -69,7 +69,7 @@ public class Team {
         this.name = name;
         this.ownerInfo = new MemberInfo(owner);
         this.sport = sport;
-        this.membersInfo = new HashSet<>();
+        this.membersInfo = new ArrayList<>();
         // add the owner to the team, this also updates database
         setOwner(owner);
         this.wins = 0;
@@ -214,7 +214,7 @@ public class Team {
      * Returns a hashset of the members of the team
      * @return HashSet containing info of the members of the team
      */
-    public HashSet<MemberInfo> getTeamMembersInfo(){
+    public ArrayList<MemberInfo> getTeamMembersInfo(){
         // TODO this is dangerous as it returns a reference to an object attribute, should probably shallow clone this
         return this.membersInfo;
     }

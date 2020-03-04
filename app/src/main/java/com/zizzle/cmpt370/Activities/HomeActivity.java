@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
 
@@ -69,8 +71,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
 
         teams = new ArrayList<>();
-        Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341");
-        Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125");
+        Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341","uid12334");
+        Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125","uid543456");
         League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
 
         for (int i = 0; i < 20; i++) {

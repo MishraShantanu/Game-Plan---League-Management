@@ -31,7 +31,7 @@ public final class CurrentUser {
             }
             else{
                 // user is signed on, use the information stored by firebase to read from the database
-                MemberInfo currentUserInfo = new MemberInfo(fbUser.getDisplayName(),fbUser.getEmail());
+                MemberInfo currentUserInfo = new MemberInfo(fbUser.getDisplayName(),fbUser.getUid());
                 // read the currentMember from the database
                 currentUser = Storage.readMember(currentUserInfo);
                 if(currentUser==null){
