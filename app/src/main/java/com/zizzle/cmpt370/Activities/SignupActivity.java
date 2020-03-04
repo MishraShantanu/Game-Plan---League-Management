@@ -82,7 +82,7 @@ public class SignupActivity extends AppCompatActivity {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321","UID327846723");
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "12345678901","UID327846723");
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
