@@ -53,11 +53,12 @@ public class SigninActivity extends AppCompatActivity {
 
                 if (mfirebaseUser != null) {
                     Toast.makeText(SigninActivity.this, " You are  logged in", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(SigninActivity.this, homepageWithMenu.class);
-                    startActivity(i);
+                    Intent intoMain = new Intent(SigninActivity.this, homepageWithMenu.class);
+                    intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intoMain);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
                     Toast.makeText(SigninActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
-
                 }
             }
         };
@@ -86,7 +87,9 @@ public class SigninActivity extends AppCompatActivity {
 
                             } else {
                                 Intent intoMain = new Intent(SigninActivity.this, homepageWithMenu.class);
+                                intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
                         }
 
@@ -103,9 +106,16 @@ public class SigninActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent inSignUp = new Intent(SigninActivity.this, SignupActivity.class);
                 startActivity(inSignUp);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
+
+
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() { }
+
 
     @Override
     protected void onStart() {
