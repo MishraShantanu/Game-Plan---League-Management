@@ -109,10 +109,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
-        Member testOwner = new Member("jonny test","jhon@mail","13066999999","UID7865432456789");
-        League testWrite = new League("testWrite",testOwner,"testing","testing");
-        Storage.writeLeague(testWrite);
-        League testRead = Storage.readLeague(new LeagueInfo(testWrite));
 
 
     }
@@ -138,8 +134,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, SigninActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                Intent toLogOut = new Intent(this, SigninActivity.class);
+                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toLogOut);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -152,8 +150,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else{
-            super.onBackPressed();
         }
     }
 

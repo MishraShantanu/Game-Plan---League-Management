@@ -337,7 +337,7 @@ public class Storage {
      * @throws InputMismatchException if the type of newValue is invalid for the input field, for example updating the name of a member requires a string newValue
      * @throws IllegalArgumentException if the input field isn't one of the specified constants
      */
-    private static void updateMemberField(Member member, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
+    public static void updateMemberField(Member member, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
         MemberInfo memberInfo = new MemberInfo(member);
         if(field.equals(MEMBER_NAME) || field.equals(MEMBER_EMAIL) || field.equals(MEMBER_PHONE_NUMER)){
             // we expect String input for these fields

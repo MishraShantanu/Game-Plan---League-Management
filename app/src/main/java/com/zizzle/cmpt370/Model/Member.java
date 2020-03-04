@@ -125,7 +125,8 @@ public class Member {
      */
     public void setFirstName(String newName) {
         this.displayName = newName;
-        // TODO update this onto the database
+        // write changes through to the database
+        Storage.updateMemberField(this,Storage.MEMBER_NAME,newName);
     }
 
 
