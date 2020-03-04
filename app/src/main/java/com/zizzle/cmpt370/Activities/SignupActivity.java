@@ -79,7 +79,10 @@ public class SignupActivity extends AppCompatActivity {
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
-                                startActivity(new Intent(SignupActivity.this, homepageWithMenu.class));
+                                Intent intoMain = new Intent(SignupActivity.this, homepageWithMenu.class);
+                                intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intoMain);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                             }
                         }
@@ -95,9 +98,15 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(SignupActivity.this, SigninActivity.class);
                 startActivity(i);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
 
     }
+
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() { }
+
 }
