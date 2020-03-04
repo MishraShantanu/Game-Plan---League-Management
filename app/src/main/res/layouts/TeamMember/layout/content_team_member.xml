@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    android:overScrollMode="never"
+    android:paddingHorizontal="15dp"
+    android:scrollbars="none"
+    tools:context=".Activities.TeamMemberActivity"
+    tools:showIn="@layout/activity_profile">
+
+    <!--    Display Name    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_card"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Display Name"
+            android:textColor="@color/colorText"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/TeamMember_DisplayName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Text to Change"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+
+    <!--    Email    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_card"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Email"
+            android:textColor="@color/colorText"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/TeamMember_Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Text to Change"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+    <!--    Phone Number    -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_card"
+        android:orientation="vertical"
+        android:padding="22dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Phone Number"
+            android:textColor="@color/colorText"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/TeamMember_PhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Text to Change"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
