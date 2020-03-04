@@ -45,6 +45,7 @@ public class SigninActivity extends AppCompatActivity {
         buttonSignIn = findViewById(R.id.Signin_Button);
         tvSignUp = findViewById(R.id.Signin_HaveAccount);
 
+
         mAuthstatelistner = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
