@@ -48,7 +48,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
         // Temporary User created ==========================================================================
         //TODO Mar. 4 2020: change this to get member from the database
-        Member user = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311");
+        Member user = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311", "F");
 
         // Set the title of the page to user name.
         getSupportActionBar().setTitle(user.getDisplayName() + " Information");
