@@ -32,6 +32,13 @@ public class MemberInfo implements InfoInterface{
         memberKey = userID;
     }
 
+    /**
+     * Blank constructor required for database
+     */
+    public MemberInfo(){
+
+    }
+
     public String getName(){
         return memberName;
     }

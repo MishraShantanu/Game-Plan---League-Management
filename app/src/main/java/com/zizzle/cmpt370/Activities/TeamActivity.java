@@ -106,7 +106,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         members = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            members.add(new Member("Tod Manter", "mail", "12345678901"));
+            members.add(new Member("Tod Manter", "mail", "12345678901","uid733334"));
         }
 
 

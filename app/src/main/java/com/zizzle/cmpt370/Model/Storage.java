@@ -390,6 +390,7 @@ public class Storage {
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfo").child(memberToRemoveInfo.getDatabaseKey()).removeValue();
         // remove team from memberToRemove
         database.child("users").child(memberToRemoveInfo.getDatabaseKey()).child("teamsInfo").child(teamInfo.getDatabaseKey()).removeValue();
+        // TODO what happens if member isn't on the input team
     }
 
 

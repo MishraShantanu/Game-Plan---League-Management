@@ -3,7 +3,6 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 /**
@@ -32,12 +31,12 @@ public class Member {
     /**
      * Teams the user belongs to.
      */
-    private HashSet<TeamInfo> teamsInfo = new HashSet<>();
+    private ArrayList<TeamInfo> teamsInfo = new ArrayList<>();
 
     /**
      * Leagues the user belongs to.
      */
-    private HashSet<LeagueInfo> leaguesInfo = new HashSet<>();
+    private ArrayList<LeagueInfo> leaguesInfo = new ArrayList<>();
 
 
     /**
@@ -105,8 +104,7 @@ public class Member {
      *
      * @return HashSet containing TeamInfo objects of the teams the user is a part of
      */
-    public HashSet<TeamInfo> getTeamsInfo() {
-        // TODO could convert this to an arraylist
+    public ArrayList<TeamInfo> getTeamsInfo() {
         return teamsInfo;
     }
 
@@ -115,7 +113,7 @@ public class Member {
      * Retrieves info about the leagues the user belongs to.
      * @return HashSet containing LeagueInfo objects with infor about the leagues the user belongs to.
      */
-    public HashSet<LeagueInfo> getLeaguesInfo() {
+    public ArrayList<LeagueInfo> getLeaguesInfo() {
         return leaguesInfo;
     }
 
