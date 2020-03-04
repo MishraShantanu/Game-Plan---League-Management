@@ -198,7 +198,6 @@ public class Storage {
         // TODO if member is part of any teams, add these to the new member on database
     }
 
-    
 
 
     /**
@@ -329,6 +328,7 @@ public class Storage {
     }
 
     // TODO update functions can only add leagues, teams, members, require separate methods for removing these
+    // TODO refactor into individual functions for clarity
     /**
      * Updates the specified field of the input Member on the database, note that userID cannot be changed
      * @param member: Member object, member whose fields are being updated on the database
@@ -369,6 +369,27 @@ public class Storage {
             // invalid field specified
             throw new IllegalArgumentException("Field: " + field + " is invalid");
         }
+    }
+
+    /**
+     * Removes the input Member from the input team, the Member cannot be owner of this team, the input team
+     * is removed from the input member and the member is deleted from the team
+     * @param memberToRemove: Member object, member to be removed from the team
+     * @param team: Team object, team to remove member from
+     * @throws IllegalArgumentException if memberToRemove is the owner of the team, use removeTeamFromLeague()
+     * when this team has only an owner to remove the team
+     */
+    public static void removeMemberFromTeam(Member memberToRemove, Team team){
+        // memberToRemove cannot be removed if this member is the owner of the team
+        if(team.getOwner().equals(memberToRemove)){
+            throw new IllegalArgumentException("Cannot remove owner from team: " + team);
+        }
+        MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
+        TeamInfo teamInfo = new TeamInfo(team);
+        // remove memberToRemove from the input team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfo").child(memberToRemoveInfo.getDatabaseKey()).removeValue();
+        // remove team from memberToRemove
+        database.child("users").child(memberToRemoveInfo.getDatabaseKey()).child("teamsInfo").child(teamInfo.getDatabaseKey()).removeValue();
     }
 
 
