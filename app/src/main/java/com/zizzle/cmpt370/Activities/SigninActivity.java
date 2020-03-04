@@ -18,7 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.zizzle.cmpt370.R;
-import com.zizzle.cmpt370.Useless.homepageWithMenu;
 
 public class SigninActivity extends AppCompatActivity {
     EditText emailId, password;
@@ -52,12 +51,13 @@ public class SigninActivity extends AppCompatActivity {
                 FirebaseUser mfirebaseUser = mFirebaseAuth.getCurrentUser();
 
                 if (mfirebaseUser != null) {
-                    Toast.makeText(SigninActivity.this, " You are  logged in", Toast.LENGTH_SHORT).show();
-                    Intent intoMain = new Intent(SigninActivity.this, homepageWithMenu.class);
+                    Intent intoMain = new Intent(SigninActivity.this, HomeActivity.class);
                     intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intoMain);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                } else {
+                }
+
+                else {
                     Toast.makeText(SigninActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -69,24 +69,31 @@ public class SigninActivity extends AppCompatActivity {
                 String email = emailId.getText().toString();
                 String pass = password.getText().toString();
 
-                if (email.isEmpty()) {
-                    emailId.setError("Please enter an email address");
-                    emailId.requestApplyInsets();
-                } else if (pass.isEmpty()) {
-                    password.setError("Enter a password");
-                    password.requestFocus();
-
-                } else if (pass.isEmpty() && email.isEmpty()) {
+                if (pass.isEmpty() && email.isEmpty()) {
                     Toast.makeText(SigninActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                } else if (!(pass.isEmpty() && email.isEmpty())) {
+                }
+
+                else if (email.isEmpty()) {
+                    emailId.setError("Email address is required");
+                    emailId.requestApplyInsets();
+                }
+
+                else if (pass.isEmpty()) {
+                    password.setError("Password is required");
+                    password.requestFocus();
+                }
+
+                else if (!(pass.isEmpty() && email.isEmpty())) {
                     mFirebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(SigninActivity.this, "Login Error, Please try again..", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SigninActivity.this, "Combination of email and password is invalid", Toast.LENGTH_SHORT).show();
 
-                            } else {
-                                Intent intoMain = new Intent(SigninActivity.this, homepageWithMenu.class);
+                            }
+
+                            else {
+                                Intent intoMain = new Intent(SigninActivity.this, HomeActivity.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -95,8 +102,10 @@ public class SigninActivity extends AppCompatActivity {
 
                         ;
                     });
-                } else {
-                    Toast.makeText(SigninActivity.this, "Error Occurred..!!,try again..!!", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    Toast.makeText(SigninActivity.this, "Something went wrong, try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
