@@ -149,6 +149,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
+
+        else super.onBackPressed();
     }
 
     //Button to open menu

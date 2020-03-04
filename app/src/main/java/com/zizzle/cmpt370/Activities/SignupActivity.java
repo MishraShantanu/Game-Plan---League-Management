@@ -75,13 +75,14 @@ public class SignupActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
                                 Toast.makeText(SignupActivity.this, "Sign up was unsuccessful, please try again", Toast.LENGTH_SHORT).show();
+                                task.getException();
                             }
 
                             else {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321");
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "12345678901");
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
@@ -98,6 +99,8 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+
+
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,12 +109,5 @@ public class SignupActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-
-
     }
-
-    //When back button is pressed, we want to just close the menu, not close the activity
-    @Override
-    public void onBackPressed() { }
-
 }

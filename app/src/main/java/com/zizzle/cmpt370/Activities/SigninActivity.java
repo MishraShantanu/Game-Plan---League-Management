@@ -57,10 +57,6 @@ public class SigninActivity extends AppCompatActivity {
                     startActivity(intoMain);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
-
-                else {
-                    Toast.makeText(SigninActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
-                }
             }
         };
 
@@ -122,9 +118,6 @@ public class SigninActivity extends AppCompatActivity {
     }
 
 
-    //When back button is pressed, we want to just close the menu, not close the activity
-    @Override
-    public void onBackPressed() { }
 
 
     @Override
