@@ -10,8 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,9 +49,37 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
+        // Temporary User created ==========================================================================
+        //TODO Feb. 29, 2020: change this to get member from the database
+        Member user = new Member("Larry Page", "larrypage@google.com", "18008008008","UID6787894");
+
+        // Set the title of the page to user name.
+        getSupportActionBar().setTitle(user.getDisplayName() + " Information");
+
+        // DisplayName Text ==========================================================================
+        TextView userName = (TextView) findViewById(R.id.Profile_DisplayName);
+        userName.setText(user.getDisplayName());
+
+        // Email Text ==========================================================================
+        TextView email = (TextView) findViewById(R.id.Profile_Email);
+        email.setText(user.getEmail());
+
+        // Phone Number Text ==========================================================================
+        TextView phoneNumber = (TextView) findViewById(R.id.Profile_PhoneNumber);
+        phoneNumber.setText(user.getPhoneNumber());
 
 
+        // Update Info button ==========================================================================
+        Button updateInfoButton = findViewById(R.id.updateInfoButton);
+        updateInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity( new Intent(ProfileActivity.this, ProfilePop.class));
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+            }
+        });
     }
+
 
     //When item is selected in the menu, open the respective element (fragment or activity)
     @Override

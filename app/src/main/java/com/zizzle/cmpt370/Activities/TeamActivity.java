@@ -110,18 +110,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        // creates a ArrayList<String> from ArrayList<Team> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace teams with the the one from the database.
-
-        ArrayList<String> member_names = new ArrayList<>();
-        for (Member m : members) {
-            member_names.add(m.getDisplayName());
-        }
-
-
         // Display ListView contents.
-        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, member_names);
+        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, members);
         NonScrollableListView teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
@@ -134,11 +124,16 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // Member object that was clicked.
+                Member clickedMember = (Member) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
+
+                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getDisplayName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
