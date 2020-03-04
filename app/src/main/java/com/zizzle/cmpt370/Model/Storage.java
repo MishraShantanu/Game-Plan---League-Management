@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashSet;
 import java.util.InputMismatchException;
 
 
@@ -50,7 +51,7 @@ public class Storage {
     public static final String TEAM_SPORT = "sport";
 
     /** constant that should be used if the members of a team are being updated */
-    public static final String TEAM_MEMBERS = "membersInfo";
+    public static final String TEAM_MEMBER = "membersInfo";
 
     /** constant that should be used if the owner of a team is being updated */
     public static final String TEAM_OWNER = "ownerInfo";
@@ -272,20 +273,54 @@ public class Storage {
         else{
             throw new IllegalArgumentException("Input field: " + field + " isn't recognized");
         }
+        // TODO uncouple leagues from teams, and leagues from users, update league fields only, call a separate method to update team and user fields
     }
 
     /**
-     * Updates the specified field of the input team on the database
+     * Updates the specified field of the input team on the database, note that team members should only be added
+     * with the field TEAM_MEMBER, to remove team members use the removeTeamValue() function
      * @param team: Team object, team to be updated on the database
-     * @param field: 
-     * @param newValue
-     * @throws InputMismatchException
-     * @throws IllegalArgumentException
+     * @param field: String field of the team to be changed, should be one of the constants defined in this class, TEAM_NAME for example
+     * @param newValue: Object new value for the field being changed, this must have the proper type, for example if the members of a team are being updated
+     *                newValue should be a MemberInfo object
+     * @throws InputMismatchException if newValue has an invalid type for the field being changed
+     * @throws IllegalArgumentException if the input field isn't one of the specified constants
      */
     public static void updateTeamField(Team team, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
-
-
-
+        TeamInfo teamInfo = new TeamInfo(team);
+        if(field.equals(TEAM_NAME) || field.equals(TEAM_SPORT)){
+            // these fields require string values
+            if(!(newValue instanceof String)){
+                throw new InputMismatchException("Field: " + field + " requires String values");
+            }
+        }
+        else if(field.equals(TEAM_LOSSES) || field.equals(TEAM_TIES) || field.equals(TEAM_WINS)){
+            // these fields require Integer values
+            if(!(newValue instanceof Integer)){
+                throw new InputMismatchException("Field: " + field + " requires Integer values");
+            }
+        }
+        else if(field.equals(TEAM_MEMBER)){
+            // we expect a HashSet<MemberInfo> for this field
+            // attempt to cast newValue to the correct type, if this fails, newValue is invalid type
+            try{
+                HashSet<MemberInfo> newHashSet = (HashSet<MemberInfo>) newValue;
+            }catch (ClassCastException e){
+                throw new InputMismatchException("Field: " + field + " requires HashSet<MemberInfo>");
+            }
+        }
+        else if(field.equals(TEAM_OWNER)){
+            // we expect a MemberInfo object for this field
+            if(!(newValue instanceof MemberInfo)){
+                throw new InputMismatchException("Field: " + field + " requires MemberInfo values");
+            }
+        }
+        else{
+            // invalid field
+            throw new IllegalArgumentException("Input field: " + field + " is invalid");
+        }
+        // write new value to database
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
     }
 
 
