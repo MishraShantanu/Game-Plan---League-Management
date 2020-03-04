@@ -126,6 +126,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
 
+                startActivity(new Intent(TeamActivity.this, TeamMemberActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getDisplayName(), Toast.LENGTH_SHORT).show();
             }
         });
