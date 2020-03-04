@@ -50,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         // Temporary User created ==========================================================================
         //TODO Feb. 29, 2020: change this to get member from the database
-        Member user = new Member("Larry Page", "larrypage@google.com", "18008008008");
+        Member user = new Member("Larry Page", "larrypage@google.com", "18008008008","UID6787894");
 
         // Set the title of the page to user name.
         getSupportActionBar().setTitle(user.getDisplayName() + " Information");

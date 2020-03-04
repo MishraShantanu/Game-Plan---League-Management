@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashSet;
 import java.util.InputMismatchException;
 
 
@@ -26,6 +27,7 @@ public class Storage {
 
     // constants to be used when updating fields of the database
 
+    // constants that should be used to update Leagues
     /** constant that should be used if the description of a league is being updated */
     public static final String LEAGUE_DESCRIPTION = "description";
 
@@ -40,6 +42,50 @@ public class Storage {
 
     /** constant that should be used if the teams of a league are being updated */
     public static final String LEAGUE_TEAMS = "teamsInfo";
+
+    // constants that should be used to update Teams
+    /** constant that should be used if the name of a team is being updated */
+    public static final String TEAM_NAME = "name";
+
+    /** constant that should be used if the sport of a team is being updated */
+    public static final String TEAM_SPORT = "sport";
+
+    /** constant that should be used if the members of a team are being updated */
+    public static final String TEAM_MEMBER = "membersInfo";
+
+    /** constant that should be used if the owner of a team is being updated */
+    public static final String TEAM_OWNER = "ownerInfo";
+
+    /** constant that should be used if the wins of a team are being updated */
+    public static final String TEAM_WINS = "wins";
+
+    /** constant that should be used if the losses of a team are being updated */
+    public static final String TEAM_LOSSES = "losses";
+
+    /** constant that should be used if the ties of a team are being updated */
+    public static final String TEAM_TIES = "ties";
+
+    // TODO add fields that allow you to change games
+
+    // constants that should be used to update Members
+    /** constant that should be updated if the name of a member is being updated */
+    public static final String MEMBER_NAME = "displayName";
+
+    /** constant that should be updated if the email of a member is being updated */
+    public static final String MEMBER_EMAIL = "email";
+
+    /** constant that should be updated if the phone number of a member is being updated */
+    public static final String MEMBER_PHONE_NUMER = "phoneNumber";
+
+    /** constant that should be updated if the teams of a member are being updated */
+    public static final String MEMBER_TEAMS = "teamsInfo";
+
+    /** constant that should be updated if the leagues of a member are being updated */
+    public static final String MEMBER_LEAGUES = "leaguesInfo";
+
+
+
+
 
 
 
@@ -119,6 +165,11 @@ public class Storage {
     }
 
 
+    /**
+     * Adds the input team to the database, this team is also added to its parent league, and any members
+     * present on this team have their database entries updated to reflect this new team
+     * @param newTeam: Team to be added to the database
+     */
     public static void writeTeam(Team newTeam){
         // assume newTeam already has a unique name for the league it's in
         // use a TeamInfo object to get the key to store the Team with
@@ -131,7 +182,7 @@ public class Storage {
 
         // add this new team to each member of the team on the database
         for(MemberInfo currentMemberInfo : newTeam.getTeamMembersInfo()){
-            database.child("Users").child("teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
+            database.child("users").child("teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
         }
     }
 
@@ -143,9 +194,10 @@ public class Storage {
     public static void writeMember(Member member){
         // new member is added at the path /Users/memberEmail/
         // assume the member being added has a unique email address
-        database.child("Users").child(member.getEmail()).setValue(member);
+        database.child("users").child(member.getUserID()).setValue(member);
         // TODO if member is part of any teams, add these to the new member on database
     }
+
 
 
     /**
@@ -157,7 +209,7 @@ public class Storage {
      */
     public static Member readMember(MemberInfo info) throws DatabaseException{
         // the singleValueEvent listener will read from the database exactly once
-        database.child("Users").child(info.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener(){
+        database.child("users").child(info.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
@@ -181,7 +233,7 @@ public class Storage {
      * @param league: league to update
      * @param field: field or attribute of the league to update, these should be one of the constants defined above, LEAGUE_OWNER for example
      * @param newValue: new value for this field or attribute to take, must be an appropriate type for the field being updated
-     * @throws InputMismatchException if newValue is an invalid type, for example if updating the owner field, a Member object is expected
+     * @throws InputMismatchException if newValue is an invalid type, for example if updating the owner field, a MemberInfo object is expected
      * @throws IllegalArgumentException if field input isn't one of the defined constants
      */
     public static void updateLeagueField(League league, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
@@ -197,31 +249,149 @@ public class Storage {
             database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newValue);
         }
         else if(field.equals(LEAGUE_OWNER)){
-            // expected input is a Member object
-            if(!(newValue instanceof Member)){
+            // expected input is a MemberInfo object
+            if(!(newValue instanceof MemberInfo)){
                 // invalid type of input for this field
-                throw new InputMismatchException("Selected field requires Member object input");
+                throw new InputMismatchException("Selected field requires MemberInfo object input");
             }
             // update database to have this new member, add MemberInfo where required
-            MemberInfo newOwnerInfo = new MemberInfo((Member)newValue);
+            MemberInfo newOwnerInfo = (MemberInfo)newValue;
             database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newOwnerInfo);
-            // also add this league to the new owner
-            database.child("Users").child(newOwnerInfo.getDatabaseKey()).child("leagues").child(leagueInfo.getDatabaseKey()).setValue(leagueInfo);
         }
         else if(field.equals(LEAGUE_TEAMS)){
             // expected input is a Team object
-            if(!(newValue instanceof Team)){
-                throw new InputMismatchException("Selected field requires a Team object input");
+            if(!(newValue instanceof TeamInfo)){
+                throw new InputMismatchException("Selected field requires a TeamInfo object input");
             }
             // update league on database to have this new team
-            TeamInfo newTeamInfo =  new TeamInfo((Team)newValue);
+            TeamInfo newTeamInfo = (TeamInfo) newValue;
             database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
-            // also add this league to the new team
-            database.child("Teams").child(newTeamInfo.getDatabaseKey()).child("leagueInfo").setValue(leagueInfo);
         }
         else{
             throw new IllegalArgumentException("Input field: " + field + " isn't recognized");
         }
+        // TODO uncouple leagues from teams, and leagues from users, update league fields only, call a separate method to update team and user fields
+        // TODO may need to replace sets in objects with maps associating database ids with values
     }
+
+    /**
+     * Updates the specified field of the input team on the database, note that team members should only be added
+     * with the field TEAM_MEMBER, to remove team members use the removeTeamValue() function
+     * @param team: Team object, team to be updated on the database
+     * @param field: String field of the team to be changed, should be one of the constants defined in this class, TEAM_NAME for example
+     * @param newValue: Object new value for the field being changed, this must have the proper type, for example if the members of a team are being updated
+     *                newValue should be a MemberInfo object
+     * @throws InputMismatchException if newValue has an invalid type for the field being changed
+     * @throws IllegalArgumentException if the input field isn't one of the specified constants
+     */
+    public static void updateTeamField(Team team, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
+        // TODO: Allow teams to change to different leagues?
+        TeamInfo teamInfo = new TeamInfo(team);
+        if(field.equals(TEAM_NAME) || field.equals(TEAM_SPORT)){
+            // these fields require string values
+            if(!(newValue instanceof String)){
+                throw new InputMismatchException("Field: " + field + " requires String values");
+            }
+            // write our new value to the database
+            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
+        }
+        else if(field.equals(TEAM_LOSSES) || field.equals(TEAM_TIES) || field.equals(TEAM_WINS)){
+            // these fields require Integer values
+            if(!(newValue instanceof Integer)){
+                throw new InputMismatchException("Field: " + field + " requires Integer values");
+            }
+            // write new values to our database
+            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
+        }
+        else if(field.equals(TEAM_MEMBER)){
+            // we expect a HashSet<MemberInfo> for this field
+            // attempt to cast newValue to the correct type, if this fails, newValue is invalid type
+            if(!(newValue instanceof MemberInfo)){
+                throw new InputMismatchException("Field: " + field + " requires MemberInfo input");
+            }
+            // write new member to our database, here we need to create a new database entry for this member
+            MemberInfo newMemberinfo = (MemberInfo)newValue;
+            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).child(newMemberinfo.getDatabaseKey()).setValue(newValue);
+        }
+        else if(field.equals(TEAM_OWNER)){
+            // we expect a MemberInfo object for this field
+            if(!(newValue instanceof MemberInfo)){
+                throw new InputMismatchException("Field: " + field + " requires MemberInfo values");
+            }
+            // update owner field on the database
+            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
+        }
+        else{
+            // invalid field
+            throw new IllegalArgumentException("Input field: " + field + " is invalid");
+        }
+    }
+
+    // TODO update functions can only add leagues, teams, members, require separate methods for removing these
+    // TODO refactor into individual functions for clarity
+    /**
+     * Updates the specified field of the input Member on the database, note that userID cannot be changed
+     * @param member: Member object, member whose fields are being updated on the database
+     * @param field: String field of the member being changed, this should be one of the constants defined in this class
+     * @param newValue: Object, new value for the specified field
+     * @throws InputMismatchException if the type of newValue is invalid for the input field, for example updating the name of a member requires a string newValue
+     * @throws IllegalArgumentException if the input field isn't one of the specified constants
+     */
+    public static void updateMemberField(Member member, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
+        MemberInfo memberInfo = new MemberInfo(member);
+        if(field.equals(MEMBER_NAME) || field.equals(MEMBER_EMAIL) || field.equals(MEMBER_PHONE_NUMER)){
+            // we expect String input for these fields
+            if(!(newValue instanceof String)){
+                throw new InputMismatchException("Field: " + field + " requires String values");
+            }
+            // write newValue to database for this field
+            database.child("users").child(memberInfo.getDatabaseKey()).child(field).setValue(newValue);
+        }
+        else if(field.equals(MEMBER_LEAGUES)){
+            // we expect LeagueInfo input
+            if(!(newValue instanceof LeagueInfo)){
+                throw new InputMismatchException("Field: " + field + " requires LeagueInfo input");
+            }
+            // write this value to the database, create a new entry for this new league
+            LeagueInfo newLeagueInfo = (LeagueInfo) newValue;
+            database.child("users").child(memberInfo.getDatabaseKey()).child(field).child(newLeagueInfo.getDatabaseKey()).setValue(newValue);
+        }
+        else if(field.equals(MEMBER_TEAMS)){
+            // we expect TeamInfo input
+            if(!(newValue instanceof TeamInfo)){
+                throw new InputMismatchException("Field: " + field + " requires TeamInfo input");
+            }
+            // write this new value to our database, we need to create a new entry for this new team
+            TeamInfo newTeamInfo = (TeamInfo)newValue;
+            database.child("users").child(memberInfo.getDatabaseKey()).child(field).child(newTeamInfo.getDatabaseKey()).setValue(newValue);
+        }
+        else{
+            // invalid field specified
+            throw new IllegalArgumentException("Field: " + field + " is invalid");
+        }
+    }
+
+    /**
+     * Removes the input Member from the input team, the Member cannot be owner of this team, the input team
+     * is removed from the input member and the member is deleted from the team
+     * @param memberToRemove: Member object, member to be removed from the team
+     * @param team: Team object, team to remove member from
+     * @throws IllegalArgumentException if memberToRemove is the owner of the team, use removeTeamFromLeague()
+     * when this team has only an owner to remove the team
+     */
+    public static void removeMemberFromTeam(Member memberToRemove, Team team){
+        // memberToRemove cannot be removed if this member is the owner of the team
+        if(team.getOwner().equals(memberToRemove)){
+            throw new IllegalArgumentException("Cannot remove owner from team: " + team);
+        }
+        MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
+        TeamInfo teamInfo = new TeamInfo(team);
+        // remove memberToRemove from the input team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfo").child(memberToRemoveInfo.getDatabaseKey()).removeValue();
+        // remove team from memberToRemove
+        database.child("users").child(memberToRemoveInfo.getDatabaseKey()).child("teamsInfo").child(teamInfo.getDatabaseKey()).removeValue();
+        // TODO what happens if member isn't on the input team
+    }
+
 
 }

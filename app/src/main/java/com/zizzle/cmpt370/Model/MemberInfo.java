@@ -19,17 +19,23 @@ public class MemberInfo implements InfoInterface{
     public MemberInfo(Member member){
         memberName = member.getDisplayName(); // use first names for now, could extend to first and last names
         // a user's email must be unique, use this as a key into the database
-        memberKey = member.getEmail();
+        memberKey = member.getUserID();
     }
 
     /**
      * Creates a MemberInfo object using the input fields
      * @param name: String name of some Member
-     * @param email: String email address of this Member
+     * @param userID: String user ID of the user
      */
-    public MemberInfo(String name, String email){
+    public MemberInfo(String name, String userID){
         memberName = name;
-        memberKey = email;
+        memberKey = userID;
+    }
+
+    /**
+     * Blank constructor required for database
+     */
+    public MemberInfo(){
 
     }
 

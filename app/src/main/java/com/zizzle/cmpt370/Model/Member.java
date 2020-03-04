@@ -3,7 +3,6 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 /**
@@ -26,15 +25,18 @@ public class Member {
      */
     private String phoneNumber;
 
+    /** Unique ID identifying this user */
+    private String userID;
+
     /**
      * Teams the user belongs to.
      */
-    private HashSet<TeamInfo> teamsInfo = new HashSet<>();
+    private ArrayList<TeamInfo> teamsInfo = new ArrayList<>();
 
     /**
      * Leagues the user belongs to.
      */
-    private HashSet<LeagueInfo> leaguesInfo = new HashSet<>();
+    private ArrayList<LeagueInfo> leaguesInfo = new ArrayList<>();
 
 
     /**
@@ -43,11 +45,13 @@ public class Member {
      * @param displayName: name of this user as displayed on the app
      * @param email:       email of member
      * @param phoneNumber: phone number of member
+     * @param userID:      unique identifier for this member
      */
-    public Member(String displayName, String email, String phoneNumber) {
+    public Member(String displayName, String email, String phoneNumber, String userID) {
         this.displayName = displayName;
         this.email = email;
         setPhoneNumber(phoneNumber);
+        this.userID = userID;
     }
 
     /**
@@ -77,6 +81,13 @@ public class Member {
         return email;
     }
 
+    /**
+     * Retrieves the user ID of this member
+     * @return String ID of this member
+     */
+    public String getUserID(){
+        return this.userID;
+    }
 
     /**
      * Retrieves the phone number of the user.
@@ -93,8 +104,7 @@ public class Member {
      *
      * @return HashSet containing TeamInfo objects of the teams the user is a part of
      */
-    public HashSet<TeamInfo> getTeamsInfo() {
-        // TODO could convert this to an arraylist
+    public ArrayList<TeamInfo> getTeamsInfo() {
         return teamsInfo;
     }
 
@@ -103,7 +113,7 @@ public class Member {
      * Retrieves info about the leagues the user belongs to.
      * @return HashSet containing LeagueInfo objects with infor about the leagues the user belongs to.
      */
-    public HashSet<LeagueInfo> getLeaguesInfo() {
+    public ArrayList<LeagueInfo> getLeaguesInfo() {
         return leaguesInfo;
     }
 
@@ -115,7 +125,8 @@ public class Member {
      */
     public void setFirstName(String newName) {
         this.displayName = newName;
-        // TODO update this onto the database
+        // write changes through to the database
+        Storage.updateMemberField(this,Storage.MEMBER_NAME,newName);
     }
 
 

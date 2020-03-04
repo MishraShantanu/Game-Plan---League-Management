@@ -68,7 +68,7 @@ public class LeaguePop extends Activity {
 
                 else {
                     // TODO 24/02/2020 - Replace tempUser with the current user of the app.
-                    Member tempUser = new Member("Mike Tyson","BigMike@email.com","13066975541");
+                    Member tempUser = new Member("Mike Tyson","BigMike@email.com","13066975541","uid1064");
                     League newLeague = new League(nameOfLeague,tempUser,sportForLeague,descriptionOfLeague);
 
                     // add newLeague to the database

@@ -23,6 +23,13 @@ public class TeamInfo implements InfoInterface{
         teamKey = leagueName + "-" + teamName;
     }
 
+    /**
+     * Blank constructor required for database
+     */
+    public TeamInfo(){
+
+    }
+
     public String getName(){
         return teamName;
     }
