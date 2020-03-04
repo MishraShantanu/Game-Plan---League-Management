@@ -25,16 +25,16 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_team_member);
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
         //MENU (button & drawer)
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.profile_layout);
-        NavigationView navigationView = findViewById(R.id.profile_nav_view); //ADDED FOR CLICK
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.team_member_layout);
+        NavigationView navigationView = findViewById(R.id.team_member_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_profile); //Highlight respective option in the navigation menu
+        navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
 
         //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
@@ -48,7 +48,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
         // Temporary User created ==========================================================================
         //TODO Mar. 4 2020: change this to get member from the database
-        Member user = new Member("Bill Gates", "BigBill@soft.com", "78945612311");
+        Member user = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311");
 
         // Set the title of the page to user name.
         getSupportActionBar().setTitle(user.getDisplayName() + " Information");
@@ -66,6 +66,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
         phoneNumber.setText(user.getPhoneNumber());
 
 
+        //THIS WAS ON THE PROFILE PAGE, DON'T NEED NOW. BUT KEEP THIS SO THAT WE CAN EASILY ADD A BUTTON TO DO STUFF IF NEEDED
 //        // Update Info button ==========================================================================
 //        Button updateInfoButton = findViewById(R.id.updateInfoButton);
 //        updateInfoButton.setOnClickListener(new View.OnClickListener() {
