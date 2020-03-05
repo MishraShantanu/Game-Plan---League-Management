@@ -185,7 +185,7 @@ public class Member {
     public void removeTeam(Team teamToRemove) throws IllegalArgumentException {
         TeamInfo removeTeamInfo = new TeamInfo(teamToRemove);
         // make sure teamToRemove is part of the member's teams.
-        if(! this.teamsInfo.contains(teamToRemove)){
+        if(! this.teamsInfo.contains(removeTeamInfo)){
             throw new IllegalArgumentException("Team: " + teamToRemove.getName() + " to remove from member: "
                     + this.displayName + " isn't a member of the team");
         }
