@@ -104,9 +104,6 @@ public class Storage {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
-                if(true){
-                    throw new IllegalArgumentException(dataSnapshot.getKey());
-                }
                 retrievedLeague = dataSnapshot.getValue(League.class);
             }
 

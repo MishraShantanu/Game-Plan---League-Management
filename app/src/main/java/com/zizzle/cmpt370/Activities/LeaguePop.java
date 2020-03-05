@@ -86,6 +86,8 @@ public class LeaguePop extends Activity {
                     }
 
                     // create a new intent instead of using finish() so the user cannot go back to this popup
+                    // TODO take the user to a page for the newly created league, the user should be redirected to their
+                    // TODO new league's page after creating it.
                     Intent i = new Intent(LeaguePop.this,LeagueActivity.class);
                     startActivity(i);
                 }
