@@ -10,29 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.League;
-import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
-import com.zizzle.cmpt370.Model.Storage;
-import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
 
-import java.util.ArrayList;
-
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    /** Values inside ListView. */
-    ArrayList<Team> teams;
-
-    /** Adapter for displaying teams */
-    ArrayAdapter teamArrayAdapter;
+public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -41,19 +25,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
+        setContentView(R.layout.activity_team_member);
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
-        getSupportActionBar().setTitle("Home");
-
 
         //MENU (button & drawer)
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.home_layout);
-        NavigationView navigationView = findViewById(R.id.home_nav_view); //ADDED FOR CLICK
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.team_member_layout);
+        NavigationView navigationView = findViewById(R.id.team_member_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_home); //Highlight respective option in the navigation menu
+        navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
 
         //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
@@ -65,80 +46,67 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // list of teams =========================================================================
+        // Temporary User created ==========================================================================
+        //TODO Mar. 4 2020: change this to get member from the database
+        Member user = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311", "F");
 
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
+        // Set the title of the page to user name.
+        getSupportActionBar().setTitle(user.getDisplayName() + " Information");
 
-        teams = new ArrayList<>();
-        Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341","uid12334");
-        Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125","uid543456");
-        League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
+        // DisplayName Text ==========================================================================
+        TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
+        userName.setText(user.getDisplayName());
 
-        for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team-Name " + i, user, "Tennis", league));
-        }
+        // Email Text ==========================================================================
+        TextView email = (TextView) findViewById(R.id.TeamMember_Email);
+        email.setText(user.getEmail());
 
-
-        // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teams);
-        ListView teamList = findViewById(R.id.user_individual_teams_list);
-        teamList.setAdapter(teamArrayAdapter);
-
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /**
-             * performs an action when a ListView item is clicked.
-             *
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // Team object that was clicked.
-                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
-
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO Feb. 26, 2020 - Give ListView items functionality
-
-                startActivity(new Intent(HomeActivity.this, TeamActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Phone Number Text ==========================================================================
+        TextView phoneNumber = (TextView) findViewById(R.id.TeamMember_PhoneNumber);
+        phoneNumber.setText(user.getPhoneNumber());
 
 
+        //THIS WAS ON THE PROFILE PAGE, DON'T NEED NOW. BUT KEEP THIS SO THAT WE CAN EASILY ADD A BUTTON TO DO STUFF IF NEEDED
+//        // Update Info button ==========================================================================
+//        Button updateInfoButton = findViewById(R.id.updateInfoButton);
+//        updateInfoButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity( new Intent(TeamMemberActivity.this, ProfilePop.class));
+//                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+//            }
+//        });
     }
+
 
     //When item is selected in the menu, open the respective element (fragment or activity)
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                // already on home page, do nothing
+                Intent toHome = new Intent(this, HomeActivity.class);
+                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toHome);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
                 startActivity(new Intent(this, LeagueActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
                 startActivity(new Intent(this, ProfileActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
                 startActivity(new Intent(this, AboutUsActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
@@ -150,9 +118,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
-
-        else super.onBackPressed();
     }
 
     //Button to open menu

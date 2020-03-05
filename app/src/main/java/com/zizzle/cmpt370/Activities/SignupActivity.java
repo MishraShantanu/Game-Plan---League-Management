@@ -20,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
-import com.zizzle.cmpt370.Useless.homepageWithMenu;
 
 public class SignupActivity extends AppCompatActivity {
     EditText emailId, password, displayName;
@@ -55,16 +54,21 @@ public class SignupActivity extends AppCompatActivity {
                 final String email = emailId.getText().toString();
                 String pass = password.getText().toString();
 
-                if (email.isEmpty()) {
-                    emailId.setError("Please enter an email address");
-                    emailId.requestApplyInsets();
-                } else if (pass.isEmpty()) {
-                    password.setError("Enter a password");
-                    password.requestFocus();
-
-                } else if (pass.isEmpty() && email.isEmpty()) {
+                if (pass.isEmpty() && email.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                } else if (!(pass.isEmpty() && email.isEmpty())) {
+                }
+
+                else if (email.isEmpty()) {
+                    emailId.setError("Email address required");
+                    emailId.requestApplyInsets();
+                }
+
+                else if (pass.isEmpty()) {
+                    password.setError("Password required");
+                    password.requestFocus();
+                }
+
+                else if (!(pass.isEmpty() && email.isEmpty())) {
                     System.out.println(email);
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -80,7 +84,7 @@ public class SignupActivity extends AppCompatActivity {
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
-                                Intent intoMain = new Intent(SignupActivity.this, homepageWithMenu.class);
+                                Intent intoMain = new Intent(SignupActivity.this, HomeActivity.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -88,25 +92,20 @@ public class SignupActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Toast.makeText(SignupActivity.this, "ERROR occurred, please try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "Something went wrong, try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+
 
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(SignupActivity.this, SigninActivity.class);
                 startActivity(i);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
-
-
     }
-
-    //When back button is pressed, we want to just close the menu, not close the activity
-    @Override
-    public void onBackPressed() { }
-
 }
