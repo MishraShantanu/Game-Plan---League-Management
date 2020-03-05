@@ -71,11 +71,12 @@ public class SignupActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
                                 Toast.makeText(SignupActivity.this, "Sign up was unsuccessful, please try again", Toast.LENGTH_SHORT).show();
+
                             } else {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321","UID327846723");
+                                String newUserId = root.getKey();
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321",newUserId);
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();
@@ -83,7 +84,6 @@ public class SignupActivity extends AppCompatActivity {
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
                             }
                         }
                     });

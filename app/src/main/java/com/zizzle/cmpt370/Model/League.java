@@ -2,9 +2,7 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 /**
@@ -193,5 +191,23 @@ public class League {
     @NonNull
     public String toString() {
         return this.getName();
+    }
+
+    /**
+     * Determines if this League is equal to another object
+     * @param other: Object being compared to this league
+     * @return boolean true if other is equal to this league, false if other isn't equal to this league
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof League){
+            // compare league fields, equal leagues have same: name, sport, description, teams, and owner
+            League otherLeague = (League) other;
+            boolean teamsEqual = this.teamsInfo.equals(otherLeague.getTeamInfos());
+            boolean ownerEqual = this.ownerInfo.equals(otherLeague.getOwnerInfo());
+            return teamsEqual && ownerEqual && this.description.equals(otherLeague.description) && this.name.equals(otherLeague.name) && this.sport.equals(otherLeague.sport);
+        }
+        // other isn't a league, cannot be equal to this league
+        return false;
     }
 }
