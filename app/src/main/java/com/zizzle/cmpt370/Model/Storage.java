@@ -100,10 +100,13 @@ public class Storage {
     public static League readLeague(LeagueInfo leagueInfo) throws DatabaseException{
         // addListenerForSingleValueEvent reads from the database exactly once
 
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
+                if(true){
+                    throw new IllegalArgumentException(dataSnapshot.getKey());
+                }
                 retrievedLeague = dataSnapshot.getValue(League.class);
             }
 

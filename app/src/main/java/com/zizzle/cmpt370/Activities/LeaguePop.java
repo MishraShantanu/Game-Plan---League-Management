@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -83,14 +84,10 @@ public class LeaguePop extends Activity {
                         // this exception is thrown if database operations fail, nothing we can do except try again
                         Toast.makeText(LeaguePop.this, "Failed to create league, please try again", Toast.LENGTH_SHORT).show();
                     }
-                    // TODO cannot add league to database if it has teams, probably an infinite nesting issue
 
-
-
-
-                    // TODO 24/02/2020 - Insert new league into league list, send to database.
-
-                    finish();
+                    // create a new intent instead of using finish() so the user cannot go back to this popup
+                    Intent i = new Intent(LeaguePop.this,LeagueActivity.class);
+                    startActivity(i);
                 }
             }
         });
