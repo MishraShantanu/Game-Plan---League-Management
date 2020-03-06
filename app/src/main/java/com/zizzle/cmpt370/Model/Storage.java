@@ -8,7 +8,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashSet;
 import java.util.InputMismatchException;
 
 
@@ -101,10 +100,13 @@ public class Storage {
     public static League readLeague(LeagueInfo leagueInfo) throws DatabaseException{
         // addListenerForSingleValueEvent reads from the database exactly once
 
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
+                if(true){
+                    throw new IllegalArgumentException(dataSnapshot.getKey());
+                }
                 retrievedLeague = dataSnapshot.getValue(League.class);
             }
 
@@ -224,6 +226,18 @@ public class Storage {
         });
         // return the member read from the database, may be null if there is no member corresponding to the input info
         return retrievedMember;
+    }
+
+
+    public static void addTeamToLeague(League league, Team newTeam){
+        LeagueInfo leagueInfo = new LeagueInfo(league);
+        TeamInfo newTeamInfo = new TeamInfo(newTeam);
+        // determine length of the list of teams for this league, add new league to the end of this list
+        // assume the team has been added to this league locally
+        Integer arrayKey = (Integer) league.getTeamInfos().size()-1;
+        String arrayKeyString = arrayKey.toString();
+        // TODO race condition if 2 users call this function at the same time, both read same arrayKey and clobber each other
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfo").child(arrayKeyString).setValue(newTeamInfo);
     }
 
     // TODO method to add a member to a team and league on the database, if a user joins a team, this team must also be added to the member on the database

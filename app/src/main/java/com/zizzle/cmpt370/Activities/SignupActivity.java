@@ -75,14 +75,12 @@ public class SignupActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
                                 Toast.makeText(SignupActivity.this, "Sign up was unsuccessful, please try again", Toast.LENGTH_SHORT).show();
-                                task.getException();
-                            }
 
-                            else {
+                            } else {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "12345678901","UID327846723");
+                                String newUserId = root.getKey();
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321",newUserId);
                                 root.setValue(member);
                                 System.out.println(member.toString());
                                 root.push();

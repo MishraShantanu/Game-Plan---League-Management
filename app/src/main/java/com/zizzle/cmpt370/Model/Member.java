@@ -185,7 +185,7 @@ public class Member {
     public void removeTeam(Team teamToRemove) throws IllegalArgumentException {
         TeamInfo removeTeamInfo = new TeamInfo(teamToRemove);
         // make sure teamToRemove is part of the member's teams.
-        if(! this.teamsInfo.contains(teamToRemove)){
+        if(! this.teamsInfo.contains(removeTeamInfo)){
             throw new IllegalArgumentException("Team: " + teamToRemove.getName() + " to remove from member: "
                     + this.displayName + " isn't a member of the team");
         }
@@ -236,5 +236,24 @@ public class Member {
     @NonNull
     public String toString() {
         return this.getDisplayName();
+    }
+
+    /**
+     * Determines if this is equal to the input object
+     * @param other: Object being compared to this League
+     * @return true if this is equal to other, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof Member){
+            // compare Member fields, equal members should have equal names, email, phone number, user ids, teams and leagues
+            Member otherMember = (Member)other;
+            boolean teamsEqual = this.teamsInfo.equals(otherMember.teamsInfo);
+            boolean leaguesEqual = this.leaguesInfo.equals(otherMember.leaguesInfo);
+            return teamsEqual && leaguesEqual && this.userID.equals(otherMember.userID) &&
+                    this.displayName.equals(otherMember.displayName) && this.email.equals(otherMember.email) && this.phoneNumber.equals(otherMember.phoneNumber);
+        }
+        // other isn't a member, cannot be equal to a member
+        return false;
     }
 }

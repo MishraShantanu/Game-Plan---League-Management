@@ -21,8 +21,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -30,7 +38,7 @@ import java.util.ArrayList;
 public class LeagueActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<League> leagues;
+    ArrayList<String> leagueNames;
 
     /** Adapter for search bar. */
     ArrayAdapter leagueArrayAdapter;
@@ -85,16 +93,35 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // TESTING - generates a list of leagues for testing the displaying functionality.
         // TODO 18/02/2020 - remove this and replace with leagues from datebase.
 
-        leagues = new ArrayList<>();
+        leagueNames = new ArrayList<>();
 
-        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901","UID8947293809");
-        for (int i = 0; i < 20; i++) {
-            leagues.add(new League("League " + i, owner, "SQUASH", "description"));
-        }
+        // get a reference to the leagues on the database
+        // NOTE: this will give all leagues created by anybody, NOT leagues the current user is a part of
+        DatabaseReference leagueDBReference = FirebaseDatabase.getInstance().getReference().child("Leagues");
+
+        // attaching this listener will read from the database once initially and whenever leagues on the database are changed.
+        leagueDBReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // method called when data is read from the database, get all league names
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    // the key of each league is the league's name
+                    String leagueName = ds.getKey();
+                    leagueNames.add(leagueName);
+                    leagueArrayAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // TODO operation couldn't be completed, diplay some information to user
+
+            }
+        });
 
 
         // Display ListView contents.
-        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, leagues);
+        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, leagueNames);
         ListView leagueList = findViewById(R.id.leagues_list);
         leagueList.setAdapter(leagueArrayAdapter);
 
@@ -109,8 +136,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-                // League object that was clicked.
-                League clickedLeague = (League) parent.getAdapter().getItem(listItemPosition);
+                // name of the league that was clicked.
+                final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the leagues array. can be used such as:
                 // leagues.get(listItemPosition)
@@ -120,7 +147,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeague.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeagueName, Toast.LENGTH_SHORT).show();
+                // TODO can read in the league clicked using Storage.readLeague()
             }
         });
 

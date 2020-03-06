@@ -17,6 +17,15 @@ public class LeagueInfo implements InfoInterface{
     }
 
     /**
+     * Creates a LeagueInfo object with the input league name, this should correspond to
+     * an actual league
+     * @param leagueName: String name of the league being represented
+     */
+    public LeagueInfo(String leagueName){
+        this.leagueName = leagueName;
+    }
+
+    /**
      * Blank constructor required for database
      */
     public LeagueInfo(){
