@@ -110,8 +110,7 @@ public class League {
      */
     public void setOwner(Member newOwner) {
         this.ownerInfo = new MemberInfo(newOwner);
-        // update database to reflect this new owner
-        Storage.updateLeagueField(this,Storage.LEAGUE_OWNER,newOwner);
+        // TODO update database to reflect this new owner
     }
 
 
@@ -121,8 +120,7 @@ public class League {
      */
     public void setSport(String sport) {
         this.sport = sport;
-        // update database to reflect this new sport
-        Storage.updateLeagueField(this,Storage.LEAGUE_SPORT,sport);
+        // TODO update database to reflect this new sport
     }
 
 
@@ -132,8 +130,7 @@ public class League {
      */
     public void setDescription(String description) {
         this.description = description;
-        // update the database to reflect the new description
-        Storage.updateLeagueField(this,Storage.LEAGUE_DESCRIPTION,description);
+        // TODO update the database to reflect the new description
     }
 
 

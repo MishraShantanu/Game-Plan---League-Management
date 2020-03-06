@@ -2,6 +2,8 @@ package com.zizzle.cmpt370.Model;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Uses the singleton pattern to store a Member object with information about the current user of the app

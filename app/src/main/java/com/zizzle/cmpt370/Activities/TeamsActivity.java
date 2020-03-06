@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,9 +23,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -32,7 +39,7 @@ import java.util.ArrayList;
 public class TeamsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<Team> teams;
+    ArrayList<TeamInfo> teams;
 
     /** Adapter for search bar. */
     ArrayAdapter teamArrayAdapter;
@@ -51,9 +58,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         // add top bar with title 'Teams'
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
-
-        // TODO 24/02/2020 - Set title to the current team.
-        getSupportActionBar().setTitle("Cool League");
 
         //MENU (button & drawer)
         menuDrawer = findViewById(R.id.teams_layout);
@@ -85,15 +89,42 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
 
         // list of teams =========================================================================
-
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO 18/02/2020 - remove this and replace with teams from database.
-
+        // initialize the list of teams with an empty array list, this empty list is displayed in the case of database errors
+        // and while waiting for values to be read from the database
         teams = new ArrayList<>();
-        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901","UID88887");
-        League league = new League("league",owner,"SQUASH","fun league"); // stub league
-        for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team " + i, owner, "SQUASH",league));
+
+        // get the name of the league the user clicked on
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            // data wasn't passed between activities, for now print out an error message
+            Toast.makeText(TeamsActivity.this, "clicked league name wasn't passed to this activity", Toast.LENGTH_SHORT).show();
+            // TODO what to do about this error?
+        }
+        else{
+            String selectedLeague = extras.getString("LEAGUE_CLICKED");
+            // set title to that of the clicked on league
+            getSupportActionBar().setTitle(selectedLeague);
+
+            // read the selectedLeague in from the database
+            Log.d("LeagueClicked",selectedLeague);
+            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
+            // this will read from the database once and whenever the selected league is updated
+            leagueReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // called to read data from the database, data is read asynchronously
+                    League currentLeague = dataSnapshot.getValue(League.class);
+                    Log.d("currentLeague",currentLeague.toString());
+                    // list the teams of this league
+                    teams = currentLeague.getTeamInfos();
+                    teamArrayAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
 
 

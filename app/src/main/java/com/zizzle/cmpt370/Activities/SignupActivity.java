@@ -76,10 +76,8 @@ public class SignupActivity extends AppCompatActivity {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference root = database.getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                 String newUserId = root.getKey();
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "987654321",newUserId);
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "98765432111",newUserId);
                                 root.setValue(member);
-                                System.out.println(member.toString());
-                                root.push();
                                 Intent intoMain = new Intent(SignupActivity.this, homepageWithMenu.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);

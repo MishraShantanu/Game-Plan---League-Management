@@ -68,9 +68,8 @@ public class LeaguePop extends Activity {
                 }
 
                 else {
-                    // TODO 24/02/2020 - Replace tempUser with the current user of the app.
-                    Member tempUser = new Member("Mike Tyson","BigMike@email.com","13066975541","uid1064");
-                    League newLeague = new League(nameOfLeague,tempUser,sportForLeague,descriptionOfLeague);
+                    // create new league with the current user of the app as owner
+                    League newLeague = new League(nameOfLeague,CurrentUser.getCurrentUser(),sportForLeague,descriptionOfLeague);
 
                     // add newLeague to the database
                     try{
@@ -85,9 +84,16 @@ public class LeaguePop extends Activity {
                         Toast.makeText(LeaguePop.this, "Failed to create league, please try again", Toast.LENGTH_SHORT).show();
                     }
 
+                    // try to read in new league
+                    League newReadLeague = Storage.readLeague(new LeagueInfo(newLeague));
+                    if(newReadLeague==null){
+                        throw new NullPointerException("newly created league is null when read");
+                    }
+
                     // create a new intent instead of using finish() so the user cannot go back to this popup
                     // TODO take the user to a page for the newly created league, the user should be redirected to their
                     // TODO new league's page after creating it.
+
                     Intent i = new Intent(LeaguePop.this,LeagueActivity.class);
                     startActivity(i);
                 }
