@@ -82,6 +82,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO pass the current League object to the popup activity
                 startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
@@ -122,7 +123,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    // error while reading from the database
+                    // TODO add some error message here
                 }
             });
         }
@@ -144,16 +146,19 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-                // Team object that was clicked.
-                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
+                // TeamInfo object that was clicked.
+                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
-                // TODO 18/02/2020 - Give ListView items functionality
-                startActivity(new Intent(TeamsActivity.this, TeamActivity.class));
+
+                Intent teamIntent = new Intent(TeamsActivity.this, TeamActivity.class);
+                // pass the teamInfo object clicked
+                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-                Toast.makeText(TeamsActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeamsActivity.this, "You clicked on " + clickedTeamInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
