@@ -31,13 +31,13 @@ public class League {
     /**
      * Constructor for league object.
      * @param name: Name of the league.
-     * @param owner: Member that owns the league.
+     * @param ownerInfo: MemberInfo object, containing information of the member that owns the league.
      * @param sport: Type of the sport that the league plays.
      * @param description: Description of the league.
      */
-    public League(String name, Member owner, String sport, String description) {
+    public League(String name, MemberInfo ownerInfo, String sport, String description) {
         this.name = name;
-        this.ownerInfo = new MemberInfo(owner);
+        this.ownerInfo = ownerInfo;
         this.sport = sport;
         this.description = description;
         this.teamsInfo = new ArrayList<>();
