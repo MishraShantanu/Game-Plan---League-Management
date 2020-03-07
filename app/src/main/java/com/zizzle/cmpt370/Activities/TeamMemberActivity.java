@@ -10,10 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
 
 public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,22 +54,47 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
         // Temporary User created ==========================================================================
         //TODO Mar. 4 2020: change this to get member from the database
-        Member user = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311", "F");
+
+        Member owner = new Member("Will Gates", "BigBill@microsoft.com", "78945612311", "F");
+        MemberInfo ownerInfo = new MemberInfo(owner);
+
+        League fakeLeague = new League("FUN", ownerInfo, "HOCKEY", "LOLOLOL");
+        Team fakeTeam = new Team("Charger", owner,"HOCKEY", fakeLeague);
+
+        Member member = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311", "F");
 
         // Set the title of the page to user name.
-        getSupportActionBar().setTitle(user.getDisplayName() + " Information");
+        getSupportActionBar().setTitle(member.getDisplayName() + " Information");
 
         // DisplayName Text ==========================================================================
         TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
-        userName.setText(user.getDisplayName());
+        userName.setText(member.getDisplayName());
 
         // Email Text ==========================================================================
         TextView email = (TextView) findViewById(R.id.TeamMember_Email);
-        email.setText(user.getEmail());
+        email.setText(member.getEmail());
 
         // Phone Number Text ==========================================================================
         TextView phoneNumber = (TextView) findViewById(R.id.TeamMember_PhoneNumber);
-        phoneNumber.setText(user.getPhoneNumber());
+        phoneNumber.setText(member.getPhoneNumber());
+
+        // Remove Player Button ==========================================================================
+        Button removePlayer = findViewById(R.id.remove_player);
+        View removeDivider = findViewById(R.id.remove_player_divider);
+
+        if (fakeTeam.getOwnerInfo().equals(CurrentUserInfo.getCurrentUserInfo())) {
+            removePlayer.setVisibility(View.VISIBLE);
+            removeDivider.setVisibility(View.VISIBLE);
+        }
+
+        removePlayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // TODO 07/03/2020 - Remove the member from the team.
+
+            }
+        });
 
 
         //THIS WAS ON THE PROFILE PAGE, DON'T NEED NOW. BUT KEEP THIS SO THAT WE CAN EASILY ADD A BUTTON TO DO STUFF IF NEEDED

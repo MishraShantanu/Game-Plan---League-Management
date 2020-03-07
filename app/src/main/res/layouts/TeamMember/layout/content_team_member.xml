@@ -25,7 +25,7 @@
             android:gravity="center_horizontal"
             android:text="Display Name"
             android:textColor="@color/colorText"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/TeamMember_DisplayName"
@@ -53,7 +53,7 @@
             android:gravity="center_horizontal"
             android:text="Email"
             android:textColor="@color/colorText"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/TeamMember_Email"
@@ -80,7 +80,7 @@
             android:gravity="center_horizontal"
             android:text="Phone Number"
             android:textColor="@color/colorText"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/TeamMember_PhoneNumber"
@@ -92,5 +92,29 @@
             android:textSize="24sp" />
 
     </LinearLayout>
+
+    <!--    divider    -->
+    <View
+        android:id="@+id/remove_player_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorText" />
+
+    <!--    owner button    -->
+    <Button
+        android:id="@+id/remove_player"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/round_card_button"
+        android:padding="22dp"
+        android:text="Remove Player"
+        android:textColor="@color/colorText"
+        android:textSize="24dp"
+        android:textStyle="normal" />
 
 </LinearLayout>
