@@ -15,6 +15,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
 
@@ -24,8 +30,15 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
 
+    private TextView profileName,profilePhone,profileEmail;
+    private Button updateInfo;
+
+    private  Member userinfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        userinfo =new Member();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         //add top bar from top_bar as action bar
@@ -50,22 +63,48 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         // Temporary User created ==========================================================================
         //TODO Feb. 29, 2020: change this to get member from the database
-        Member user = new Member("Larry Page", "larrypage@google.com", "18008008008","UID6787894");
 
-        // Set the title of the page to user name.
-        getSupportActionBar().setTitle(user.getDisplayName() + " Information");
+        FirebaseAuth firebaseAuth =FirebaseAuth.getInstance();
 
-        // DisplayName Text ==========================================================================
-        TextView userName = (TextView) findViewById(R.id.Profile_DisplayName);
-        userName.setText(user.getDisplayName());
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        // Email Text ==========================================================================
-        TextView email = (TextView) findViewById(R.id.Profile_Email);
-        email.setText(user.getEmail());
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getCurrentUser().getUid());
 
-        // Phone Number Text ==========================================================================
-        TextView phoneNumber = (TextView) findViewById(R.id.Profile_PhoneNumber);
-        phoneNumber.setText(user.getPhoneNumber());
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Member user = dataSnapshot.getValue(Member.class);
+
+                // DisplayName Text ==========================================================================
+                TextView userName = (TextView) findViewById(R.id.newProfile_DisplayName);
+                userName.setText(user.getDisplayName());
+
+                // Email Text ==========================================================================
+                TextView email = (TextView) findViewById(R.id.newProfile_Email);
+                email.setText(user.getEmail());
+
+                // Phone Number Text ==========================================================================
+                TextView phoneNumber = (TextView) findViewById(R.id.newProfile_PhoneNumber);
+                phoneNumber.setText(user.getPhoneNumber());
+
+
+                // Set the title of the page to user name.
+                getSupportActionBar().setTitle(user.getDisplayName() + " Information");
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
 
 
         // Update Info button ==========================================================================
