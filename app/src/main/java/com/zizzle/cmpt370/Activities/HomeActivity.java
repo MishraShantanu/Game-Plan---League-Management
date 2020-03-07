@@ -89,7 +89,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called to read data, get the list of teams the member is a part of
                 Member currentMember = dataSnapshot.getValue(Member.class);
-                teamsInfo = currentMember.getTeamsInfo();
+                 teamsInfo = currentMember.getTeamsInfo();
                 teamArrayAdapter.notifyDataSetChanged();
                 // TODO could store the currentMember locally here, might be nice to have stored
             }
