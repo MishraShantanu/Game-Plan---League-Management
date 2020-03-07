@@ -27,10 +27,14 @@ import java.util.ArrayList;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    /** Values inside ListView. */
+    /**
+     * Values inside ListView.
+     */
     ArrayList<Member> members;
 
-    /** Adapter for search bar. */
+    /**
+     * Adapter for search bar.
+     */
     ArrayAdapter memberArrayAdapter;
 
     //main roundedCorners ID of homepageWithMenu.xml
@@ -100,7 +104,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         members = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            members.add(new Member("Tod Manter", "mail", "12345678901","uid733334"));
+            members.add(new Member("Tod Manter", "mail", "12345678901", "uid733334"));
         }
 
 
@@ -136,7 +140,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     //When item is selected in the menu, open the respective element (fragment or activity)
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -164,7 +167,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
         //close drawer
         menuDrawer.closeDrawer(GravityCompat.START);
 
@@ -187,6 +191,12 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     //Button to open menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
+        int id = item.getItemId();
+        if (id == R.id.join_team_button) { //Join Team Text/Button was clicked
+            Toast.makeText(TeamActivity.this, "JOIN TEAM", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
         //Sidebar navigation menu
         if (toggleDrawer.onOptionsItemSelected(item)) {
             return true;
