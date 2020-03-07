@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".Activities.TeamActivity"
-    app:itemTextAppearance="@style/MenuItems">
+    tools:context=".Activities.TeamActivity">
+
+
 
     <item
         android:id="@+id/join_team_button"
+        android:icon="@drawable/ic_add_circle_outline_black_24dp"
         android:title="JOIN"
         app:showAsAction="always"/>
 
