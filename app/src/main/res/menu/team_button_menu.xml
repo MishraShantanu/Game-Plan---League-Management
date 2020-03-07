@@ -7,12 +7,16 @@
     tools:context=".Activities.TeamActivity">
 
 
+    <item
+        android:id="@+id/join_team_text"
+        android:title="JOIN"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/join_team_button"
-        android:icon="@drawable/ic_add_circle_outline_black_24dp"
+        android:icon="@drawable/ic_add_circle_outline_white_24dp"
         android:title="JOIN"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
     <!--    BELOW CODE IS FOR DROP DOWN MENU-->
     <!--    <item-->
