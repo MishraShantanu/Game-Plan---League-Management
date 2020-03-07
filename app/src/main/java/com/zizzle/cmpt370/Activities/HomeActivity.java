@@ -9,19 +9,30 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -29,7 +40,7 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<Team> teams;
+    ArrayList<TeamInfo> teamsInfo;
 
     /** Adapter for displaying teams */
     ArrayAdapter teamArrayAdapter;
@@ -70,18 +81,41 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // TESTING - generates a list of teams for testing the displaying functionality.
         // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
 
-        teams = new ArrayList<>();
-        Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341","uid12334");
-        Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125","uid543456");
-        League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
+        teamsInfo = new ArrayList<>();
+        final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        // read in the current user from the database
+        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
+        // this listener will read from the database once initially and again whenever the current user is updated on the database
+        currentUserReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Remove the progress bar once leagues have been fetched
+                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                leagueLoading.setVisibility(View.GONE);
 
-        for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team-Name " + i, user, "Tennis", league));
-        }
+                // called to read data, get the list of teams the member is a part of
+                Member currentMember = dataSnapshot.getValue(Member.class);
+                teamsInfo = currentMember.getTeamsInfo();
+                teamArrayAdapter.notifyDataSetChanged();
+                // TODO could store the currentMember locally here, might be nice to have stored
+
+                // if not apart of a team, display no team text
+                if (teamsInfo.isEmpty()) {
+                    TextView noTeam = findViewById(R.id.no_team_text);
+                    noTeam.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // called when an error has occurred reading from the database
+                // TODO display some error message here
+            }
+        });
 
 
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teams);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
@@ -96,8 +130,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-                // Team object that was clicked.
-                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
+                // TeamInfo object that was clicked.
+                TeamInfo clickedTeam = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)

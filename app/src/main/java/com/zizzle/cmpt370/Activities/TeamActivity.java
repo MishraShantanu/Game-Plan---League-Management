@@ -19,7 +19,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.NonScrollableListView;
 import com.zizzle.cmpt370.R;
 
@@ -27,14 +35,10 @@ import java.util.ArrayList;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    /**
-     * Values inside ListView.
-     */
-    ArrayList<Member> members;
+    /** Values inside ListView. */
+    ArrayList<MemberInfo> membersInfo;
 
-    /**
-     * Adapter for search bar.
-     */
+    /** Adapter for search bar. */
     ArrayAdapter memberArrayAdapter;
 
     //main roundedCorners ID of homepageWithMenu.xml
@@ -52,8 +56,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
-        // TODO 24/02/2020 - Set title to the current team.
-        getSupportActionBar().setTitle("Cool Team");
+        // get the TeamInfo object stored in the intent
+        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
+
+        // set the title to the name of the clicked team
+        getSupportActionBar().setTitle(currentTeamInfo.getName());
 
         //MENU (button & drawer)
         menuDrawer = findViewById(R.id.team_layout);
@@ -99,17 +106,30 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         // list of teams =========================================================================
 
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO 18/02/2020 - remove this and replace with teams from database.
+        membersInfo = new ArrayList<>();
+        // read in the current team from the database
+        DatabaseReference teamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
+        // this listener will read from the database once initially and whenever the current team is updated
+        teamReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // called to read in data
+                Team currentTeam = dataSnapshot.getValue(Team.class);
+                membersInfo = currentTeam.getTeamMembersInfo();
+                memberArrayAdapter.notifyDataSetChanged();
 
-        members = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            members.add(new Member("Tod Manter", "mail", "12345678901", "uid733334"));
-        }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // called when database operation fails
+                // TODO display some error message, telling the user they couldn't connect to database, or asking them to try again
+            }
+        });
+
 
 
         // Display ListView contents.
-        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, members);
+        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, membersInfo);
         NonScrollableListView teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
@@ -124,17 +144,15 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-                // Member object that was clicked.
-                Member clickedMember = (Member) parent.getAdapter().getItem(listItemPosition);
+                // MemberInfo object that was clicked.
+                MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
+                // TODO create an activity listing information about the team we've clicked on
 
-                startActivity(new Intent(TeamActivity.this, TeamMemberActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getDisplayName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });
     }

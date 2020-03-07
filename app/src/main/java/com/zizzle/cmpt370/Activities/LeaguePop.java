@@ -3,22 +3,15 @@ package com.zizzle.cmpt370.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.*;
 import com.zizzle.cmpt370.R;
 
@@ -68,9 +61,8 @@ public class LeaguePop extends Activity {
                 }
 
                 else {
-                    // TODO 24/02/2020 - Replace tempUser with the current user of the app.
-                    Member tempUser = new Member("Mike Tyson","BigMike@email.com","13066975541","uid1064");
-                    League newLeague = new League(nameOfLeague,tempUser,sportForLeague,descriptionOfLeague);
+                    // create new league with the current user of the app as owner
+                    League newLeague = new League(nameOfLeague,CurrentUserInfo.getCurrentUserInfo(),sportForLeague,descriptionOfLeague);
 
                     // add newLeague to the database
                     try{
@@ -85,7 +77,9 @@ public class LeaguePop extends Activity {
                         Toast.makeText(LeaguePop.this, "Failed to create league, please try again", Toast.LENGTH_SHORT).show();
                     }
 
-                    // create a new intent instead of using finish() so the user cannot go back to this popup
+                    // TODO create a new intent that takes the user to their newly created league page
+                    // TODO need some way of passing this newly created league to this new activity
+
                     Intent i = new Intent(LeaguePop.this,LeagueActivity.class);
                     startActivity(i);
                 }
