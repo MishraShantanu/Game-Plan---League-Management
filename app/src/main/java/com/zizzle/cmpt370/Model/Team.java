@@ -46,38 +46,23 @@ public class Team {
     /**
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
-     * @param owner: Member object, owner/creator of the team
+     * @param ownerInfo: MemberInfo object, represents the owner/creator of the team
      * @param sport: String sport the team plays, must match the sport of the league
-     * @param league: League object, league the team is a part of, this adds the Team object to the league
-     * @throws IllegalArgumentException if team name isn't unique for this league, or if league sport doesn't
-     * match team sport
+     * @param leagueInfo: LeagueInfo object, representing the league this team belongs to
      */
-    public Team(String name, Member owner, String sport, League league) throws IllegalArgumentException{
-        this.leagueInfo = new LeagueInfo(league);
-        // make sure the team name is unique to this league
-        for (TeamInfo team : league.getTeamInfos()){
-            if(team.getName().equals(name)){
-                // new name isn't unique for the league
-                throw new IllegalArgumentException("Team name: " + name + " isn't unique in league: " + league);
-            }
-        }
-        // make sure team and league sport match
-        if(!league.getSport().equals(sport)){
-            throw new IllegalArgumentException("Team sport: " + sport + " doesn't match league sport: " + league.getSport());
-        }
+    public Team(String name, MemberInfo ownerInfo, String sport, LeagueInfo leagueInfo) {
+        this.leagueInfo = leagueInfo;
         this.name = name;
-        this.ownerInfo = new MemberInfo(owner);
+        this.ownerInfo = ownerInfo;
         this.sport = sport;
         this.membersInfo = new ArrayList<>();
         // add the owner to the team, this also updates database
-        setOwner(owner);
+        setOwner(ownerInfo);
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
         this.gamesPlayed = new ArrayList<>();
         this.scheduledGames = new ArrayList<>();
-        // add team to league
-        league.addTeam(this);
     }
 
     /**
@@ -119,19 +104,18 @@ public class Team {
     }
 
     /**
-     * Sets the owner of the team to the Member specified, if the new owner isn't part of the team,
+     * Sets the owner of the team to the MemberInfo specified, if the new owner isn't part of the team,
      * they will be added to the members of the team, the old owner still remains part of the team
      * and can be removed using removeMember
-     * @param newOwner: Member object, new owner of the team
+     * @param newOwnerInfo: MemberInfo object representing the new owner of the team
      */
-    public void setOwner(Member newOwner){
-        MemberInfo newOwnerInfo = new MemberInfo(newOwner);
+    public void setOwner(MemberInfo newOwnerInfo){
         // if newOwner isn't on the team, add them to the team members
         if(! membersInfo.contains(newOwnerInfo)){
             membersInfo.add(newOwnerInfo);
             // update this team on the database to include this new member
         }
-        this.ownerInfo = new MemberInfo(newOwner);
+        this.ownerInfo = newOwnerInfo;
         // update this team on the database to include this new owner
     }
 
@@ -302,6 +286,7 @@ public class Team {
      * @return Game object that is scheduled to be played closest to now
      * @throws IllegalStateException if the team has no games scheduled
      */
+    /*
     public Game getClosestScheduledGame() throws IllegalStateException{
         // make sure there is a game scheduled
         if(! this.hasGamesScheduled()){
@@ -311,6 +296,7 @@ public class Team {
         // the closest game is always at the front of the list of scheduled games
         return this.scheduledGames.get(0);
     }
+     */
 
     /**
      * Checks if the team has played at least 1 game before
@@ -325,6 +311,7 @@ public class Team {
      * @return Game object, most recently played game
      * @throws IllegalStateException if the team hasn't played any games
      */
+    /*
     public Game getMostRecentPlayedGame() throws IllegalStateException{
         // make sure the team has played at least 1 game
         if(! this.hasPlayedGame()){
@@ -333,6 +320,7 @@ public class Team {
         // most recently played game is always at the front of the list of played games
         return this.gamesPlayed.get(0);
     }
+     */
 
     /**
      * Returns an array of the games played by the team in order, the first game is most recently played
@@ -340,6 +328,7 @@ public class Team {
      * @return Game[] specified above
      * @throws IllegalStateException if the team hasn't played a game yet
      */
+    /*
     public Game[] getPlayedGames() throws IllegalStateException{
         // make sure the team has played at least 1 game
         if(! this.hasPlayedGame()){
@@ -347,6 +336,7 @@ public class Team {
         }
         return (Game[]) this.gamesPlayed.toArray();
     }
+     */
 
     /**
      * Returns an array of games the team is scheduled to play, this array is sorted so the first element
@@ -355,6 +345,7 @@ public class Team {
      * @return Game[] specified above
      * @throws IllegalStateException if the team doesn't have at least 1 game scheduled
      */
+    /*
     public Game[] getScheduledGames() throws IllegalStateException{
         // make sure the team has at least 1 game scheduled
         if(! this.hasGamesScheduled()){
@@ -362,7 +353,9 @@ public class Team {
         }
         return this.scheduledGames.toArray(new Game[this.scheduledGames.size()]);
     }
+     */
 
+    /*
     public void scheduleNewGame(Game newGame) throws IllegalStateException{
         // game must not have already been started
         if(newGame.hasGameStarted() || newGame.hasBeenPlayed()){
@@ -385,7 +378,9 @@ public class Team {
         }
     }
 
+     */
 
+/*
     public void markGameAsPlayed(Game playedGame){
         // make sure that playedGame involves our team
         if((! playedGame.getTeamOne().equals(this)) && (! playedGame.getTeamTwo().equals(this))){
@@ -422,11 +417,14 @@ public class Team {
         }
     }
 
+ */
+
     /**
      * Cancels a game that the team was scheduled to play
      * @param gameToCancel: Game object that the team is scheduled to play
      * @throws IllegalArgumentException if the team isn't scheduled to play gameToCancel
      */
+    /*
     public void cancelGame(Game gameToCancel) throws IllegalArgumentException{
         boolean removedSuccessfully = this.scheduledGames.remove(gameToCancel);
         // true is returned if gameToCancel is found and removed
@@ -434,4 +432,5 @@ public class Team {
             throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
         }
     }
+     */
 }
