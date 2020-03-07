@@ -26,9 +26,4 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-    <style name="MenuItems" parent="AppTheme">
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-    </style>
-
 </resources>
