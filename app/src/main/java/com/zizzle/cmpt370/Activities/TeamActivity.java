@@ -3,28 +3,22 @@ package com.zizzle.cmpt370.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
-import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.NonScrollableListView;
 import com.zizzle.cmpt370.R;
 
@@ -85,6 +79,19 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 //        });
 
 
+        // owner button ==========================================================================
+        Button ownerButton = findViewById(R.id.owner_button);
+        ownerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // TODO 29/02/2020 Take to the member page for owner.
+                Toast.makeText(TeamActivity.this, "YOU JUST GOT OWNED", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
         // list of teams =========================================================================
 
         // TESTING - generates a list of teams for testing the displaying functionality.
@@ -92,22 +99,12 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         members = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            members.add(new Member("Tod", "Manter", "mail", "12345678901"));
-        }
-
-
-        // creates a ArrayList<String> from ArrayList<Team> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace teams with the the one from the database.
-
-        ArrayList<String> member_names = new ArrayList<>();
-        for (Member m : members) {
-            member_names.add(m.getFirstName() + " " + m.getLastName());
+            members.add(new Member("Tod Manter", "mail", "12345678901","uid733334"));
         }
 
 
         // Display ListView contents.
-        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, member_names);
+        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, members);
         NonScrollableListView teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
@@ -120,11 +117,19 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // Member object that was clicked.
+                Member clickedMember = (Member) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
+
+                startActivity(new Intent(TeamActivity.this, TeamMemberActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getDisplayName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -136,7 +141,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                startActivity(new Intent(this, HomeActivity.class));
+                Intent toHome = new Intent(this, HomeActivity.class);
+                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toHome);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
@@ -153,14 +160,16 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, SigninActivity.class));
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+                Intent toLogOut = new Intent(this, SigninActivity.class);
+                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toLogOut);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
         //close drawer
         menuDrawer.closeDrawer(GravityCompat.START);
 
         return true;
     }
+
 
     //When back button is pressed, we want to just close the menu, not close the activity
     @Override
@@ -168,9 +177,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         if (menuDrawer.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             menuDrawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed(); //close activity (as usual)
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
+
 
     //Button to open menu
     @Override

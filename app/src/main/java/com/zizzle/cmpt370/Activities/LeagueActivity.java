@@ -21,8 +21,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -30,7 +38,7 @@ import java.util.ArrayList;
 public class LeagueActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<League> leagues;
+    ArrayList<String> leagueNames;
 
     /** Adapter for search bar. */
     ArrayAdapter leagueArrayAdapter;
@@ -85,25 +93,35 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // TESTING - generates a list of leagues for testing the displaying functionality.
         // TODO 18/02/2020 - remove this and replace with leagues from datebase.
 
-        leagues = new ArrayList<>();
-        Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
-        for (int i = 0; i < 20; i++) {
-            leagues.add(new League("League " + i, owner, "SQUASH", "description"));
-        }
+        leagueNames = new ArrayList<>();
 
+        // get a reference to the leagues on the database
+        // NOTE: this will give all leagues created by anybody, NOT leagues the current user is a part of
+        DatabaseReference leagueDBReference = FirebaseDatabase.getInstance().getReference().child("Leagues");
 
-        // creates a ArrayList<String> from ArrayList<League> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace leagues with the the one from the database.
+        // attaching this listener will read from the database once initially and whenever leagues on the database are changed.
+        leagueDBReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // method called when data is read from the database, get all league names
+                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    // the key of each league is the league's name
+                    String leagueName = ds.getKey();
+                    leagueNames.add(leagueName);
+                    leagueArrayAdapter.notifyDataSetChanged();
+                }
+            }
 
-        ArrayList<String> league_names = new ArrayList<>();
-        for (League l : leagues) {
-            league_names.add(l.getName());
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // TODO operation couldn't be completed, diplay some information to user
+
+            }
+        });
 
 
         // Display ListView contents.
-        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, league_names);
+        leagueArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, leagueNames);
         ListView leagueList = findViewById(R.id.leagues_list);
         leagueList.setAdapter(leagueArrayAdapter);
 
@@ -116,7 +134,10 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // name of the league that was clicked.
+                final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the leagues array. can be used such as:
                 // leagues.get(listItemPosition)
@@ -126,7 +147,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeagueName, Toast.LENGTH_SHORT).show();
+                // TODO can read in the league clicked using Storage.readLeague()
             }
         });
 
@@ -156,7 +178,9 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                startActivity(new Intent(this, HomeActivity.class));
+                Intent toHome = new Intent(this, HomeActivity.class);
+                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toHome);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
@@ -172,7 +196,9 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, SigninActivity.class));
+                Intent toLogOut = new Intent(this, SigninActivity.class);
+                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toLogOut);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         //close drawer
@@ -187,7 +213,10 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed(); //close activity (as usual)
+            Intent toHome = new Intent(this, HomeActivity.class);
+            toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(toHome);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
 

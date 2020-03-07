@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.R;
 
@@ -69,25 +71,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
 
         teams = new ArrayList<>();
-        Member user = new Member("Elon", "Musk", "ironman@xyz.com", "12312312341");
-        Member owner = new Member("Pope", "Francis", "rome@popemobile.com", "15935774125");
+        Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341","uid12334");
+        Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125","uid543456");
         League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
+
         for (int i = 0; i < 20; i++) {
             teams.add(new Team("Team-Name " + i, user, "Tennis", league));
         }
 
 
-        // creates a ArrayList<String> from ArrayList<Team> in order to display the names to user.
-        // TODO Feb. 26, 2020 - replace teams with the the ones from the database.
-
-        ArrayList<String> team_names = new ArrayList<>();
-        for (Team team : teams) {
-            team_names.add(team.getName());
-        }
-
-
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, team_names);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teams);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
@@ -100,7 +94,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // Team object that was clicked.
+                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
@@ -109,8 +106,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(HomeActivity.this, TeamActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-                // this was used for testing. can be removed later.
-                Toast.makeText(HomeActivity.this, "You just clicked " + listItemPosition, Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -138,8 +134,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, SigninActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                Intent toLogOut = new Intent(this, SigninActivity.class);
+                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toLogOut);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -152,9 +150,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else{
-            super.onBackPressed();
         }
+
+        else super.onBackPressed();
     }
 
     //Button to open menu

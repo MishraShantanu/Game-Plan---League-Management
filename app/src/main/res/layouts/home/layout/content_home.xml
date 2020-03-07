@@ -9,6 +9,7 @@
 
     <!-- list of teams that the user is a member of-->
     <ListView
+        android:listSelector="@android:color/transparent"
         android:id="@+id/user_individual_teams_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

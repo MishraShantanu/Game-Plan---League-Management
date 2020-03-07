@@ -90,25 +90,15 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         // TODO 18/02/2020 - remove this and replace with teams from database.
 
         teams = new ArrayList<>();
-        Member owner = new Member("Tom", "Holland", "e@mail.gov", "12345678901");
+        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901","UID88887");
         League league = new League("league",owner,"SQUASH","fun league"); // stub league
         for (int i = 0; i < 20; i++) {
             teams.add(new Team("Team " + i, owner, "SQUASH",league));
         }
 
 
-        // creates a ArrayList<String> from ArrayList<Team> in order to display the names
-        // to user.
-        // TODO 18/02/2020 - replace teams with the the one from the database.
-
-        ArrayList<String> team_names = new ArrayList<>();
-        for (Team t : teams) {
-            team_names.add(t.getName());
-        }
-
-
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, team_names);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, teams);
         ListView teamList = findViewById(R.id.teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
@@ -121,13 +111,18 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int listItemPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                // Team object that was clicked.
+                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
                 startActivity(new Intent(TeamsActivity.this, TeamActivity.class));
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                Toast.makeText(TeamsActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -157,7 +152,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                startActivity(new Intent(this, HomeActivity.class));
+                Intent toHome = new Intent(this, HomeActivity.class);
+                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toHome);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
@@ -174,7 +171,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(this, SigninActivity.class));
+                Intent toLogOut = new Intent(this, SigninActivity.class);
+                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(toLogOut);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
         //close drawer
@@ -189,7 +188,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         if (menuDrawer.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             menuDrawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed(); //close activity (as usual)
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
 

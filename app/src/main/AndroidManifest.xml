@@ -9,23 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.TeamActivity"/>
+        <activity android:name=".Activities.TeamMemberActivity"></activity>
+        <activity android:name=".Activities.TeamActivity" />
         <activity android:name=".Activities.AboutUsActivity" />
         <activity android:name=".Activities.ProfileActivity" />
         <activity android:name=".Activities.SigninActivity" />
         <activity android:name=".Activities.SignupActivity" />
-        <activity android:name=".Useless.homepageWithMenu" />
         <activity android:name=".Activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <!-- Below Line hides the warning given by Android Studio -->
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activities.LeagueActivity"
+        <activity android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
             android:parentActivityName=".Activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -33,8 +31,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zizzle.cmpt370.Activities.HomeActivity" />
         </activity>
-        <activity
-            android:name=".Activities.TeamsActivity"
+        <activity android:name=".Activities.TeamsActivity"
             android:label="@string/title_activity_league"
             android:parentActivityName=".Activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -42,11 +39,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zizzle.cmpt370.Activities.HomeActivity" />
         </activity>
-        <activity
-            android:name=".Activities.LeaguePop"
+        <activity android:name=".Activities.LeaguePop"
             android:theme="@style/AppTheme.PopUp" />
-        <activity
-            android:name=".Activities.TeamsPop"
+        <activity android:name=".Activities.ProfilePop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity android:name=".Activities.TeamsPop"
             android:theme="@style/AppTheme.PopUp" />
     </application>
 

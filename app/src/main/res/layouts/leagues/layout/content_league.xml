@@ -30,6 +30,7 @@
 
     <!-- list of leagues-->
         <com.zizzle.cmpt370.NonScrollableListView
+            android:listSelector="@android:color/transparent"
             android:id="@+id/leagues_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

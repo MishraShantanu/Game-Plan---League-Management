@@ -1,7 +1,9 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -9,6 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.*;
 import com.zizzle.cmpt370.R;
 
@@ -41,9 +51,9 @@ public class LeaguePop extends Activity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nameOfLeague = leagueName.getText().toString();
-                String sportForLeague = typeOfSport.getText().toString();
-                String descriptionOfLeague = description.getText().toString();
+                final String nameOfLeague = leagueName.getText().toString();
+                final String sportForLeague = typeOfSport.getText().toString();
+                final String descriptionOfLeague = description.getText().toString();
 
                 if (nameOfLeague.isEmpty() && sportForLeague.isEmpty()) {
                     Toast.makeText(LeaguePop.this, "Fields are empty", Toast.LENGTH_SHORT).show();
@@ -59,12 +69,25 @@ public class LeaguePop extends Activity {
 
                 else {
                     // TODO 24/02/2020 - Replace tempUser with the current user of the app.
-                    Member currentUser = new Member("Mike", "Tyson", "bigmike@punchface.gov", "12312312312");
-                    League newLeague = new League(nameOfLeague, currentUser, sportForLeague, descriptionOfLeague);
+                    Member tempUser = new Member("Mike Tyson","BigMike@email.com","13066975541","uid1064");
+                    League newLeague = new League(nameOfLeague,tempUser,sportForLeague,descriptionOfLeague);
 
-                    // TODO 24/02/2020 - Insert new league into league list, send to database.
+                    // add newLeague to the database
+                    try{
+                        Storage.writeLeague(newLeague);
+                    }
+                    catch (IllegalStateException e){
+                        // this exception is thrown if there is already a league with our new league's name, display error message
+                        Toast.makeText(LeaguePop.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    catch (DatabaseException e){
+                        // this exception is thrown if database operations fail, nothing we can do except try again
+                        Toast.makeText(LeaguePop.this, "Failed to create league, please try again", Toast.LENGTH_SHORT).show();
+                    }
 
-                    finish();
+                    // create a new intent instead of using finish() so the user cannot go back to this popup
+                    Intent i = new Intent(LeaguePop.this,LeagueActivity.class);
+                    startActivity(i);
                 }
             }
         });

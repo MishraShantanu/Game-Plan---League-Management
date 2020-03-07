@@ -1,7 +1,6 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import java.util.ArrayList;
 
@@ -17,18 +16,18 @@ public class Team {
     /** Sport the team is playing */
     private String sport;
 
-    /** Members of the team */
-    private ArrayList<Member> members;
+    /** Info about Members of the team */
+    private ArrayList<MemberInfo> membersInfo;
 
     /** Games previously played by the team, this list is ordered so games towards the front of the
      * list are more recent than those at the back */
     private ArrayList<Game> gamesPlayed;
 
-    /** The league the team is a part of */
-    private League league;
+    /** Info about the league the team is a part of */
+    private LeagueInfo leagueInfo;
 
-    /** Owner of the team */
-    private Member owner;
+    /** Info about the owner of the team */
+    private MemberInfo ownerInfo;
 
     /** List of games the team is scheduled to play, this list is ordered such that closer games are
      * towards the front of the list and further away games are towards the end of the list */
@@ -54,31 +53,31 @@ public class Team {
      * match team sport
      */
     public Team(String name, Member owner, String sport, League league) throws IllegalArgumentException{
-        this.league = league;
+        this.leagueInfo = new LeagueInfo(league);
         // make sure the team name is unique to this league
-        for (Team team : this.league.getTeams()){
+        for (TeamInfo team : league.getTeamInfos()){
             if(team.getName().equals(name)){
                 // new name isn't unique for the league
                 throw new IllegalArgumentException("Team name: " + name + " isn't unique in league: " + league);
             }
         }
         // make sure team and league sport match
-        if(!this.league.getSport().equals(sport)){
+        if(!league.getSport().equals(sport)){
             throw new IllegalArgumentException("Team sport: " + sport + " doesn't match league sport: " + league.getSport());
         }
         this.name = name;
-        this.owner = owner;
+        this.ownerInfo = new MemberInfo(owner);
         this.sport = sport;
-        this.members = new ArrayList<>();
-        // assume the owner is always a player on the team
-        this.members.add(owner);
+        this.membersInfo = new ArrayList<>();
+        // add the owner to the team, this also updates database
+        setOwner(owner);
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
         this.gamesPlayed = new ArrayList<>();
         this.scheduledGames = new ArrayList<>();
         // add team to league
-        this.league.addTeam(this);
+        league.addTeam(this);
     }
 
     /**
@@ -94,7 +93,16 @@ public class Team {
      * @return Member object owner of the team
      */
     public Member getOwner(){
-        return this.owner;
+        // read the owner from the database
+        return Storage.readMember(this.ownerInfo);
+    }
+
+    /**
+     * Retrievs a MemberInfo object with info about the owner of the team
+     * @return MemberInfo object describing the owner of the team
+     */
+    public MemberInfo getOwnerInfo(){
+        return this.ownerInfo;
     }
 
     /**
@@ -102,7 +110,12 @@ public class Team {
      * @return League the team is a part of
      */
     public League getLeague(){
-        return this.league;
+        // read league from the database
+        return Storage.readLeague(this.leagueInfo);
+    }
+
+    public LeagueInfo getLeagueInfo(){
+        return this.leagueInfo;
     }
 
     /**
@@ -112,11 +125,14 @@ public class Team {
      * @param newOwner: Member object, new owner of the team
      */
     public void setOwner(Member newOwner){
+        MemberInfo newOwnerInfo = new MemberInfo(newOwner);
         // if newOwner isn't on the team, add them to the team members
-        if(! members.contains(newOwner)){
-            members.add(newOwner);
+        if(! membersInfo.contains(newOwnerInfo)){
+            membersInfo.add(newOwnerInfo);
+            // update this team on the database to include this new member
         }
-        this.owner = newOwner;
+        this.ownerInfo = new MemberInfo(newOwner);
+        // update this team on the database to include this new owner
     }
 
     /**
@@ -129,17 +145,19 @@ public class Team {
      */
     public void removeMember(Member memberToRemove) throws IllegalStateException, IllegalArgumentException{
         // make sure memberToRemove is on the team
-        if(! this.members.contains(memberToRemove)){
-            throw new IllegalArgumentException("Team: Member: " + memberToRemove.getFirstName() + " to remove from team: "
+        MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
+        if(! this.membersInfo.contains(memberToRemoveInfo)){
+            throw new IllegalArgumentException("Team: Member: " + memberToRemove.getDisplayName() + " to remove from team: "
                     + this.name + " isn't a member of the team");
         }
         // make sure memberToRemove isn't the owner
-        if(memberToRemove.equals(this.owner)){
-            throw new IllegalStateException("Team: Member: " + memberToRemove.getFirstName() + " cannot be removed from team " +
+        if(memberToRemoveInfo.equals(this.ownerInfo)){
+            throw new IllegalStateException("Team: Member: " + memberToRemove.getDisplayName() + " cannot be removed from team " +
                     this.name + " as this Member is the owner of the team");
         }
 
-        this.members.remove(memberToRemove);
+        this.membersInfo.remove(memberToRemoveInfo);
+        // TODO remove memberToRemove from this team on the database
     }
 
     /**
@@ -172,7 +190,8 @@ public class Team {
      * @return true if member is on the team, false otherwise
      */
     public boolean teamHasMember(Member member){
-        return this.members.contains(member);
+        // TODO: could take in memberInfo
+        return this.membersInfo.contains(new MemberInfo(member));
     }
 
     /**
@@ -184,34 +203,38 @@ public class Team {
         if(this.teamHasMember(newMember)){
             throw new IllegalStateException("Member: " + newMember.toString() + " is already on this team");
         }
-        this.members.add(newMember);
+        MemberInfo newMemberInfo = new MemberInfo(newMember);
+        this.membersInfo.add(newMemberInfo);
+        // TODO add this new member to the database for this team
     }
 
 
     /**
-     * Returns an array of the members of the team
-     * @return Member[], array of members of the team
+     * Returns a hashset of the members of the team
+     * @return HashSet containing info of the members of the team
      */
-    public Member[] getTeamMembers(){
-        return this.members.toArray(new Member[this.members.size()]);
+    public ArrayList<MemberInfo> getTeamMembersInfo(){
+        // TODO this is dangerous as it returns a reference to an object attribute, should probably shallow clone this
+        return this.membersInfo;
     }
 
     /**
      * Returns the Member who has the specified name from the team
-     * @param MemberFirstName: String name of a Member on the team, this name must belong to a Member on the team
+     * @param memberName: String name of a Member on the team, this name must belong to a Member on the team
      * @return Member with the name input
-     * @throws IllegalArgumentException if Membername doesn't belong to any Member on the team
+     * @throws IllegalArgumentException if memberName doesn't belong to any Member on the team
      */
-    public Member getMemberByFirstName(String MemberFirstName) throws IllegalArgumentException{
+    public Member getMemberByFirstName(String memberName) throws IllegalArgumentException{
         // linear search the list of team members for the input name
-        for(Member currentMember : this.members){
-            if(currentMember.getFirstName().equals(MemberFirstName)){
-                // Member found
-                return currentMember;
+        for(MemberInfo currentMemberInfo : this.membersInfo){
+            if(currentMemberInfo.getName().equals(memberName)){
+                // Member found, read the member object in from the database
+                return Storage.readMember(currentMemberInfo);
             }
         }
         // Member not found
-        throw new IllegalArgumentException("Team: Member with name '" + MemberFirstName + "' not on team: " + this.name);
+        // TODO could also return null here
+        throw new IllegalArgumentException("Team: Member with name '" + memberName + "' not on team: " + this.name);
     }
 
     /**
@@ -242,11 +265,7 @@ public class Team {
     @Override
     @NonNull
     public String toString(){
-        String teamString = "Team: " + this.name;
-        teamString += "\nLeague: " + this.league.getName();
-        teamString += "\nSport: " + this.sport;
-        teamString += "\nRecord: " + this.wins + " Wins, " + this.losses + " Losses, " + this.ties + " Ties";
-        return teamString;
+        return this.getName();
     }
 
     /**
@@ -258,13 +277,11 @@ public class Team {
     public boolean equals(Object other){
         if(other instanceof Team){
             Team otherTeam = (Team) other;
-            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.league.equals(otherTeam.league) && this.owner.equals(otherTeam.getOwner());
+            return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.leagueInfo.equals(otherTeam.getLeagueInfo()) && this.ownerInfo.equals(otherTeam.getOwnerInfo());
         }
         // other isn't a Team, cannot be equal to this
         return false;
     }
-
-
 
 
 
@@ -417,11 +434,4 @@ public class Team {
             throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
         }
     }
-
-
-
-
-
-
-
 }

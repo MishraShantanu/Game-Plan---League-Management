@@ -10,15 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
 
-public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -27,16 +25,16 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_team_member);
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
         //MENU (button & drawer)
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.profile_layout);
-        NavigationView navigationView = findViewById(R.id.profile_nav_view); //ADDED FOR CLICK
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.team_member_layout);
+        NavigationView navigationView = findViewById(R.id.team_member_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_profile); //Highlight respective option in the navigation menu
+        navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
 
         //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
@@ -49,34 +47,35 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
 
         // Temporary User created ==========================================================================
-        //TODO Feb. 29, 2020: change this to get member from the database
-        Member user = new Member("Larry Page", "larrypage@google.com", "18008008008","UID6787894");
+        //TODO Mar. 4 2020: change this to get member from the database
+        Member user = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311", "F");
 
         // Set the title of the page to user name.
         getSupportActionBar().setTitle(user.getDisplayName() + " Information");
 
         // DisplayName Text ==========================================================================
-        TextView userName = (TextView) findViewById(R.id.Profile_DisplayName);
+        TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
         userName.setText(user.getDisplayName());
 
         // Email Text ==========================================================================
-        TextView email = (TextView) findViewById(R.id.Profile_Email);
+        TextView email = (TextView) findViewById(R.id.TeamMember_Email);
         email.setText(user.getEmail());
 
         // Phone Number Text ==========================================================================
-        TextView phoneNumber = (TextView) findViewById(R.id.Profile_PhoneNumber);
+        TextView phoneNumber = (TextView) findViewById(R.id.TeamMember_PhoneNumber);
         phoneNumber.setText(user.getPhoneNumber());
 
 
-        // Update Info button ==========================================================================
-        Button updateInfoButton = findViewById(R.id.updateInfoButton);
-        updateInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity( new Intent(ProfileActivity.this, ProfilePop.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            }
-        });
+        //THIS WAS ON THE PROFILE PAGE, DON'T NEED NOW. BUT KEEP THIS SO THAT WE CAN EASILY ADD A BUTTON TO DO STUFF IF NEEDED
+//        // Update Info button ==========================================================================
+//        Button updateInfoButton = findViewById(R.id.updateInfoButton);
+//        updateInfoButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity( new Intent(TeamMemberActivity.this, ProfilePop.class));
+//                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+//            }
+//        });
     }
 
 
@@ -95,7 +94,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                // already on profile activity, do nothing
+                startActivity(new Intent(this, ProfileActivity.class));
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
                 startActivity(new Intent(this, AboutUsActivity.class));
@@ -106,8 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
@@ -120,9 +119,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            Intent toHome = new Intent(this, HomeActivity.class);
-            toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(toHome);
+            finish();
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }

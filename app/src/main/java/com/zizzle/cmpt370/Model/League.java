@@ -13,8 +13,8 @@ public class League {
     /** Name of the league. */
     private String name;
 
-    /** Owner of the league. */
-    private Member owner;
+    /** Information of owner of the league. */
+    private MemberInfo ownerInfo;
 
     /** Sport played in the league. */
     private String sport;
@@ -23,10 +23,9 @@ public class League {
     private String description;
 
     /**
-     * Teams involved in the league. This also acts as the standings for teams
-     * with the teams sorted from best to worst.
+     * Teams involved in the league.
      */
-    private ArrayList<Team> teams;
+    private ArrayList<TeamInfo> teamsInfo;
 
 
     /**
@@ -38,10 +37,17 @@ public class League {
      */
     public League(String name, Member owner, String sport, String description) {
         this.name = name;
-        this.owner = owner;
+        this.ownerInfo = new MemberInfo(owner);
         this.sport = sport;
         this.description = description;
-        this.teams = new ArrayList<>();
+        this.teamsInfo = new ArrayList<>();
+    }
+
+    /**
+     * Blank constructor required for reassembling leagues when read in from database
+     */
+    public League(){
+
     }
 
 
@@ -51,12 +57,23 @@ public class League {
      */
     public String getName() { return name; }
 
+    /**
+     * Retrieves a MemberInfo object representing the owner of the league
+     * @return MemberInfo object containing info about the owner of the league
+     */
+    public MemberInfo getOwnerInfo(){
+        return ownerInfo;
+    }
+
 
     /**
      * Retrieves the owner of the league.
      * @return owner of the league.
      */
-    public Member getOwner() { return owner; }
+    public Member getOwner() {
+        // read the owner in from the database using ownerInfo
+        return Storage.readMember(ownerInfo);
+    }
 
 
     /**
@@ -74,10 +91,10 @@ public class League {
 
 
     /**
-     * Retrieves the list of teams in the league.
-     * @return list of teams in the league.
+     * Retrieves a list of TeamInfo objects for the teams of the league
+     * @return list of TeamInfo for the teams in the league.
      */
-    public ArrayList<Team> getTeams() { return teams; }
+    public ArrayList<TeamInfo> getTeamInfos() { return teamsInfo; }
 
 
     /**
@@ -89,44 +106,70 @@ public class League {
 
     /**
      * Transfer ownership to the new owner provided.
-     * @param owner: New owner of the league.
+     * @param newOwner: Member object describing the new owner of the league.
      */
-    public void setOwner(Member owner) { this.owner = owner; }
+    public void setOwner(Member newOwner) {
+        this.ownerInfo = new MemberInfo(newOwner);
+        // update database to reflect this new owner
+        Storage.updateLeagueField(this,Storage.LEAGUE_OWNER,newOwner);
+    }
 
 
     /**
      * Set the sport the league plays to one provided.
      * @param sport: Name of the sport.
      */
-    public void setSport(String sport) { this.sport = sport; }
+    public void setSport(String sport) {
+        this.sport = sport;
+        // update database to reflect this new sport
+        Storage.updateLeagueField(this,Storage.LEAGUE_SPORT,sport);
+    }
 
 
     /**
      * Set the description to the one provided.
      * @param description: String of the new team description.
      */
-    public void setDescription(String description) { this.description = description; }
-
-
-    /**
-     * Add a team to the league.
-     * @param team: Team to be added.
-     */
-    public void addTeam(Team team) {
-        if (!teams.contains(team)) teams.add(team);
-        else System.out.println("Error in addTeam():\n\tTeam " +
-                team.getName() + " already in the league.");
+    public void setDescription(String description) {
+        this.description = description;
+        // update the database to reflect the new description
+        Storage.updateLeagueField(this,Storage.LEAGUE_DESCRIPTION,description);
     }
 
 
     /**
-     * Remove a team from the list of teams in the league.
+     * Add a team to the league.
+     * @param team: Team to be added, team must have a unique name for this league
+     * @throws IllegalStateException if the input team doesn't have a unique name in this league
+     */
+    public void addTeam(Team team) throws IllegalStateException, IllegalArgumentException{
+        // represent this team with a TeamInfo object
+        TeamInfo newTeamInfo = new TeamInfo(team);
+        // ensure that the new team is unique in this league, if the TeamInfo for this new team is
+        // unique, the team must be unique
+        if(this.teamsInfo.contains(newTeamInfo)){
+            // team name isn't unique
+            throw new IllegalArgumentException("Team: " + team.getName() + " cannot be added to league: " + this.getName() + " another team with this name already exists");
+        }
+        // TODO write team object to database, update league in database to contain this TeamInfo
+    }
+
+
+    /**
+     * Remove a team from the list of teams in the league, if the specified teamName isn't present in this
+     * league, this becomes a no-op. Team can only be removed if it has no members except for the owner
      * @param teamName: Name of the team to remove.
+     * @throws IllegalStateException if Team to be deleted has more members than the owner
      */
     public void removeTeam(String teamName) {
-        for (Team team : teams) {
-            if (team.getName().equals(teamName)) {
-                teams.remove(team);
+        // TODO make sure that team to be removed has no members except the owner, need to read in Team off the database
+        // TODO could also remove all members from team once team is to be removed
+        // delete TeamInfo from league locally
+        for (TeamInfo currentInfo : teamsInfo) {
+            if (currentInfo.getName().equals(teamName)) {
+                teamsInfo.remove(currentInfo);
+                // TODO remove TeamInfo from league on the database
+                // TODO remove Team from the database
             }
         }
     }
@@ -137,6 +180,7 @@ public class League {
      */
     public void sortTeams() {
         // TODO 18/01/2020 Sort teams based on the standings of teams.
+        // TODO could store wins with each TeamInfo object so TeamInfos can be sorted
     }
 
 
@@ -146,15 +190,24 @@ public class League {
      */
     @NonNull
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("League Name: " + this.name + "\n");
-        sb.append("Owner: " + this.owner.getFirstName() + " " + this.owner.getLastName() + "\n");
-        sb.append("Sport: " + this.sport + "\n");
-        sb.append("Description: " + this.description + "\n");
-        sb.append("Teams:");
-        for (Team team : this.teams) {
-            sb.append("\n\t" + team.getName());
+        return this.getName();
+    }
+
+    /**
+     * Determines if this League is equal to another object
+     * @param other: Object being compared to this league
+     * @return boolean true if other is equal to this league, false if other isn't equal to this league
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof League){
+            // compare league fields, equal leagues have same: name, sport, description, teams, and owner
+            League otherLeague = (League) other;
+            boolean teamsEqual = this.teamsInfo.equals(otherLeague.getTeamInfos());
+            boolean ownerEqual = this.ownerInfo.equals(otherLeague.getOwnerInfo());
+            return teamsEqual && ownerEqual && this.description.equals(otherLeague.description) && this.name.equals(otherLeague.name) && this.sport.equals(otherLeague.sport);
         }
-        return sb.toString();
+        // other isn't a league, cannot be equal to this league
+        return false;
     }
 }
