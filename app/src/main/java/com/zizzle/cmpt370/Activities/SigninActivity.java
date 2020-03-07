@@ -52,7 +52,7 @@ public class SigninActivity extends AppCompatActivity {
                 FirebaseUser mfirebaseUser = mFirebaseAuth.getCurrentUser();
 
                 if (mfirebaseUser != null) {
-                    Intent intoMain = new Intent(SigninActivity.this, HomeActivity.class);
+                    Intent intoMain = new Intent(SigninActivity.this, ProfileActivity.class);
                     intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intoMain);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
