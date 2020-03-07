@@ -13,15 +13,17 @@
         <activity android:name=".Activities.TeamActivity" />
         <activity android:name=".Activities.AboutUsActivity" />
         <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.SigninActivity" />
+        <activity android:name=".Activities.SigninActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+            <!-- Below Line hides the warning given by Android Studio -->
+            <action android:name="android.intent.action.VIEW" />
+        </intent-filter>
+        </activity>
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <!-- Below Line hides the warning given by Android Studio -->
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
