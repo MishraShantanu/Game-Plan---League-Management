@@ -23,7 +23,6 @@
         </activity>
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.HomeActivity"/>
-        <activity android:name=".Activities.LeagueActivity"
         <activity
             android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
