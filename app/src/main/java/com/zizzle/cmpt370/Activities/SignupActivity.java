@@ -96,7 +96,7 @@ public class SignupActivity extends AppCompatActivity {
                                             }
                                         });
                                 // head to main activity
-                                Intent intoMain = new Intent(SignupActivity.this, homepageWithMenu.class);
+                                Intent intoMain = new Intent(SignupActivity.this, HomeActivity.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
