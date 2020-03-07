@@ -15,7 +15,7 @@
         android:minHeight="100dp"
         android:minWidth="100dp"
         android:indeterminate="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:progress="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -30,7 +30,7 @@
         android:textSize="24dp"
         android:paddingLeft="35dp"
         android:paddingRight="35dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:textAlignment="center"/>
 
     <!-- list of teams that the user is a member of-->
