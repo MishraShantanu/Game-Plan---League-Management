@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -9,6 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
@@ -57,13 +68,11 @@ public class TeamsPop extends Activity {
                 }
 
                 else {
-                    // TODO 24/02/2020 - Replace tempUser with the current user of the app.
-                    Member currentUser = new Member("Mike Tyson", "bigmike@punchface.gov", "12312312312","UID67755");
+                    MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo(); // TODO update team constructor to take league info
+
                     // TODO get league from previous activity
-                    //Team newTeam = new Team(nameOfTeam, currentUser, sportForTeam);
-
+                    // Team newTeam = new Team(nameOfTeam, currentUserInfo, sportForTeam, );
                     // TODO 24/02/2020 - Insert new team into team list, send to database.
-
                     finish();
                 }
             }

@@ -90,6 +90,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
 
         // list of leagues =========================================================================
+
         leagueNames = new ArrayList<>();
 
         // get a reference to the leagues on the database
@@ -115,8 +116,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // TODO operation couldn't be completed, diplay some information to user
-
+                // Firebase failed to fetch the data requested
+                // TODO display some sort of error message to the user
             }
         });
 
@@ -143,13 +144,14 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 // listItemPosition is the array index for the leagues array. can be used such as:
                 // leagues.get(listItemPosition)
                 // TODO 18/02/2020 - Give ListView items functionality
-
-                startActivity(new Intent(LeagueActivity.this, TeamsActivity.class));
+                Intent teamsIntent = new Intent(LeagueActivity.this, TeamsActivity.class);
+                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+                teamsIntent.putExtra("LEAGUE_CLICKED",clickedLeagueName);
+                startActivity(teamsIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 // this was used for testing. can b removed later.
                 Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeagueName, Toast.LENGTH_SHORT).show();
-                // TODO can read in the league clicked using Storage.readLeague()
             }
         });
 
