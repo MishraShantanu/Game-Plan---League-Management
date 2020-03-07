@@ -31,13 +31,13 @@ public class League {
     /**
      * Constructor for league object.
      * @param name: Name of the league.
-     * @param owner: Member that owns the league.
+     * @param ownerInfo: MemberInfo object, containing information of the member that owns the league.
      * @param sport: Type of the sport that the league plays.
      * @param description: Description of the league.
      */
-    public League(String name, Member owner, String sport, String description) {
+    public League(String name, MemberInfo ownerInfo, String sport, String description) {
         this.name = name;
-        this.ownerInfo = new MemberInfo(owner);
+        this.ownerInfo = ownerInfo;
         this.sport = sport;
         this.description = description;
         this.teamsInfo = new ArrayList<>();
@@ -110,8 +110,7 @@ public class League {
      */
     public void setOwner(Member newOwner) {
         this.ownerInfo = new MemberInfo(newOwner);
-        // update database to reflect this new owner
-        Storage.updateLeagueField(this,Storage.LEAGUE_OWNER,newOwner);
+        // TODO update database to reflect this new owner
     }
 
 
@@ -121,8 +120,7 @@ public class League {
      */
     public void setSport(String sport) {
         this.sport = sport;
-        // update database to reflect this new sport
-        Storage.updateLeagueField(this,Storage.LEAGUE_SPORT,sport);
+        // TODO update database to reflect this new sport
     }
 
 
@@ -132,8 +130,7 @@ public class League {
      */
     public void setDescription(String description) {
         this.description = description;
-        // update the database to reflect the new description
-        Storage.updateLeagueField(this,Storage.LEAGUE_DESCRIPTION,description);
+        // TODO update the database to reflect the new description
     }
 
 
