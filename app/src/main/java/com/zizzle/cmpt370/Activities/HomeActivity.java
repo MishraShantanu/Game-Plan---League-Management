@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,11 +89,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         currentUserReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Remove the progress bar once leagues have been fetched
+                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                leagueLoading.setVisibility(View.GONE);
+
                 // called to read data, get the list of teams the member is a part of
                 Member currentMember = dataSnapshot.getValue(Member.class);
                 teamsInfo = currentMember.getTeamsInfo();
                 teamArrayAdapter.notifyDataSetChanged();
                 // TODO could store the currentMember locally here, might be nice to have stored
+
+                // if not apart of a team, display no team text
+                if (teamsInfo.isEmpty()) {
+                    TextView noTeam = findViewById(R.id.no_team_text);
+                    noTeam.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override

@@ -5,7 +5,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".Activities.HomeActivity"
+    android:gravity="center_horizontal"
     tools:showIn="@layout/activity_home">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:id="@+id/progressbar_loading"
+        android:layout_marginTop="250dp"
+        android:minHeight="100dp"
+        android:minWidth="100dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:progress="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/no_team_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="250dp"
+        android:text="Looking for a team?\n\nCheckout the Leagues tab to get started."
+        android:textColor="@color/colorText"
+        android:textSize="24dp"
+        android:paddingLeft="35dp"
+        android:paddingRight="35dp"
+        android:visibility="visible"
+        android:textAlignment="center"/>
 
     <!-- list of teams that the user is a member of-->
     <ListView
