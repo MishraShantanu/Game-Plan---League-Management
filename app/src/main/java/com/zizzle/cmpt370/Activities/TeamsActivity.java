@@ -115,8 +115,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             leagueReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // called when a new team is added to this league, we want to add this new team to the list of teams
-                    teams.add(dataSnapshot.getValue(TeamInfo.class));
+                    // called when a new team is added to this league, we want to add this new team to the front of the list of teams
+                    teams.add(0,dataSnapshot.getValue(TeamInfo.class));
                     teamArrayAdapter.notifyDataSetChanged();
                 }
 

@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,23 +83,40 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         teamsInfo = new ArrayList<>();
         final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
-        // read in the current user from the database
-        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
-        // this listener will read from the database once initially and again whenever the current user is updated on the database
-        currentUserReference.addValueEventListener(new ValueEventListener() {
+        // read in the current user's teams from the database
+        DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
+
+        userTeamsReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // called to read data, get the list of teams the member is a part of
-                Member currentMember = dataSnapshot.getValue(Member.class);
-                teamsInfo = currentMember.getTeamsInfo();
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // called when the user is added to a team, when a user's join request for some team has been accepted for example
+                // add this new team to the top of the list of teams the user is a part of
+                teamsInfo.add(0,dataSnapshot.getValue(TeamInfo.class));
                 teamArrayAdapter.notifyDataSetChanged();
-                // TODO could store the currentMember locally here, might be nice to have stored
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // called when one of the teams the user is a part of is changed, for example if its name or members changed
+                // do nothing, may want to update a team if its name has changed
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                // called when the user has been removed from a team, remove this team from the display
+                teamsInfo.remove(dataSnapshot.getValue(TeamInfo.class));
+                teamArrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                // called when a team is moved on the database, do nothing
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // called when an error has occurred reading from the database
-                // TODO display some error message here
+                // called if database operations fail, display some error message
+                Toast.makeText(HomeActivity.this, "Couldn't connect to the database, please try again later", Toast.LENGTH_SHORT).show();
             }
         });
 
