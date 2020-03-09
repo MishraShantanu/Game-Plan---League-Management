@@ -30,7 +30,7 @@ public class MemberInfo implements InfoInterface, Serializable {
      * @param userID: String user ID of the user
      */
     public MemberInfo(String name, String userID){
-        name = name;
+        this.name = name;
         databaseKey = userID;
     }
 
