@@ -101,6 +101,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         leagueDBReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // first clear our list of league names in case a league is added, we don't want the same leagues to be displayed twice
+                leagueNames.clear();
                 // method called when data is read from the database, get all league names
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     // Remove the progress bar once leagues have been fetched
