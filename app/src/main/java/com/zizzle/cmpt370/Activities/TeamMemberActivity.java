@@ -22,11 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
-import com.zizzle.cmpt370.Model.League;
-import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
-import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.Storage;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,7 +63,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
         //TODO Mar. 4 2020: change this to get member from the database
 
         // the clicked on member is passed via intent
-        MemberInfo clickedMemberInfo = (MemberInfo)getIntent().getSerializableExtra("CLICKED_MEMBER");
+        final MemberInfo clickedMemberInfo = (MemberInfo)getIntent().getSerializableExtra("CLICKED_MEMBER");
 
         // read the clicked member in from the database
         DatabaseReference clickedMemberReference = FirebaseDatabase.getInstance().getReference().child("users").child(clickedMemberInfo.getDatabaseKey());
@@ -107,7 +106,6 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // called when database operations fail, display an error message
                 Toast.makeText(TeamMemberActivity.this, "Cannot connect to database, please try again later", Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -119,9 +117,10 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
         removePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO 07/03/2020 - Remove the member from the team.
-
+                // remove the team member from the team
+                TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+                Storage.removeMemberFromTeam(clickedMemberInfo,currentTeamInfo);
+                Toast.makeText(TeamMemberActivity.this, "Team member removed successfully", Toast.LENGTH_SHORT).show();
             }
         });
 
