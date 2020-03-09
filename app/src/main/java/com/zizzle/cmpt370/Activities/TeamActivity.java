@@ -120,12 +120,18 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called to read in data
+                // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
+                membersInfo.clear();
                 Team currentTeam = dataSnapshot.getValue(Team.class);
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
                 final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
                 ownerButton.setText("  " + ownerInfo.getName());
                 // display the members of the team
-                membersInfo.addAll(currentTeam.getTeamMembersInfo());
+                // TODO this is a short term fix, getMembersInfo was returning null when called from this team
+                for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
+                    // each ds now holds a MemberInfo object
+                    membersInfo.add(ds.getValue(MemberInfo.class));
+                }
                 memberArrayAdapter.notifyDataSetChanged();
 
                 // clicking on a team in the ListView is handled in here.
@@ -151,7 +157,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                         // TODO what to do if the user clicks on themselves, should this take them to the profile page, should the user even be allowed to click themselves??
                         teamMemberIntent.putExtra("CLICKED_MEMBER",clickedMemberInfo);
                         // add the owner's info of this team to the intent also
-                        teamMemberIntent.putExtra("OWNERINFO",ownerInfo);
+                        teamMemberIntent.putExtra("OWNER_INFO",ownerInfo);
                         startActivity(teamMemberIntent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
