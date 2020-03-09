@@ -65,6 +65,10 @@ public class Team {
         this.scheduledGames = new ArrayList<>();
     }
 
+    public Team(){
+
+    }
+
     /**
      * Retrieves the name of the team.
      * @return String name of the team.
@@ -198,7 +202,12 @@ public class Team {
      * @return HashSet containing info of the members of the team
      */
     public ArrayList<MemberInfo> getTeamMembersInfo(){
-        // convert the values of our map into an arraylist
+        // if there are no members on this team, and we read this object from the database, membersInfoMap will be null
+        if(this.membersInfoMap == null){
+            // in this case just return an empty arraylist, as there are no members on the team
+            return new ArrayList<>();
+        }
+        // otherwise convert the values of our map into an arraylist
         return new ArrayList<>(this.membersInfoMap.values());
     }
 
