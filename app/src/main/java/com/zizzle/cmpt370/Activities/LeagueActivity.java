@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -102,6 +103,10 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // method called when data is read from the database, get all league names
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    // Remove the progress bar once leagues have been fetched
+                    ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                    leagueLoading.setVisibility(View.GONE);
+
                     // the key of each league is the league's name
                     String leagueName = ds.getKey();
                     leagueNames.add(leagueName);

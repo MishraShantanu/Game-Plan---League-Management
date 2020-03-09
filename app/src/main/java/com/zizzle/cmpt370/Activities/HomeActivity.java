@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,40 +88,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         // read in the current user's teams from the database
         DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
 
-        userTeamsReference.addChildEventListener(new ChildEventListener() {
+        userTeamsReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // called when the user is added to a team, when a user's join request for some team has been accepted for example
-                // add this new team to the top of the list of teams the user is a part of
-                teamsInfo.add(0,dataSnapshot.getValue(TeamInfo.class));
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Remove the progress bar once leagues have been fetched
+                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                leagueLoading.setVisibility(View.GONE);
+
+                // called to read data, get the list of teams the member is a part of
+                // first clear this list as this list may be updated as new teams are added and removed
+                teamsInfo.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    teamsInfo.add(ds.getValue(TeamInfo.class));
+                }
                 teamArrayAdapter.notifyDataSetChanged();
+
             }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // called when one of the teams the user is a part of is changed, for example if its name or members changed
-                // do nothing, may want to update a team if its name has changed
-            }
 
             @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                // called when the user has been removed from a team, remove this team from the display
-                teamsInfo.remove(dataSnapshot.getValue(TeamInfo.class));
-                teamArrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // called when a team is moved on the database, do nothing
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // called if database operations fail, display some error message
-                Toast.makeText(HomeActivity.this, "Couldn't connect to the database, please try again later", Toast.LENGTH_SHORT).show();
+            public void onCancelled(DatabaseError databaseError){
+                // called when database operations fail,
             }
         });
-
 
         // Display ListView contents.
         teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);

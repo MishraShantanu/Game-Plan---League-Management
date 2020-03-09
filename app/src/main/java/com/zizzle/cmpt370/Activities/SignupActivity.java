@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
+
 public class SignupActivity extends AppCompatActivity {
     EditText emailId, password, displayName;
     Button buttonSignup;
