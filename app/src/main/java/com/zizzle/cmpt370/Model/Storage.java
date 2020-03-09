@@ -246,6 +246,18 @@ public class Storage {
     }
 
     /**
+     * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team
+     * @param memberInfo: MemberInfo object representing the member to remove from the team
+     * @param teamInfo: TeamInfo object representing the team to remove from the member
+     */
+    public static void removeMemberFromTeam(MemberInfo memberInfo, TeamInfo teamInfo){
+        // remove the team from the member
+        database.child("users").child(memberInfo.getDatabaseKey()).child("teamInfoMap").child(teamInfo.getDatabaseKey()).removeValue();
+        // remove the member from the team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
+    }
+
+    /**
      * Removes the input Member from the input team, the Member cannot be owner of this team, the input team
      * is removed from the input member and the member is deleted from the team
      * @param memberToRemove: Member object, member to be removed from the team
