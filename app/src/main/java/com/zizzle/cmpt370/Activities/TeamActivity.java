@@ -151,6 +151,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // TODO 18/02/2020 - Give ListView items functionality
                 // TODO create an activity listing information about the team we've clicked on
 
+
+                startActivity(new Intent(TeamActivity.this, TeamMemberActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
                 Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });

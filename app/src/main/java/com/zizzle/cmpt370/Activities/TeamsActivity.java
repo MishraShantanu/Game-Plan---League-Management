@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +24,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -108,22 +110,37 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             getSupportActionBar().setTitle(selectedLeague);
 
             // read the selectedLeague in from the database
-            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
+            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
             // this will read from the database once and whenever the selected league is updated
-            leagueReference.addValueEventListener(new ValueEventListener() {
+            leagueReference.addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // called to read data from the database, data is read asynchronously
-                    final League currentLeague = dataSnapshot.getValue(League.class);
-                    // manually update our arraylist of teams to include the TeamInfos read from this league
-                    teams.addAll(currentLeague.getTeamInfos());
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    // called when a new team is added to this league, we want to add this new team to the list of teams
+                    teams.add(dataSnapshot.getValue(TeamInfo.class));
                     teamArrayAdapter.notifyDataSetChanged();
                 }
 
                 @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    // do nothing, may want to update teams displayed if the name of a team is changed
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    // remove the deleted team from our list
+                    teams.remove(dataSnapshot.getValue(TeamInfo.class));
+                    teamArrayAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    // do nothing, teams won't really be moved
+                }
+
+                @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // error while reading from the database
-                    // TODO add some error message here
+                    // database operation failed
+                    Toast.makeText(TeamsActivity.this, "Cannot access database, please try again later", Toast.LENGTH_SHORT).show();
                 }
             });
         }

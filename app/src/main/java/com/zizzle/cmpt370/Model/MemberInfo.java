@@ -12,7 +12,7 @@ public class MemberInfo implements InfoInterface, Serializable {
 
     /** String key into the database where the Member represented by this object can be accessed, must be used
      * from the correct path in the database */
-    private String databaseKey;  
+    private String databaseKey;
 
     /**
      * Creates a MemberInfo object that stores information about the input member
