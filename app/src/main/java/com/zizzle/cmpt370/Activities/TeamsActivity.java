@@ -75,18 +75,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // add team button =======================================================================
 
-        // launches a pop-up for adding a new class.
-        FloatingActionButton addTeam = findViewById(R.id.add_team_button);
-        addTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO pass the current League object to the popup activity
-                startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            }
-        });
 
 
         // list of teams =========================================================================
@@ -102,22 +91,32 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // TODO what to do about this error?
         }
         else{
-            String selectedLeague = extras.getString("LEAGUE_CLICKED");
+            final String selectedLeague = extras.getString("LEAGUE_CLICKED");
+            // add the click listener for the add team button here as we need to pass the current league name
+            // read from the database through to the popup
+            FloatingActionButton addTeam = findViewById(R.id.add_team_button);
+            addTeam.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent popupIntent = new Intent(TeamsActivity.this, TeamsPop.class);
+                    popupIntent.putExtra("CURRENT_LEAGUE_NAME", selectedLeague);
+                    startActivity(popupIntent);
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }
+            });
             // set title to that of the clicked on league
             getSupportActionBar().setTitle(selectedLeague);
 
             // read the selectedLeague in from the database
-            Log.d("LeagueClicked",selectedLeague);
             DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
             // this will read from the database once and whenever the selected league is updated
             leagueReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // called to read data from the database, data is read asynchronously
-                    League currentLeague = dataSnapshot.getValue(League.class);
-                    Log.d("currentLeague",currentLeague.toString());
-                    // list the teams of this league
-                    teams = currentLeague.getTeamInfos();
+                    final League currentLeague = dataSnapshot.getValue(League.class);
+                    // manually update our arraylist of teams to include the TeamInfos read from this league
+                    teams.addAll(currentLeague.getTeamInfos());
                     teamArrayAdapter.notifyDataSetChanged();
                 }
 
