@@ -158,6 +158,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                         teamMemberIntent.putExtra("CLICKED_MEMBER",clickedMemberInfo);
                         // add the owner's info of this team to the intent also
                         teamMemberIntent.putExtra("OWNER_INFO",ownerInfo);
+                        // add the current teamInfo to the intent
+                        teamMemberIntent.putExtra("TEAM_INFO",currentTeamInfo);
                         startActivity(teamMemberIntent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
