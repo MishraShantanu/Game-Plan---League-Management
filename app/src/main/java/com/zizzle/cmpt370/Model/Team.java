@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -16,8 +17,8 @@ public class Team {
     /** Sport the team is playing */
     private String sport;
 
-    /** Info about Members of the team */
-    private ArrayList<MemberInfo> membersInfo;
+    /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
+    private HashMap<String,MemberInfo> membersInfoMap;
 
     /** Games previously played by the team, this list is ordered so games towards the front of the
      * list are more recent than those at the back */
@@ -55,9 +56,8 @@ public class Team {
         this.name = name;
         this.ownerInfo = ownerInfo;
         this.sport = sport;
-        this.membersInfo = new ArrayList<>();
-        // add the owner to the team, this also updates database
-        setOwner(ownerInfo);
+        this.membersInfoMap = new HashMap<>();
+        this.ownerInfo = ownerInfo;
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
@@ -111,8 +111,8 @@ public class Team {
      */
     public void setOwner(MemberInfo newOwnerInfo){
         // if newOwner isn't on the team, add them to the team members
-        if(! membersInfo.contains(newOwnerInfo)){
-            membersInfo.add(newOwnerInfo);
+        if(! membersInfoMap.containsKey(newOwnerInfo.getDatabaseKey())){
+            membersInfoMap.put(newOwnerInfo.getDatabaseKey(),newOwnerInfo);
             // update this team on the database to include this new member
         }
         this.ownerInfo = newOwnerInfo;
@@ -130,7 +130,7 @@ public class Team {
     public void removeMember(Member memberToRemove) throws IllegalStateException, IllegalArgumentException{
         // make sure memberToRemove is on the team
         MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
-        if(! this.membersInfo.contains(memberToRemoveInfo)){
+        if(! this.membersInfoMap.containsKey(memberToRemoveInfo.getDatabaseKey())){
             throw new IllegalArgumentException("Team: Member: " + memberToRemove.getDisplayName() + " to remove from team: "
                     + this.name + " isn't a member of the team");
         }
@@ -140,7 +140,7 @@ public class Team {
                     this.name + " as this Member is the owner of the team");
         }
 
-        this.membersInfo.remove(memberToRemoveInfo);
+        this.membersInfoMap.remove(memberToRemoveInfo.getDatabaseKey());
         // TODO remove memberToRemove from this team on the database
     }
 
@@ -175,7 +175,7 @@ public class Team {
      */
     public boolean teamHasMember(Member member){
         // TODO: could take in memberInfo
-        return this.membersInfo.contains(new MemberInfo(member));
+        return this.membersInfoMap.containsKey(member.getUserID());
     }
 
     /**
@@ -188,7 +188,7 @@ public class Team {
             throw new IllegalStateException("Member: " + newMember.toString() + " is already on this team");
         }
         MemberInfo newMemberInfo = new MemberInfo(newMember);
-        this.membersInfo.add(newMemberInfo);
+        this.membersInfoMap.put(newMemberInfo.getDatabaseKey(),newMemberInfo);
         // TODO add this new member to the database for this team
     }
 
@@ -198,27 +198,17 @@ public class Team {
      * @return HashSet containing info of the members of the team
      */
     public ArrayList<MemberInfo> getTeamMembersInfo(){
-        // TODO this is dangerous as it returns a reference to an object attribute, should probably shallow clone this
-        return this.membersInfo;
+        // convert the values of our map into an arraylist
+        return new ArrayList<>(this.membersInfoMap.values());
     }
 
     /**
-     * Returns the Member who has the specified name from the team
-     * @param memberName: String name of a Member on the team, this name must belong to a Member on the team
-     * @return Member with the name input
-     * @throws IllegalArgumentException if memberName doesn't belong to any Member on the team
+     * Returns the MemberInfo who has the specified user ID from the team
+     * @param userID: String user ID of a Member on the team, if this user ID doesn't belong to a member on the team null is returned
+     * @return MemberInfo representing a member with the input userID
      */
-    public Member getMemberByFirstName(String memberName) throws IllegalArgumentException{
-        // linear search the list of team members for the input name
-        for(MemberInfo currentMemberInfo : this.membersInfo){
-            if(currentMemberInfo.getName().equals(memberName)){
-                // Member found, read the member object in from the database
-                return Storage.readMember(currentMemberInfo);
-            }
-        }
-        // Member not found
-        // TODO could also return null here
-        throw new IllegalArgumentException("Team: Member with name '" + memberName + "' not on team: " + this.name);
+    public MemberInfo getMemberInfoByUserID(String userID) {
+        return this.membersInfoMap.get(userID);
     }
 
     /**
