@@ -24,8 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.NonScrollableListView;
@@ -40,6 +42,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
     /** Adapter for search bar. */
     ArrayAdapter memberArrayAdapter;
+
+    /** TeamInfo object representing the current team whose page the user is on*/
+    TeamInfo currentTeamInfo;
 
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
@@ -57,7 +62,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
         // get the TeamInfo object stored in the intent
-        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
+        currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
 
         // set the title to the name of the clicked team
         getSupportActionBar().setTitle(currentTeamInfo.getName());
@@ -217,7 +222,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
         int id = item.getItemId();
         if (id == R.id.join_team_button) { //Join Team Text/Button was clicked
-            Toast.makeText(TeamActivity.this, "JOIN TEAM", Toast.LENGTH_SHORT).show();
+            // add the current user to the current team
+            MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+            // add this current user to the current team, and the current team to the current user
+            // we don't need to check if the user is already part of this team, we just rewrite values that are already there in that case
+            Storage.addTeamToMember(currentUserInfo,currentTeamInfo);
             return true;
         }
 
