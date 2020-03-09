@@ -228,8 +228,8 @@ public class Storage {
     public static void addTeamToLeague(LeagueInfo parentLeagueInfo, TeamInfo newTeamInfo){
         // assume the input team is valid to add to this league
         // add the team to the league, and the league to the team
-        database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child(newTeamInfo.getName()).setValue(newTeamInfo);
-        database.child("Teams").child(newTeamInfo.getDatabaseKey()).child(parentLeagueInfo.getName()).setValue(parentLeagueInfo);
+        database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName()).setValue(newTeamInfo);
+        database.child("Teams").child(newTeamInfo.getDatabaseKey()).child("leagueInfo").child(parentLeagueInfo.getName()).setValue(parentLeagueInfo);
     }
 
     // TODO method to add a member to a team and league on the database, if a user joins a team, this team must also be added to the member on the database
