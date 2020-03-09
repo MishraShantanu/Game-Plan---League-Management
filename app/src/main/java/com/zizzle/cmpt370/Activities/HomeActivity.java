@@ -37,6 +37,8 @@ import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -101,8 +103,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     teamsInfo.add(ds.getValue(TeamInfo.class));
                 }
-                teamArrayAdapter.notifyDataSetChanged();
 
+                // If user is on teams, show their teams.
+                if (!teamsInfo.isEmpty()) {
+                    TextView myTeamsText = findViewById(R.id.my_teams_text);
+                    myTeamsText.setVisibility(View.VISIBLE);
+                    View myTeamsDivider = findViewById(R.id.my_teams_div);
+                    myTeamsDivider.setVisibility(View.VISIBLE);
+                }
+                // If user not on any teams, show sad text.
+                else {
+                    TextView noTeamText = findViewById(R.id.no_team_text);
+                    noTeamText.setVisibility(View.VISIBLE);
+                }
+
+                // Show the teams found.
+                teamArrayAdapter.notifyDataSetChanged();
             }
 
 
@@ -131,9 +147,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // TeamInfo object that was clicked.
                 TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO Feb. 26, 2020 - Give ListView items functionality
+                // Intent for the team clicked.
                 Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
                 // pass the clicked TeamInfo to the Team page through this intent
                 teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
