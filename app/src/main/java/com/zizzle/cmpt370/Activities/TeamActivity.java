@@ -24,8 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.NonScrollableListView;
@@ -41,9 +43,13 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     /** Adapter for search bar. */
     ArrayAdapter memberArrayAdapter;
 
+    /** TeamInfo object representing the current team whose page the user is on*/
+    TeamInfo currentTeamInfo;
+
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
+    private NonScrollableListView teamList;
 
 
     @Override
@@ -57,7 +63,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
         // get the TeamInfo object stored in the intent
-        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
+        currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
 
         // set the title to the name of the clicked team
         getSupportActionBar().setTitle(currentTeamInfo.getName());
@@ -92,7 +98,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
 
         // owner button ==========================================================================
-        Button ownerButton = findViewById(R.id.owner_button);
+        final Button ownerButton = findViewById(R.id.owner_button);
         ownerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,10 +120,52 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called to read in data
+                // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
+                membersInfo.clear();
                 Team currentTeam = dataSnapshot.getValue(Team.class);
-                membersInfo = currentTeam.getTeamMembersInfo();
+                // set the text of the owner button to the owner's name, add 2 spaces to center the name
+                final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
+                ownerButton.setText("  " + ownerInfo.getName());
+                // display the members of the team
+                // TODO this is a short term fix, getMembersInfo was returning null when called from this team
+                for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
+                    // each ds now holds a MemberInfo object
+                    membersInfo.add(ds.getValue(MemberInfo.class));
+                }
                 memberArrayAdapter.notifyDataSetChanged();
 
+                // clicking on a team in the ListView is handled in here.
+                teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    /**
+                     * performs an action when a ListView item is clicked.
+                     * @param listItemPosition the index of position for the item in the ListView
+                     */
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                        // MemberInfo object that was clicked.
+                        MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
+
+                        // listItemPosition is the array index for the teams array. can be used such as:
+                        // teams.get(listItemPosition)
+                        // TODO 18/02/2020 - Give ListView items functionality
+                        // TODO create an activity listing information about the team we've clicked on
+
+                        // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                        Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                        // TODO what to do if the user clicks on themselves, should this take them to the profile page, should the user even be allowed to click themselves??
+                        teamMemberIntent.putExtra("CLICKED_MEMBER",clickedMemberInfo);
+                        // add the owner's info of this team to the intent also
+                        teamMemberIntent.putExtra("OWNER_INFO",ownerInfo);
+                        // add the current teamInfo to the intent
+                        teamMemberIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                        startActivity(teamMemberIntent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                        Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -130,31 +178,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         // Display ListView contents.
         memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, membersInfo);
-        NonScrollableListView teamList = findViewById(R.id.members_list);
+        teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * performs an action when a ListView item is clicked.
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // MemberInfo object that was clicked.
-                MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
-
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO 18/02/2020 - Give ListView items functionality
-                // TODO create an activity listing information about the team we've clicked on
-
-                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
@@ -211,7 +237,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
         int id = item.getItemId();
         if (id == R.id.join_team_button) { //Join Team Text/Button was clicked
-            Toast.makeText(TeamActivity.this, "JOIN TEAM", Toast.LENGTH_SHORT).show();
+            // add the current user to the current team
+            MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+            // add this current user to the current team, and the current team to the current user
+            // we don't need to check if the user is already part of this team, we just rewrite values that are already there in that case
+            Storage.addTeamToMember(currentUserInfo,currentTeamInfo);
             return true;
         }
 

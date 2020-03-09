@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.R;
 
 public class SigninActivity extends AppCompatActivity {
@@ -56,6 +57,8 @@ public class SigninActivity extends AppCompatActivity {
                     intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intoMain);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } else {
+                    Toast.makeText(SigninActivity.this, "Please Login", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -123,6 +126,8 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        // refresh the current user's member info to get rid of any stale values before the new user signs on
+        CurrentUserInfo.RefreashMemberInfo();
         mFirebaseAuth.addAuthStateListener(mAuthstatelistner);
     }
 }

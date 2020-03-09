@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -83,10 +85,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         teamsInfo = new ArrayList<>();
         final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
-        // read in the current user from the database
-        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
-        // this listener will read from the database once initially and again whenever the current user is updated on the database
-        currentUserReference.addValueEventListener(new ValueEventListener() {
+        // read in the current user's teams from the database
+        DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
+
+        userTeamsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Remove the progress bar once leagues have been fetched
@@ -94,25 +96,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 leagueLoading.setVisibility(View.GONE);
 
                 // called to read data, get the list of teams the member is a part of
-                Member currentMember = dataSnapshot.getValue(Member.class);
-                 teamsInfo = currentMember.getTeamsInfo();
-                teamArrayAdapter.notifyDataSetChanged();
-                // TODO could store the currentMember locally here, might be nice to have stored
-
-                // if not apart of a team, display no team text
-                if (teamsInfo.isEmpty()) {
-                    TextView noTeam = findViewById(R.id.no_team_text);
-                    noTeam.setVisibility(View.VISIBLE);
+                // first clear this list as this list may be updated as new teams are added and removed
+                teamsInfo.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    teamsInfo.add(ds.getValue(TeamInfo.class));
                 }
+                teamArrayAdapter.notifyDataSetChanged();
+
             }
+
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // called when an error has occurred reading from the database
-                // TODO display some error message here
+            public void onCancelled(DatabaseError databaseError){
+                // called when database operations fail,
             }
         });
-
 
         // Display ListView contents.
         teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);
@@ -131,16 +129,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
                 // TeamInfo object that was clicked.
-                TeamInfo clickedTeam = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
+                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO Feb. 26, 2020 - Give ListView items functionality
-
-                startActivity(new Intent(HomeActivity.this, TeamActivity.class));
+                Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
+                // pass the clicked TeamInfo to the Team page through this intent
+                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeamInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

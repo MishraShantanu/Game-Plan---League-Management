@@ -2,13 +2,15 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
  * League class for holding the information about a league.
  */
-public class League {
+public class League implements Serializable {
 
     /** Name of the league. */
     private String name;
@@ -23,9 +25,9 @@ public class League {
     private String description;
 
     /**
-     * Teams involved in the league.
+     * Map associating string team names with TeamInfo objects
      */
-    private ArrayList<TeamInfo> teamsInfo;
+    private HashMap<String,TeamInfo> teamsInfoMap;
 
 
     /**
@@ -40,7 +42,7 @@ public class League {
         this.ownerInfo = ownerInfo;
         this.sport = sport;
         this.description = description;
-        this.teamsInfo = new ArrayList<>();
+        this.teamsInfoMap = new HashMap<>();
     }
 
     /**
@@ -94,7 +96,15 @@ public class League {
      * Retrieves a list of TeamInfo objects for the teams of the league
      * @return list of TeamInfo for the teams in the league.
      */
-    public ArrayList<TeamInfo> getTeamInfos() { return teamsInfo; }
+    public ArrayList<TeamInfo> getTeamInfos() {
+        // this.teamsInfoMap may be null if we've don't yet have any teams and have read this league from the database
+        if(this.teamsInfoMap == null){
+            // if this is the case, simply return an empty arraylist
+            return new ArrayList<>();
+        }
+        // otherwise create an arraylist from the values of our hashmap
+        return new ArrayList<>(this.teamsInfoMap.values());
+    }
 
 
     /**
@@ -142,9 +152,8 @@ public class League {
     public void addTeam(Team team) throws IllegalStateException, IllegalArgumentException{
         // represent this team with a TeamInfo object
         TeamInfo newTeamInfo = new TeamInfo(team);
-        // ensure that the new team is unique in this league, if the TeamInfo for this new team is
-        // unique, the team must be unique
-        if(this.teamsInfo.contains(newTeamInfo)){
+        // ensure that the new team is unique in this league, if this team has a unique name, it is considered to be unique
+        if(this.teamsInfoMap.containsKey(newTeamInfo.getName())){
             // team name isn't unique
             throw new IllegalArgumentException("Team: " + team.getName() + " cannot be added to league: " + this.getName() + " another team with this name already exists");
         }
@@ -162,13 +171,7 @@ public class League {
         // TODO make sure that team to be removed has no members except the owner, need to read in Team off the database
         // TODO could also remove all members from team once team is to be removed
         // delete TeamInfo from league locally
-        for (TeamInfo currentInfo : teamsInfo) {
-            if (currentInfo.getName().equals(teamName)) {
-                teamsInfo.remove(currentInfo);
-                // TODO remove TeamInfo from league on the database
-                // TODO remove Team from the database
-            }
-        }
+        this.teamsInfoMap.remove(teamName);
     }
 
 
@@ -200,7 +203,7 @@ public class League {
         if(other instanceof League){
             // compare league fields, equal leagues have same: name, sport, description, teams, and owner
             League otherLeague = (League) other;
-            boolean teamsEqual = this.teamsInfo.equals(otherLeague.getTeamInfos());
+            boolean teamsEqual = this.getTeamInfos().equals(otherLeague.getTeamInfos());
             boolean ownerEqual = this.ownerInfo.equals(otherLeague.getOwnerInfo());
             return teamsEqual && ownerEqual && this.description.equals(otherLeague.description) && this.name.equals(otherLeague.name) && this.sport.equals(otherLeague.sport);
         }

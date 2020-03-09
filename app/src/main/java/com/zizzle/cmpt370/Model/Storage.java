@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.InputMismatchException;
@@ -168,24 +169,15 @@ public class Storage {
 
 
     /**
-     * Adds the input team to the database, this team is also added to its parent league, and any members
-     * present on this team have their database entries updated to reflect this new team
+     * Adds the input team to the database
      * @param newTeam: Team to be added to the database
      */
     public static void writeTeam(Team newTeam){
         // assume newTeam already has a unique name for the league it's in
-        // use a TeamInfo object to get the key to store the Team with
         TeamInfo newTeamInfo = new TeamInfo(newTeam);
+        // write the team to the database
         database.child("Teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeam);
 
-        LeagueInfo parentLeagueInfo = newTeam.getLeagueInfo();
-        // add this new team to the parent league in the database
-        database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfo").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
-
-        // add this new team to each member of the team on the database
-        for(MemberInfo currentMemberInfo : newTeam.getTeamMembersInfo()){
-            database.child("users").child("teamsInfo").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
-        }
     }
 
 
@@ -197,7 +189,6 @@ public class Storage {
         // new member is added at the path /Users/memberEmail/
         // assume the member being added has a unique email address
         database.child("users").child(member.getUserID()).setValue(member);
-        // TODO if member is part of any teams, add these to the new member on database
     }
 
 
@@ -228,19 +219,43 @@ public class Storage {
         return retrievedMember;
     }
 
-
-    public static void addTeamToLeague(League league, Team newTeam){
-        LeagueInfo leagueInfo = new LeagueInfo(league);
-        TeamInfo newTeamInfo = new TeamInfo(newTeam);
-        // determine length of the list of teams for this league, add new league to the end of this list
-        // assume the team has been added to this league locally
-        Integer arrayKey = (Integer) league.getTeamInfos().size()-1;
-        String arrayKeyString = arrayKey.toString();
-        // TODO race condition if 2 users call this function at the same time, both read same arrayKey and clobber each other
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfo").child(arrayKeyString).setValue(newTeamInfo);
+    /**
+     * Adds the input team to the input league on the database, this assumes that the input team
+     * can be validly added to the input league, and that both league and team are already on the database
+     * @param parentLeagueInfo: LeagueInfo object the team is being added to
+     * @param newTeamInfo: TeamInfo object to be added to the league
+     */
+    public static void addTeamToLeague(LeagueInfo parentLeagueInfo, TeamInfo newTeamInfo){
+        // assume the input team is valid to add to this league
+        // add the team to the league, and the league to the team
+        database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName()).setValue(newTeamInfo);
+        // we don't have to add the league to the team, as the team already keeps track of its parent league
     }
 
-    // TODO method to add a member to a team and league on the database, if a user joins a team, this team must also be added to the member on the database
+    /**
+     * Adds the input member to the input team and vice versa on the database, this assumes that the input
+     * member can and should be added to the input team
+     * @param teamMemberInfo: MemberInfo object describing the member to be added to the input team
+     * @param newTeamInfo: TeamInfo object describing the team to add the input member to
+     */
+    public static void addTeamToMember(MemberInfo teamMemberInfo, TeamInfo newTeamInfo){
+        // add the team to the member
+        database.child("users").child(teamMemberInfo.getDatabaseKey()).child("teamInfoMap").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
+        // add the member to the team
+        database.child("Teams").child(newTeamInfo.getDatabaseKey()).child("membersInfoMap").child(teamMemberInfo.getDatabaseKey()).setValue(teamMemberInfo);
+    }
+
+    /**
+     * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team
+     * @param memberInfo: MemberInfo object representing the member to remove from the team
+     * @param teamInfo: TeamInfo object representing the team to remove from the member
+     */
+    public static void removeMemberFromTeam(MemberInfo memberInfo, TeamInfo teamInfo){
+        // remove the team from the member
+        database.child("users").child(memberInfo.getDatabaseKey()).child("teamInfoMap").child(teamInfo.getDatabaseKey()).removeValue();
+        // remove the member from the team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
+    }
 
     /**
      * Removes the input Member from the input team, the Member cannot be owner of this team, the input team

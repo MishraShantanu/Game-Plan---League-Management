@@ -13,13 +13,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
-import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
-import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.Storage;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -27,6 +33,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
+    private Button removePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,44 +62,65 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
         // Temporary User created ==========================================================================
         //TODO Mar. 4 2020: change this to get member from the database
 
-        Member owner = new Member("Will Gates", "BigBill@microsoft.com", "78945612311", "F");
-        MemberInfo ownerInfo = new MemberInfo(owner);
+        // the clicked on member is passed via intent
+        final MemberInfo clickedMemberInfo = (MemberInfo)getIntent().getSerializableExtra("CLICKED_MEMBER");
 
-        League fakeLeague = new League("FUN", ownerInfo, "HOCKEY", "LOLOLOL");
-        Team fakeTeam = new Team("Charger", owner,"HOCKEY", fakeLeague);
+        // read the clicked member in from the database
+        DatabaseReference clickedMemberReference = FirebaseDatabase.getInstance().getReference().child("users").child(clickedMemberInfo.getDatabaseKey());
+        clickedMemberReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // called when data is read from the database
+                Member clickedMember = dataSnapshot.getValue(Member.class);
 
-        Member member = new Member("Bill Gates", "BigBill@microsoft.com", "78945612311", "F");
+                // Set the title of the page to user name.
+                getSupportActionBar().setTitle(clickedMember.getDisplayName() + " Information");
 
-        // Set the title of the page to user name.
-        getSupportActionBar().setTitle(member.getDisplayName() + " Information");
+                // DisplayName Text ==========================================================================
+                TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
+                userName.setText(clickedMember.getDisplayName());
 
-        // DisplayName Text ==========================================================================
-        TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
-        userName.setText(member.getDisplayName());
+                // Email Text ==========================================================================
+                TextView email = (TextView) findViewById(R.id.TeamMember_Email);
+                email.setText(clickedMember.getEmail());
 
-        // Email Text ==========================================================================
-        TextView email = (TextView) findViewById(R.id.TeamMember_Email);
-        email.setText(member.getEmail());
+                // Phone Number Text ==========================================================================
+                TextView phoneNumber = (TextView) findViewById(R.id.TeamMember_PhoneNumber);
+                phoneNumber.setText(clickedMember.getPhoneNumber());
 
-        // Phone Number Text ==========================================================================
-        TextView phoneNumber = (TextView) findViewById(R.id.TeamMember_PhoneNumber);
-        phoneNumber.setText(member.getPhoneNumber());
+                // if the current user of the app is the owner of the current team, display the remove member button
+                // get the owner info again from our intent
+                MemberInfo ownerInfo = (MemberInfo)getIntent().getSerializableExtra("OWNER_INFO");
 
-        // Remove Player Button ==========================================================================
-        Button removePlayer = findViewById(R.id.remove_player);
-        View removeDivider = findViewById(R.id.remove_player_divider);
+                // Remove Player Button ==========================================================================
 
-        if (fakeTeam.getOwnerInfo().equals(CurrentUserInfo.getCurrentUserInfo())) {
-            removePlayer.setVisibility(View.VISIBLE);
-            removeDivider.setVisibility(View.VISIBLE);
-        }
+                View removeDivider = findViewById(R.id.remove_player_divider);
 
+                if (ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())) {
+                    removePlayer.setVisibility(View.VISIBLE);
+                    removeDivider.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // called when database operations fail, display an error message
+                Toast.makeText(TeamMemberActivity.this, "Cannot connect to database, please try again later", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+
+        removePlayer = findViewById(R.id.remove_player);
         removePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO 07/03/2020 - Remove the member from the team.
-
+                // remove the team member from the team
+                TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+                Storage.removeMemberFromTeam(clickedMemberInfo,currentTeamInfo);
+                Toast.makeText(TeamMemberActivity.this, "Team member removed successfully", Toast.LENGTH_SHORT).show();
             }
         });
 
