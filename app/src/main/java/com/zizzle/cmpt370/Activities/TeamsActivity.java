@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -106,6 +109,11 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
             // read the selectedLeague in from the database
             DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
+
+            // set the league description
+            TextView leagueDescription = findViewById(R.id.league_description);
+            leagueDescription.setText("");
+
             // this will read from the database once and whenever the selected league is updated
             leagueReference.addChildEventListener(new ChildEventListener() {
                 @Override
