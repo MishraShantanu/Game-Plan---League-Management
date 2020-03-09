@@ -48,4 +48,24 @@ public class MemberInfo implements InfoInterface, Serializable {
     public String getDatabaseKey(){
         return databaseKey;
     }
+
+    /**
+     * Returns a string representation of the MemberInfo object
+     * @return String representation of MemberInfo object
+     */
+    @Override
+    public String toString(){
+        return this.name;
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof MemberInfo){
+            // other is a MemberInfo object, MemberInfos are equal if their name and database key are equal
+            MemberInfo otherInfo = (MemberInfo)other;
+            return this.name.equals(otherInfo.getName()) && this.databaseKey.equals(otherInfo.getDatabaseKey());
+        }
+        // other isn't a MemberInfo object, can't be equal to our memberInfo
+        return false;
+    }
 }
