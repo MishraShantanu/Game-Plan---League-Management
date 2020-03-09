@@ -1,9 +1,11 @@
 package com.zizzle.cmpt370.Model;
 
+import java.io.Serializable;
+
 /**
  * Stores information about a particular team, facilitates easy database access to underlying member object
  */
-public class MemberInfo implements InfoInterface{
+public class MemberInfo implements InfoInterface, Serializable {
 
     /** String name of the member being represented */
     private String memberName;

@@ -26,6 +26,16 @@ public class TeamInfo implements InfoInterface, Serializable {
     }
 
     /**
+     * Creates a TeamInfo object that stores information about the input team
+     * @param teamName: name of the team being represented
+     * @param leagueName: name of the league this team is a part of
+     */
+    public TeamInfo(String teamName, String leagueName){
+        this.teamName = teamName;
+        this.teamKey = leagueName + "-" + teamName;
+    }
+
+    /**
      * Blank constructor required for database
      */
     public TeamInfo(){
