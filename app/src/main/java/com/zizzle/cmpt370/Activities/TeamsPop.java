@@ -96,6 +96,8 @@ public class TeamsPop extends Activity {
                                     Storage.writeTeam(newTeam);
                                     // add this new team to its parent league and vice versa on the database
                                     Storage.addTeamToLeague(parentLeagueInfo,newTeamInfo);
+                                    // add the current user to this team, and this team to the current user
+                                    Storage.addTeamToMember(currentUserInfo,newTeamInfo);
                                 }
                             }
 
