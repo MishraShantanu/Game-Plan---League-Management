@@ -220,16 +220,16 @@ public class Storage {
     }
 
     /**
-     * Adds the input team to the input league on the database and vice versa, this assumes that the input team
+     * Adds the input team to the input league on the database, this assumes that the input team
      * can be validly added to the input league, and that both league and team are already on the database
-     * @param parentLeagueInfo: LeagueInfo object to be added to the team
+     * @param parentLeagueInfo: LeagueInfo object the team is being added to
      * @param newTeamInfo: TeamInfo object to be added to the league
      */
     public static void addTeamToLeague(LeagueInfo parentLeagueInfo, TeamInfo newTeamInfo){
         // assume the input team is valid to add to this league
         // add the team to the league, and the league to the team
         database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName()).setValue(newTeamInfo);
-        database.child("Teams").child(newTeamInfo.getDatabaseKey()).child("leagueInfo").child(parentLeagueInfo.getName()).setValue(parentLeagueInfo);
+        // we don't have to add the league to the team, as the team already keeps track of its parent league
     }
 
     /**
