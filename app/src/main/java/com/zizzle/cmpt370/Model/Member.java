@@ -32,7 +32,7 @@ public class Member {
     /**
      * TeamInfos of the teams the user belongs to, this is a map associating database key of teams with TeamInfo objects
      */
-    private HashMap<String,TeamInfo> teamsInfoMap = new HashMap<>();
+    private HashMap<String,TeamInfo> teamInfoMap = new HashMap<>();
 
     /**
      * Leagues the user belongs to.
@@ -107,12 +107,12 @@ public class Member {
      */
     public ArrayList<TeamInfo> getTeamsInfo() {
         // if this member isn't part of any teams and has been read in from the database, teamsInfoMap will be null
-        if(this.teamsInfoMap == null){
+        if(this.teamInfoMap == null){
             // if this is the case, simply return an empty arraylist as this member isn't part of any teams
             return new ArrayList<>();
         }
         // otherwise convert teamsInfoMap into an arraylist
-        return new ArrayList<>(this.teamsInfoMap.values());
+        return new ArrayList<>(this.teamInfoMap.values());
     }
 
 
@@ -175,10 +175,10 @@ public class Member {
     public void addTeam(Team teamToAdd) throws IllegalArgumentException {
         TeamInfo newTeamInfo = new TeamInfo(teamToAdd);
         // Check if user is already part of this team.
-        if (this.teamsInfoMap.containsKey(newTeamInfo.getDatabaseKey())) throw new IllegalArgumentException("Error in addTeam(): " +
+        if (this.teamInfoMap.containsKey(newTeamInfo.getDatabaseKey())) throw new IllegalArgumentException("Error in addTeam(): " +
                 "Member is already part of " + teamToAdd.getName());
 
-        this.teamsInfoMap.put(newTeamInfo.getDatabaseKey(),newTeamInfo);
+        this.teamInfoMap.put(newTeamInfo.getDatabaseKey(),newTeamInfo);
         // TODO update team and user on the database to reflect this new team
     }
 
@@ -189,7 +189,7 @@ public class Member {
      */
     public void removeTeam(Team teamToRemove) throws IllegalArgumentException {
         TeamInfo removeTeamInfo = new TeamInfo(teamToRemove);
-        this.teamsInfoMap.remove(removeTeamInfo.getDatabaseKey());
+        this.teamInfoMap.remove(removeTeamInfo.getDatabaseKey());
         // TODO remove this member from teamToRemove on the database
     }
 
@@ -247,7 +247,7 @@ public class Member {
         if(other instanceof Member){
             // compare Member fields, equal members should have equal names, email, phone number, user ids, teams and leagues
             Member otherMember = (Member)other;
-            boolean teamsEqual = this.teamsInfoMap.equals(otherMember.teamsInfoMap);
+            boolean teamsEqual = this.teamInfoMap.equals(otherMember.teamInfoMap);
             boolean leaguesEqual = this.leaguesInfo.equals(otherMember.leaguesInfo);
             return teamsEqual && leaguesEqual && this.userID.equals(otherMember.userID) &&
                     this.displayName.equals(otherMember.displayName) && this.email.equals(otherMember.email) && this.phoneNumber.equals(otherMember.phoneNumber);
