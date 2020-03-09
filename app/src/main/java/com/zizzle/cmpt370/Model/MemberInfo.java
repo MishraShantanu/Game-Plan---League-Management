@@ -8,20 +8,20 @@ import java.io.Serializable;
 public class MemberInfo implements InfoInterface, Serializable {
 
     /** String name of the member being represented */
-    private String memberName;
+    private String name;
 
     /** String key into the database where the Member represented by this object can be accessed, must be used
      * from the correct path in the database */
-    private String memberKey;
+    private String databaseKey;  
 
     /**
      * Creates a MemberInfo object that stores information about the input member
      * @param member: Member object to store information about
      */
     public MemberInfo(Member member){
-        memberName = member.getDisplayName(); // use first names for now, could extend to first and last names
+        name = member.getDisplayName(); // use first names for now, could extend to first and last names
         // a user's email must be unique, use this as a key into the database
-        memberKey = member.getUserID();
+        databaseKey = member.getUserID();
     }
 
     /**
@@ -30,8 +30,8 @@ public class MemberInfo implements InfoInterface, Serializable {
      * @param userID: String user ID of the user
      */
     public MemberInfo(String name, String userID){
-        memberName = name;
-        memberKey = userID;
+        name = name;
+        databaseKey = userID;
     }
 
     /**
@@ -42,10 +42,10 @@ public class MemberInfo implements InfoInterface, Serializable {
     }
 
     public String getName(){
-        return memberName;
+        return name;
     }
 
     public String getDatabaseKey(){
-        return memberKey;
+        return databaseKey;
     }
 }
