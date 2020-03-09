@@ -50,5 +50,13 @@ public class TeamInfo implements InfoInterface, Serializable {
         return teamKey;
     }
 
+    /**
+     * Returns a string representation of the TeamInfo object
+     */
+    public String toString(){
+        // represent the TeamInfo object by team name
+        return this.teamName;
+    }
+
 
 }
