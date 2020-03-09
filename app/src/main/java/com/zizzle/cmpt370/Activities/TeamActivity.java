@@ -49,6 +49,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
+    private NonScrollableListView teamList;
 
 
     @Override
@@ -121,10 +122,42 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // called to read in data
                 Team currentTeam = dataSnapshot.getValue(Team.class);
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
-                ownerButton.setText("  " + currentTeam.getOwnerInfo().getName());
+                final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
+                ownerButton.setText("  " + ownerInfo.getName());
                 // display the members of the team
                 membersInfo.addAll(currentTeam.getTeamMembersInfo());
                 memberArrayAdapter.notifyDataSetChanged();
+
+                // clicking on a team in the ListView is handled in here.
+                teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    /**
+                     * performs an action when a ListView item is clicked.
+                     * @param listItemPosition the index of position for the item in the ListView
+                     */
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                        // MemberInfo object that was clicked.
+                        MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
+
+                        // listItemPosition is the array index for the teams array. can be used such as:
+                        // teams.get(listItemPosition)
+                        // TODO 18/02/2020 - Give ListView items functionality
+                        // TODO create an activity listing information about the team we've clicked on
+
+                        // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                        Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                        // TODO what to do if the user clicks on themselves, should this take them to the profile page, should the user even be allowed to click themselves??
+                        teamMemberIntent.putExtra("CLICKED_MEMBER",clickedMemberInfo);
+                        // add the owner's info of this team to the intent also
+                        teamMemberIntent.putExtra("OWNERINFO",ownerInfo);
+                        startActivity(teamMemberIntent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                        Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -137,35 +170,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         // Display ListView contents.
         memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, membersInfo);
-        NonScrollableListView teamList = findViewById(R.id.members_list);
+        teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * performs an action when a ListView item is clicked.
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // MemberInfo object that was clicked.
-                MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
-
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO 18/02/2020 - Give ListView items functionality
-                // TODO create an activity listing information about the team we've clicked on
-
-
-                startActivity(new Intent(TeamActivity.this, TeamMemberActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
