@@ -91,7 +91,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
 
         // owner button ==========================================================================
-        Button ownerButton = findViewById(R.id.owner_button);
+        final Button ownerButton = findViewById(R.id.owner_button);
         ownerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,9 +114,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called to read in data
                 Team currentTeam = dataSnapshot.getValue(Team.class);
-                membersInfo = currentTeam.getTeamMembersInfo();
+                // set the text of the owner button to the owner's name, add 2 spaces to center the name
+                ownerButton.setText("  " + currentTeam.getOwnerInfo().getName());
+                // display the members of the team
+                membersInfo.addAll(currentTeam.getTeamMembersInfo());
                 memberArrayAdapter.notifyDataSetChanged();
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
