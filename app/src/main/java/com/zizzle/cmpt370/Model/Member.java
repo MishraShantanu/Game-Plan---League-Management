@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -29,9 +30,9 @@ public class Member {
     private String userID;
 
     /**
-     * Teams the user belongs to.
+     * TeamInfos of the teams the user belongs to, this is a map associating database key of teams with TeamInfo objects
      */
-    private ArrayList<TeamInfo> teamsInfo = new ArrayList<>();
+    private HashMap<String,TeamInfo> teamsInfoMap = new HashMap<>();
 
     /**
      * Leagues the user belongs to.
@@ -105,7 +106,13 @@ public class Member {
      * @return HashSet containing TeamInfo objects of the teams the user is a part of
      */
     public ArrayList<TeamInfo> getTeamsInfo() {
-        return teamsInfo;
+        // if this member isn't part of any teams and has been read in from the database, teamsInfoMap will be null
+        if(this.teamsInfoMap == null){
+            // if this is the case, simply return an empty arraylist as this member isn't part of any teams
+            return new ArrayList<>();
+        }
+        // otherwise convert teamsInfoMap into an arraylist
+        return new ArrayList<>(this.teamsInfoMap.values());
     }
 
 
@@ -168,28 +175,21 @@ public class Member {
     public void addTeam(Team teamToAdd) throws IllegalArgumentException {
         TeamInfo newTeamInfo = new TeamInfo(teamToAdd);
         // Check if user is already part of this team.
-        if (this.teamsInfo.contains(newTeamInfo)) throw new IllegalArgumentException("Error in addTeam(): " +
+        if (this.teamsInfoMap.containsKey(newTeamInfo.getDatabaseKey())) throw new IllegalArgumentException("Error in addTeam(): " +
                 "Member is already part of " + teamToAdd.getName());
 
-        this.teamsInfo.add(newTeamInfo);
+        this.teamsInfoMap.put(newTeamInfo.getDatabaseKey(),newTeamInfo);
         // TODO update team and user on the database to reflect this new team
     }
 
 
     /**
-     * Remove a team from the users list of teams they are on.
+     * Remove a team from the users list of teams they are on, this is a no-op if the member isn't on the input team
      * @param teamToRemove: team to remove from the list.
-     * @throws IllegalArgumentException if they are not part of this team.
      */
     public void removeTeam(Team teamToRemove) throws IllegalArgumentException {
         TeamInfo removeTeamInfo = new TeamInfo(teamToRemove);
-        // make sure teamToRemove is part of the member's teams.
-        if(! this.teamsInfo.contains(removeTeamInfo)){
-            throw new IllegalArgumentException("Team: " + teamToRemove.getName() + " to remove from member: "
-                    + this.displayName + " isn't a member of the team");
-        }
-
-        this.teamsInfo.remove(removeTeamInfo);
+        this.teamsInfoMap.remove(removeTeamInfo.getDatabaseKey());
         // TODO remove this member from teamToRemove on the database
     }
 
@@ -247,7 +247,7 @@ public class Member {
         if(other instanceof Member){
             // compare Member fields, equal members should have equal names, email, phone number, user ids, teams and leagues
             Member otherMember = (Member)other;
-            boolean teamsEqual = this.teamsInfo.equals(otherMember.teamsInfo);
+            boolean teamsEqual = this.teamsInfoMap.equals(otherMember.teamsInfoMap);
             boolean leaguesEqual = this.leaguesInfo.equals(otherMember.leaguesInfo);
             return teamsEqual && leaguesEqual && this.userID.equals(otherMember.userID) &&
                     this.displayName.equals(otherMember.displayName) && this.email.equals(otherMember.email) && this.phoneNumber.equals(otherMember.phoneNumber);
