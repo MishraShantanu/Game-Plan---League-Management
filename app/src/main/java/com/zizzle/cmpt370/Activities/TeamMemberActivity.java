@@ -34,7 +34,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
-    private Button removePlayer = findViewById(R.id.remove_player);
+    private Button removePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +115,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
 
 
-
-
+        removePlayer = findViewById(R.id.remove_player);
         removePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
