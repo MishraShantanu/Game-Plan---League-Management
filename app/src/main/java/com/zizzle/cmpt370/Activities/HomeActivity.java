@@ -138,16 +138,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
                 // TeamInfo object that was clicked.
-                TeamInfo clickedTeam = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
+                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
                 // listItemPosition is the array index for the teams array. can be used such as:
                 // teams.get(listItemPosition)
                 // TODO Feb. 26, 2020 - Give ListView items functionality
-
-                startActivity(new Intent(HomeActivity.this, TeamActivity.class));
+                Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
+                // pass the clicked TeamInfo to the Team page through this intent
+                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeamInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
