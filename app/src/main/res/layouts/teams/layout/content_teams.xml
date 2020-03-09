@@ -22,7 +22,7 @@
         android:layout_marginLeft="14dp"
         android:layout_marginRight="14dp"
         android:layout_marginTop="20dp"
-        android:background="@color/colorText"
+        android:background="@drawable/round_search"
         android:singleLine="true"
         android:padding="8dp"
         android:hint="Search teams"/>
