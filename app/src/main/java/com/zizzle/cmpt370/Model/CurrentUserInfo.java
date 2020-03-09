@@ -37,6 +37,15 @@ public final class CurrentUserInfo {
         return currentUserInfo;
     }
 
+    /**
+     * Refreshes the MemberInfo stored by this class, should be used when a new user has signed in to
+     * remove stale MemberInfo from a previous user
+     */
+    public static void RefreashMemberInfo(){
+        // set the current user of the app to null so we have to reset the MemberInfo to reflect a new user
+        currentUserInfo = null;
+    }
+
 
 
 }
