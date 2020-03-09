@@ -97,7 +97,12 @@ public class League implements Serializable {
      * @return list of TeamInfo for the teams in the league.
      */
     public ArrayList<TeamInfo> getTeamInfos() {
-        // create an arraylist from the values of our hashmap
+        // this.teamsInfoMap may be null if we've don't yet have any teams and have read this league from the database
+        if(this.teamsInfoMap == null){
+            // if this is the case, simply return an empty arraylist
+            return new ArrayList<>();
+        }
+        // otherwise create an arraylist from the values of our hashmap
         return new ArrayList<>(this.teamsInfoMap.values());
     }
 
