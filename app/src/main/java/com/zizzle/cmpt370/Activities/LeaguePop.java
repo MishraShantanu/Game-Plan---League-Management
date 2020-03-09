@@ -77,11 +77,15 @@ public class LeaguePop extends Activity {
                         Toast.makeText(LeaguePop.this, "Failed to create league, please try again", Toast.LENGTH_SHORT).show();
                     }
 
-                    // TODO create a new intent that takes the user to their newly created league page
-                    // TODO need some way of passing this newly created league to this new activity
+                    // close this pop-up activity
+                    finish();
 
-                    Intent i = new Intent(LeaguePop.this,LeagueActivity.class);
-                    startActivity(i);
+                    // intent to the new league page.
+                    Intent teamsIntent = new Intent(LeaguePop.this, TeamsActivity.class);
+                    // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+                    teamsIntent.putExtra("LEAGUE_CLICKED", newLeague.getName());
+                    startActivity(teamsIntent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             }
         });
