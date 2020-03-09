@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -98,6 +99,17 @@ public class TeamsPop extends Activity {
                                     Storage.addTeamToLeague(parentLeagueInfo,newTeamInfo);
                                     // add the current user to this team, and this team to the current user
                                     Storage.addTeamToMember(currentUserInfo,newTeamInfo);
+
+                                    // close this pop-up activity
+                                    finish();
+
+                                    // intent to the new league page.
+                                    Intent teamsIntent = new Intent(TeamsPop.this, TeamActivity.class);
+                                    // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+
+                                    teamsIntent.putExtra("TEAM_INFO_CLICKED", newTeamInfo);
+                                    startActivity(teamsIntent);
+                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                                 }
                             }
 
@@ -108,8 +120,6 @@ public class TeamsPop extends Activity {
                             }
                         });
                     }
-                    // TODO replace this finish with a new intent taking you to the newly created team's page
-                    finish();
                 }
             }
         });

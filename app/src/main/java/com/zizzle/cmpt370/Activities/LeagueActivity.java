@@ -141,17 +141,11 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 // name of the league that was clicked.
                 final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
 
-                // listItemPosition is the array index for the leagues array. can be used such as:
-                // leagues.get(listItemPosition)
-                // TODO 18/02/2020 - Give ListView items functionality
                 Intent teamsIntent = new Intent(LeagueActivity.this, TeamsActivity.class);
                 // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
                 teamsIntent.putExtra("LEAGUE_CLICKED",clickedLeagueName);
                 startActivity(teamsIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                // this was used for testing. can b removed later.
-                Toast.makeText(LeagueActivity.this, "You just clicked " + clickedLeagueName, Toast.LENGTH_SHORT).show();
             }
         });
 
