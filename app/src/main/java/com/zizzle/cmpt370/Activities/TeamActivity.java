@@ -115,6 +115,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
                 membersInfo.clear();
                 Team currentTeam = dataSnapshot.getValue(Team.class);
+
+
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
                 final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
                 ownerButton.setText("  " + ownerInfo.getName());
@@ -149,15 +151,21 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 }
                 memberArrayAdapter.notifyDataSetChanged();
 
+                // Leave the team button.
                 MemberInfo currentUser = getCurrentUserInfo();
+                // if member is on the team.
                 if (membersInfo.contains(currentUser)) {
-                    Button leaveTeamButton = findViewById(R.id.leave_team_button);
+                    // Make button visible and set click listener.
+                    final Button leaveTeamButton = findViewById(R.id.leave_team_button);
                     leaveTeamButton.setVisibility(View.VISIBLE);
-
                     leaveTeamButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            System.out.println("CLICKED");
+                            // leave the team
+                            MemberInfo currentUser = getCurrentUserInfo();
+                            Storage.removeMemberFromTeam(currentUser, currentTeamInfo);
+                            leaveTeamButton.setVisibility(View.INVISIBLE);
+                            Toast.makeText(TeamActivity.this, "Left the team successfully", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
