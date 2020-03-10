@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
 
                 // Set the title of the page to user name.
-                getSupportActionBar().setTitle(user.getDisplayName() + " Information");
+                getSupportActionBar().setTitle(user.getDisplayName() + "'s Information");
 
 
 
