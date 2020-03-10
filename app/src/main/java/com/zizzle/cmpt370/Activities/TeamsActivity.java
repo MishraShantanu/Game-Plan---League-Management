@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
@@ -111,8 +112,18 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
 
             // set the league description
-            TextView leagueDescription = findViewById(R.id.league_description);
-            leagueDescription.setText("");
+            final TextView leagueDescription = findViewById(R.id.league_description);
+            DatabaseReference test = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("description");
+            test.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    leagueDescription.setText(dataSnapshot.getValue(String.class));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
+            });
+
 
             // this will read from the database once and whenever the selected league is updated
             leagueReference.addChildEventListener(new ChildEventListener() {
@@ -136,9 +147,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 }
 
                 @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // do nothing, teams won't really be moved
-                }
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
