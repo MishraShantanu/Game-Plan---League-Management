@@ -133,6 +133,7 @@
     android:layout_marginTop="60dp"
     android:background="@color/colorAccent"
     android:gravity="center_horizontal"
+    android:visibility="gone"
     android:padding="12dp"
     android:elevation="10dp"
     android:text="Remove Player"
