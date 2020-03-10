@@ -33,8 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class TeamsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -108,15 +106,16 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // set title to that of the clicked on league
             getSupportActionBar().setTitle(selectedLeague);
 
-            // read the selectedLeague in from the database
-            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
+
 
             // set the league description
+            // read the reference for league description.
             final TextView leagueDescription = findViewById(R.id.league_description);
-            DatabaseReference test = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("description");
-            test.addValueEventListener(new ValueEventListener() {
+            DatabaseReference descriptionReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("description");
+            descriptionReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // set the league description.
                     leagueDescription.setText(dataSnapshot.getValue(String.class));
                 }
 
@@ -125,6 +124,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             });
 
 
+
+            // read the selectedLeague in from the database
+            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
             // this will read from the database once and whenever the selected league is updated
             leagueReference.addChildEventListener(new ChildEventListener() {
                 @Override
@@ -132,6 +134,12 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                     // called when a new team is added to this league, we want to add this new team to the front of the list of teams
                     teams.add(0,dataSnapshot.getValue(TeamInfo.class));
                     teamArrayAdapter.notifyDataSetChanged();
+
+                    // display the no team text if not apart of any teams.
+                    if (!teams.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_teams_text);
+                        noTeamText.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
@@ -144,6 +152,12 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                     // remove the deleted team from our list
                     teams.remove(dataSnapshot.getValue(TeamInfo.class));
                     teamArrayAdapter.notifyDataSetChanged();
+
+                    // display the no team text if not apart of any teams.
+                    if (teams.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_teams_text);
+                        noTeamText.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
@@ -156,6 +170,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 }
             });
         }
+
 
 
         // Display ListView contents.
@@ -185,8 +200,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
                 startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(TeamsActivity.this, "You clicked on " + clickedTeamInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
