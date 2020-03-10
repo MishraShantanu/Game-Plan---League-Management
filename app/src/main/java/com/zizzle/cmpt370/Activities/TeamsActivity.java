@@ -192,9 +192,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 // TeamInfo object that was clicked.
                 TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-
                 Intent teamIntent = new Intent(TeamsActivity.this, TeamActivity.class);
                 // pass the teamInfo object clicked
                 teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);

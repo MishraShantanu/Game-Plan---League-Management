@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,15 +29,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
 
-    private TextView profileName,profilePhone,profileEmail;
-    private Button updateInfo;
-
-    private  Member userinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        userinfo =new Member();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         //add top bar from top_bar as action bar
@@ -62,8 +56,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
 
         // Temporary User created ==========================================================================
-        //TODO Feb. 29, 2020: change this to get member from the database
-
         FirebaseAuth firebaseAuth =FirebaseAuth.getInstance();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -89,11 +81,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
 
                 // Set the title of the page to user name.
-                getSupportActionBar().setTitle(user.getDisplayName() + " Information");
-
-
-
-
+                getSupportActionBar().setTitle(user.getDisplayName() + "'s Information");
             }
 
             @Override
@@ -105,13 +93,14 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
 
 
-
-
         // Update Info button ==========================================================================
         Button updateInfoButton = findViewById(R.id.updateInfoButton);
         updateInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // TODO 10/03/2020 - Make this button update user information.
+
                 startActivity( new Intent(ProfileActivity.this, ProfilePop.class));
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }

@@ -34,6 +34,8 @@ import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
 
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
+
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
@@ -115,7 +117,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 Team currentTeam = dataSnapshot.getValue(Team.class);
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
                 final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
-
+                ownerButton.setText("  " + ownerInfo.getName());
 
                 // Owner button
                 // Moved inside here so it can access the database info.
@@ -135,7 +137,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 });
 
 
-                ownerButton.setText("  " + ownerInfo.getName());
+
                 // display the members of the team
                 // TODO this is a short term fix, getMembersInfo was returning null when called from this team
                 for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
@@ -146,6 +148,20 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 memberArrayAdapter.notifyDataSetChanged();
+
+                MemberInfo currentUser = getCurrentUserInfo();
+                if (membersInfo.contains(currentUser)) {
+                    Button leaveTeamButton = findViewById(R.id.leave_team_button);
+                    leaveTeamButton.setVisibility(View.VISIBLE);
+
+                    leaveTeamButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            System.out.println("CLICKED");
+                        }
+                    });
+                }
+
 
                 // clicking on a team in the ListView is handled in here.
                 teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -246,7 +262,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.join_team_button) { //Join Team Text/Button was clicked
             // add the current user to the current team
-            MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+            MemberInfo currentUserInfo = getCurrentUserInfo();
             // add this current user to the current team, and the current team to the current user
             // we don't need to check if the user is already part of this team, we just rewrite values that are already there in that case
             Storage.addTeamToMember(currentUserInfo,currentTeamInfo);

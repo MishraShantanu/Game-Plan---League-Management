@@ -103,14 +103,14 @@
         android:layout_marginBottom="15dp"
         android:background="@color/colorText" />
 
-    <!--    owner button    -->
+    <!--    remove player button    -->
     <Button
         android:id="@+id/remove_player"
         android:layout_width="match_parent"
         android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/round_card_button"
+        android:background="@drawable/round_card_important_button"
         android:padding="22dp"
         android:text="Remove Player"
         android:textColor="@color/colorText"
