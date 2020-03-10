@@ -33,7 +33,6 @@
         android:textSize="24dp"
         android:visibility="gone" />
 
-    <!--    owner button    -->
     <TextView
         android:id="@+id/my_teams_text"
         android:layout_width="match_parent"
