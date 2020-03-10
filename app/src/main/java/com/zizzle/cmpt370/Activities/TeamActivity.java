@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
-import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
@@ -99,15 +98,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
         // owner button ==========================================================================
         final Button ownerButton = findViewById(R.id.owner_button);
-        ownerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // TODO 29/02/2020 Take to the member page for owner.
-                Toast.makeText(TeamActivity.this, "YOU JUST GOT OWNED", Toast.LENGTH_SHORT).show();
-
-            }
-        });
 
 
         // list of teams =========================================================================
@@ -125,12 +115,35 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 Team currentTeam = dataSnapshot.getValue(Team.class);
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
                 final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
+
+
+                // Owner button
+                // Moved inside here so it can access the database info.
+                ownerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                        Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                        teamMemberIntent.putExtra("CLICKED_MEMBER",ownerInfo);
+                        // add the owner's info of this team to the intent also
+                        teamMemberIntent.putExtra("OWNER_INFO",ownerInfo);
+                        // add the current teamInfo to the intent
+                        teamMemberIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                        startActivity(teamMemberIntent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+                });
+
+
                 ownerButton.setText("  " + ownerInfo.getName());
                 // display the members of the team
                 // TODO this is a short term fix, getMembersInfo was returning null when called from this team
                 for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
-                    // each ds now holds a MemberInfo object
-                    membersInfo.add(ds.getValue(MemberInfo.class));
+                    MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
+                    // don't add the owner to this list, the owner is already displayed
+                    if(!currentMemberInfo.equals(ownerInfo)){
+                        membersInfo.add(ds.getValue(MemberInfo.class));
+                    }
                 }
                 memberArrayAdapter.notifyDataSetChanged();
 
@@ -147,9 +160,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                         // MemberInfo object that was clicked.
                         MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
 
-                        // listItemPosition is the array index for the teams array. can be used such as:
-                        // teams.get(listItemPosition)
-                        // TODO 18/02/2020 - Give ListView items functionality
                         // TODO create an activity listing information about the team we've clicked on
 
                         // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
@@ -162,8 +172,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                         teamMemberIntent.putExtra("TEAM_INFO",currentTeamInfo);
                         startActivity(teamMemberIntent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                        Toast.makeText(TeamActivity.this, "You clicked on " + clickedMemberInfo.getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
