@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,7 +60,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_team);
 
-        // add top bar with title 'Teams'
+        // add top bar
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
@@ -115,6 +116,14 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
                 membersInfo.clear();
                 Team currentTeam = dataSnapshot.getValue(Team.class);
+
+                // Set the record
+                TextView wins = findViewById(R.id.record_wins);
+                TextView losses = findViewById(R.id.record_losses);
+
+                // Commented out because they produce a null pointer error
+//                wins.setText(currentTeam.getWins());
+//                losses.setText(currentTeam.getLosses());
 
 
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
