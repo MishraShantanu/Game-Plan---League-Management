@@ -139,8 +139,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // display the members of the team
                 // TODO this is a short term fix, getMembersInfo was returning null when called from this team
                 for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
-                    // each ds now holds a MemberInfo object
-                    membersInfo.add(ds.getValue(MemberInfo.class));
+                    MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
+                    // don't add the owner to this list, the owner is already displayed
+                    if(!currentMemberInfo.equals(ownerInfo)){
+                        membersInfo.add(ds.getValue(MemberInfo.class));
+                    }
                 }
                 memberArrayAdapter.notifyDataSetChanged();
 
