@@ -2,7 +2,6 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,7 +9,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,19 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
-import com.zizzle.cmpt370.Model.League;
-import com.zizzle.cmpt370.Model.LeagueInfo;
-import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
-import com.zizzle.cmpt370.Model.Storage;
-import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
@@ -52,6 +44,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +75,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         // list of teams =========================================================================
-
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
-
         teamsInfo = new ArrayList<>();
         final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
         // read in the current user's teams from the database
@@ -153,8 +143,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
                 startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeamInfo.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

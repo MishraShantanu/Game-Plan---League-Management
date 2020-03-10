@@ -74,7 +74,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                 Member clickedMember = dataSnapshot.getValue(Member.class);
 
                 // Set the title of the page to user name.
-                getSupportActionBar().setTitle(clickedMember.getDisplayName() + " Information");
+                getSupportActionBar().setTitle(clickedMember.getDisplayName() + "'s Information");
 
                 // DisplayName Text ==========================================================================
                 TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
@@ -93,12 +93,10 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                 MemberInfo ownerInfo = (MemberInfo)getIntent().getSerializableExtra("OWNER_INFO");
 
                 // Remove Player Button ==========================================================================
-
-                View removeDivider = findViewById(R.id.remove_player_divider);
-
-                if (ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())) {
+                // Show the remove player button if you are the owner and the player to remove is not you.
+                if (ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo()) &&
+                        !ownerInfo.equals(clickedMemberInfo)) {
                     removePlayer.setVisibility(View.VISIBLE);
-                    removeDivider.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -111,8 +109,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
 
 
-
-
+        // Remove player button ===================================
         removePlayer = findViewById(R.id.remove_player);
         removePlayer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,18 +120,6 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                 Toast.makeText(TeamMemberActivity.this, "Team member removed successfully", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-        //THIS WAS ON THE PROFILE PAGE, DON'T NEED NOW. BUT KEEP THIS SO THAT WE CAN EASILY ADD A BUTTON TO DO STUFF IF NEEDED
-//        // Update Info button ==========================================================================
-//        Button updateInfoButton = findViewById(R.id.updateInfoButton);
-//        updateInfoButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity( new Intent(TeamMemberActivity.this, ProfilePop.class));
-//                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-//            }
-//        });
     }
 
 
