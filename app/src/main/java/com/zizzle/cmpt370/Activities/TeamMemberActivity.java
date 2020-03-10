@@ -93,12 +93,8 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                 MemberInfo ownerInfo = (MemberInfo)getIntent().getSerializableExtra("OWNER_INFO");
 
                 // Remove Player Button ==========================================================================
-
-                View removeDivider = findViewById(R.id.remove_player_divider);
-
                 if (ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())) {
                     removePlayer.setVisibility(View.VISIBLE);
-                    removeDivider.setVisibility(View.VISIBLE);
                 }
             }
 
