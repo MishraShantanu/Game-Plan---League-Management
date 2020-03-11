@@ -19,21 +19,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_card"
-            android:gravity="center_horizontal"
-            android:padding="22dp"
-            android:text="Record\n\n"
-            android:textColor="@color/colorText"
-            android:textSize="24sp" />
-
-        <!--    Next Game    -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_card"
-            android:gravity="center_horizontal"
-            android:padding="22dp"
-            android:text="Next Game\n\n"
+            android:text="Record"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 
@@ -41,7 +27,89 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText" />
+
+        <!--    Record Value    -->
+        <LinearLayout
+            android:id="@+id/record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/record_wins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="0"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text=" : "
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/record_losses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="0"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="40sp" />
+
+        </LinearLayout>
+
+        <!--    Next Game    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Next Game"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText" />
+
+        <!--    Next Game    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_card"
+            android:padding="22dp"
+            android:textAlignment="center"
+            android:text="vs. Death Tigers\n@ Griffen Stadium"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+
+        <!--    Members    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Members"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="15dp"
             android:background="@color/colorText" />
 
@@ -52,12 +120,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:background="@drawable/round_card_button"
-            android:drawableLeft="@drawable/ic_star"
+            android:drawableStart="@drawable/ic_star"
             android:padding="22dp"
             android:textAlignment="textStart"
             android:textAllCaps="false"
             android:textColor="@color/colorText"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textStyle="normal" />
 
         <!-- list of teams-->
@@ -77,12 +145,12 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:background="@drawable/round_card_important_button"
-            android:drawableLeft="@drawable/ic_warning"
+            android:drawableStart="@drawable/ic_warning"
             android:padding="22dp"
             android:visibility="gone"
             android:text="  LEAVE TEAM"
             android:textColor="#FFFFFF"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
     </LinearLayout>
 </ScrollView>
