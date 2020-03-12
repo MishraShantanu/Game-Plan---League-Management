@@ -50,7 +50,7 @@ public class ProfilePop extends Activity{
         memberName  = findViewById(R.id.displayName);
         phoneNumber = findViewById(R.id.phoneNumberInput);
         email = findViewById(R.id.emailInput);
-        password = findViewById(R.id.passwordInput);
+       // password = findViewById(R.id.passwordInput);
 
         submitButton = findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +59,7 @@ public class ProfilePop extends Activity{
                 final String memberNameString = memberName.getText().toString();
                 final String phoneNumberString = phoneNumber.getText().toString();
                 final String emailString = email.getText().toString();
-                final String passwordString = password.getText().toString();
+              //  final String passwordString = password.getText().toString();
 
                 Member user;
 
@@ -80,14 +80,10 @@ public class ProfilePop extends Activity{
 
                         if (!emailString.isEmpty()) {
 
-
-
-
-                            if (!passwordString.isEmpty()) {
                                user = new Member (memberNameString,emailString,phoneNumberString,firebaseAuth.getCurrentUser().getUid());
 
                                 FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
-                                String newPassword = passwordString;
+
                                 userpass.updateEmail(emailString);
                                 Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
 
@@ -96,34 +92,12 @@ public class ProfilePop extends Activity{
 
 
                                 databaseReference.push();
+                                FirebaseAuth.getInstance().signOut();
+                                Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
+                                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(toLogOut);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
-                                userpass.updatePassword(newPassword)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-
-                                                    Log.d(TAG, "User password updated.");
-                                                    Toast.makeText(ProfilePop.this, "Updating password", Toast.LENGTH_SHORT).show();
-                                                }else  Toast.makeText(ProfilePop.this, "Password not updated", Toast.LENGTH_SHORT).show();
-
-
-                                                FirebaseAuth.getInstance().signOut();
-                                                Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
-                                                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                startActivity(toLogOut);
-                                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                            }
-                                        });
-
-
-
-
-
-
-
-
-                            }
                         }
                     }
 
