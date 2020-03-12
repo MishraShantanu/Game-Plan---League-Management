@@ -97,6 +97,11 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // first clear our list of league names in case a league is added, we don't want the same leagues to be displayed twice
                 leagueNames.clear();
+                // remove the loading animation if there are no leagues to read in
+                if(!dataSnapshot.exists()){
+                    ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                    leagueLoading.setVisibility(View.GONE);
+                }
                 // method called when data is read from the database, get all league names
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                     // Remove the progress bar once leagues have been fetched

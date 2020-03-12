@@ -57,7 +57,6 @@ public class Team {
         this.ownerInfo = ownerInfo;
         this.sport = sport;
         this.membersInfoMap = new HashMap<>();
-        this.ownerInfo = ownerInfo;
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
@@ -115,7 +114,7 @@ public class Team {
      */
     public void setOwner(MemberInfo newOwnerInfo){
         // if newOwner isn't on the team, add them to the team members
-        if(! membersInfoMap.containsKey(newOwnerInfo.getDatabaseKey())){
+        if(membersInfoMap!= null && ! membersInfoMap.containsKey(newOwnerInfo.getDatabaseKey())){
             membersInfoMap.put(newOwnerInfo.getDatabaseKey(),newOwnerInfo);
             // update this team on the database to include this new member
         }
