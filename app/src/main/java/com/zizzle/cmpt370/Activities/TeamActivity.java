@@ -122,8 +122,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 TextView losses = findViewById(R.id.record_losses);
 
                 // Commented out because they produce a null pointer error
-//                wins.setText(currentTeam.getWins());
-//                losses.setText(currentTeam.getLosses());
+                wins.setText(String.valueOf(currentTeam.getWins()));
+                losses.setText(String.valueOf(currentTeam.getLosses()));
 
 
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
