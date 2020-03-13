@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -152,7 +153,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // display the members of the team
                 // TODO this is a short term fix, getMembersInfo was returning null when called from this team
                 for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
+                    Log.d("currentInfo",ds.getValue().toString());
                     MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
+                    Log.d("memberInfo",currentMemberInfo.toString());
                     // don't add the owner to this list, the owner is already displayed
                     if(!currentMemberInfo.equals(ownerInfo)){
                         membersInfo.add(ds.getValue(MemberInfo.class));

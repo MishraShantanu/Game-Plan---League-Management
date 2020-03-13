@@ -85,5 +85,21 @@ public class Storage {
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
     }
 
+    /**
+     * Stores the input Game object under the input teams on the database
+     * @param team1Info: TeamInfo object representing the first team playing in this game
+     * @param team2Info: TeamInfo object representing the second team playing in this game
+     * @param game: Game object denoting game to store
+     */
+    public static void addGameToTeams(TeamInfo team1Info, TeamInfo team2Info, Game game){
+        // TODO, check that the game is valid for these teams
+        // a game's database key is of the form team1key-team2key-time
+        String gameDatabaseKey = team1Info.getDatabaseKey() + "-" + team2Info.getDatabaseKey() + "-" + game.getGameTime().toString();
+        // add this game to team1
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        // add this game to team2
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+    }
+
 
 }
