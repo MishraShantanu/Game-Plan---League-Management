@@ -25,7 +25,7 @@ import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
 public class SignupActivity extends AppCompatActivity {
-    EditText emailId, password, displayName;
+    EditText emailId, password, displayName, phoneNumber;
     Button buttonSignup;
     TextView tvSignIn;
     FirebaseAuth mFirebaseAuth;
@@ -48,6 +48,7 @@ public class SignupActivity extends AppCompatActivity {
         password = findViewById(R.id.Signup_Password);
         buttonSignup = findViewById(R.id.Signup_Button);
         tvSignIn = findViewById(R.id.Signup_HaveAccount);
+        phoneNumber = findViewById(R.id.Signup_Phone);
 
         displayName = findViewById(R.id.Signup_Name);
 
@@ -56,6 +57,10 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String email = emailId.getText().toString();
                 String pass = password.getText().toString();
+                String phone = phoneNumber.getText().toString();
+                // Remove all non-numeric characters
+                phone = phone.replaceAll("\\D", "");
+
 
                 if (pass.isEmpty() && email.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
@@ -71,6 +76,11 @@ public class SignupActivity extends AppCompatActivity {
                     password.requestFocus();
                 }
 
+                else if (phone.isEmpty()) {
+                    phoneNumber.setError("Phone number required");
+                    phoneNumber.requestFocus();
+                }
+
                 else if (!(pass.isEmpty() && email.isEmpty())) {
                     System.out.println(email);
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
@@ -82,7 +92,7 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 // add the newly created Member to the database
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), "98765432111",fbUser.getUid());
+                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), fbUser.getUid());
                                 Storage.writeMember(member);
                                 // add the user's display name to firebase authentication
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayName.getText().toString()).build();
