@@ -95,6 +95,19 @@
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 
+        <!--    leave team button    -->
+        <Button
+            android:id="@+id/all_games_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/round_card_button"
+            android:padding="22dp"
+            android:text="All Games"
+            android:textAllCaps="false"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
 
         <!--    Members    -->
         <TextView
