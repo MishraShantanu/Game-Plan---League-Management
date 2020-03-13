@@ -189,22 +189,27 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                      */
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
                         // MemberInfo object that was clicked.
                         MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
 
-                        // TODO create an activity listing information about the team we've clicked on
+                        // Take user to their profile if they clicked on themselves.
+                        if (getCurrentUserInfo().equals(clickedMemberInfo)) {
+                            startActivity(new Intent(TeamActivity.this, ProfileActivity.class));
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
 
-                        // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
-                        Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
-                        // TODO what to do if the user clicks on themselves, should this take them to the profile page, should the user even be allowed to click themselves??
-                        teamMemberIntent.putExtra("CLICKED_MEMBER",clickedMemberInfo);
-                        // add the owner's info of this team to the intent also
-                        teamMemberIntent.putExtra("OWNER_INFO",ownerInfo);
-                        // add the current teamInfo to the intent
-                        teamMemberIntent.putExtra("TEAM_INFO",currentTeamInfo);
-                        startActivity(teamMemberIntent);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        // Take user to member profile page if not them
+                        else {
+                            // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                            Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                            teamMemberIntent.putExtra("CLICKED_MEMBER", clickedMemberInfo);
+                            // add the owner's info of this team to the intent also
+                            teamMemberIntent.putExtra("OWNER_INFO", ownerInfo);
+                            // add the current teamInfo to the intent
+                            teamMemberIntent.putExtra("TEAM_INFO", currentTeamInfo);
+                            startActivity(teamMemberIntent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
                     }
                 });
             }
@@ -215,6 +220,20 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+
+        // All games button
+        Button allGamesButton = findViewById(R.id.all_games_button);
+        allGamesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Take the user to the game activity page
+                // TODO - uncomment this when the game page is made.
+//                Intent teamMemberIntent = new Intent(TeamActivity.this, GameActivity.class);
+//                startActivity(teamMemberIntent);
+//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                Toast.makeText(TeamActivity.this, "Not Implemented.\nWill take you to all games.",Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         // Display ListView contents.
