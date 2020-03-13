@@ -10,10 +10,10 @@ import android.util.Pair;
 public class Game {
 
     /** first team in the game */
-    private Team team1;
+    private TeamInfo team1Info;
 
     /** second team in the game */
-    private Team team2;
+    private TeamInfo team2Info;
 
     /** date (year, month, day, hour, minute) the game is being/was played */
     private GameTime date;
@@ -24,8 +24,9 @@ public class Game {
     /** name of the sport of the game */
     private String sport;
 
-    /** final scores of the teams who are in the game, can only be set after the game has been played */
-    private Pair<Integer,Integer> finalScores;
+    private int team1Score;
+
+    private int team2Score;
 
     /** boolean true if the game has been played, false otherwise */
     private boolean played;
@@ -33,18 +34,18 @@ public class Game {
 
     /**
      * Game constructor
-     * @param team1: Team object, first of the teams playing in the game
-     * @param team2: Team object, second of the teams playing in the game
+     * @param team1Info: TeamInfo object, first of the teams playing in the game
+     * @param team2Info: TeamInfo object, second of the teams playing in the game
      * @param gameDate: GameTime object specifying when this game is scheduled to occur
      * @param location: String name of the location the game is being held
      * @param sport: String name of the sport of the game
      * @throws IllegalArgumentException if the gameDate refers to a time in the past, games must be
      * scheduled for a time in the future
      */
-    public Game(Team team1, Team team2, GameTime gameDate, String location, String sport) throws IllegalArgumentException{
+    public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location, String sport) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
-        this.team1 = team1;
-        this.team2 = team2;
+        this.team1Info = team1Info;
+        this.team2Info = team2Info;
         if(!gameDate.isInFuture()){
             throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
         }
@@ -52,22 +53,24 @@ public class Game {
         this.location = location;
         this.sport = sport;
         this.played = false;
+        this.team1Score = 0;
+        this.team2Score = 0;
     }
 
     /**
      * Returns the first team playing in the game
-     * @return Team object of the first team playing
+     * @return TeamInfo object of the first team playing
      */
-    public Team getTeamOne(){
-        return this.team1;
+    public TeamInfo getTeam1Info(){
+        return this.team1Info;
     }
 
     /**
      * Returns the second team playing in the game
-     * @return Team object the second team in the game
+     * @return TeamInfo object the second team in the game
      */
-    public Team getTeamTwo(){
-        return this.team2;
+    public TeamInfo getTeam2Info(){
+        return this.team2Info;
     }
 
     /**
@@ -130,69 +133,32 @@ public class Game {
         }
         // game has now been played
         this.played = true;
-        this.finalScores = new Pair<>(team1Score,team2Score);
+        this.team1Score = team1Score;
+        this.team2Score = team2Score;
     }
 
     /**
-     * Checks if the game has ended in a tie, game must have been played, ie hasBeenPlayed() must be true
-     * @return true if the game has been played, false otherwise
-     * @throws IllegalStateException if game hasn't yet been played
+     * Retrieves team 1's score, this game must have been played in order to get scores
+     * @return int team 1's score in this game
+     * @throws IllegalStateException if the game hasn't been played yet
      */
-    public boolean gameTied() throws IllegalStateException{
-        // check that game has been played and we have valid scores
-        if(! this.hasBeenPlayed()){
-            throw new IllegalStateException("Game: gameTied() called before game has been played");
+    public int getTeam1Score() throws IllegalStateException{
+        if(!this.hasBeenPlayed()){
+            throw new IllegalStateException("Cannot get scores before this game has been played");
         }
-        // game has tied if both teams have the same score
-        return this.finalScores.first.equals(this.finalScores.second);
+        return this.team1Score;
     }
 
     /**
-     * Returns the team who won the game, can only be called after the game has been played ie hasBeenPlayed() is true
-     * @return Team object, winner of the game if one exists ie the teams didn't tie
-     * @throws IllegalStateException if hasBeenPlayed() is false or the teams have tied ie gameTied() is true
+     * Retrieves team 2's score, this game must have been played in order to get scores
+     * @return int team 2's score in this game
+     * @throws IllegalStateException if the game hasn't been played yet
      */
-    public Team getWinner() throws IllegalStateException{
-        // make sure game has been played
-        if(! this.hasBeenPlayed()){
-            throw new IllegalStateException("Game: getWinner() called before game has been played");
+    public int getTeam2Score() throws IllegalStateException{
+        if(!this.hasBeenPlayed()){
+            throw new IllegalStateException("Cannot get scores before this game has been played");
         }
-        // make sure the game didn't end in a tie
-        if(this.gameTied()){
-            throw new IllegalStateException("Game: getWinner() called when the teams have tied");
-        }
-        // the winner is the team with higher score
-        if(this.finalScores.first.compareTo(this.finalScores.second) > 0){
-            // team 1 has a higher score and is winner
-            return this.team1;
-        }
-        else{
-            return this.team2;
-        }
-    }
-
-    /**
-     * Returns the team who lost the game, can only be called after the game has been played, ie hasBeenPlayed() is true
-     * @return Team object, loser of the game if one exists, ie game didn't end in a tie
-     * @throws IllegalStateException if hasBeenPlayed() is false or the teams have tied ie gameTied() is true
-     */
-    public Team getLoser() throws IllegalStateException{
-        // make sure game has been played
-        if(! this.hasBeenPlayed()){
-            throw new IllegalStateException("Game: getLoser() called before game has been played");
-        }
-        // make sure the game didn't end in a tie
-        if(this.gameTied()){
-            throw new IllegalStateException("Game: getLoser() called when the teams have tied");
-        }
-        // the loser is the team with lower score
-        if(this.finalScores.first.compareTo(this.finalScores.second) < 0){
-            // team 1 has a lower score and is loser
-            return this.team1;
-        }
-        else{
-            return this.team2;
-        }
+        return this.team2Score;
     }
 
     /**
@@ -219,21 +185,18 @@ public class Game {
 
     /**
      * Returns a string representation of the game
-     * @return String representing the game, including the sport, teams playing in the game, the scheduled time
-     * of the game and the final scores if the game has been played
+     * @return String representing the game, including the teams playing in the game, and the final scores if the game has been played
      */
     @Override
     @NonNull
     public String toString(){
-        String gameString = "Sport: " + this.sport;
-        gameString += "\nTeams: " + this.team1 + " vs " + this.team2;
+        String gameString = this.team1Info + " vs " + this.team2Info;
         gameString += "\nFinal Score: ";
         if(this.hasBeenPlayed()){
-            gameString += this.finalScores.first + " to " + this.finalScores.second;
+            gameString += this.team1Score + "-" + this.team2Score;
         }
         else{
-            // game scores haven't yet been decided
-            gameString += "TBD";
+            gameString += "n/a";
         }
         return gameString;
     }
@@ -248,8 +211,8 @@ public class Game {
         if(other instanceof Game){
             // compare fields
             Game otherGame = (Game) other;
-            return otherGame.getGameTime().equals(this.getGameTime()) && otherGame.team1.equals(this.team1) &&
-                    otherGame.team2.equals(this.team2) && otherGame.location.equals(this.location) && otherGame.sport.equals(this.sport);
+            return otherGame.getGameTime().equals(this.getGameTime()) && otherGame.team1Info.equals(this.team1Info) &&
+                    otherGame.team2Info.equals(this.team2Info) && otherGame.location.equals(this.location) && otherGame.sport.equals(this.sport);
         }
         // Other isn't a game and can't be equal
         return false;
