@@ -77,15 +77,6 @@ public class Team {
     }
 
     /**
-     * Returns the owner of the team
-     * @return Member object owner of the team
-     */
-    public Member getOwner(){
-        // read the owner from the database
-        return Storage.readMember(this.ownerInfo);
-    }
-
-    /**
      * Retrievs a MemberInfo object with info about the owner of the team
      * @return MemberInfo object describing the owner of the team
      */
@@ -93,14 +84,6 @@ public class Team {
         return this.ownerInfo;
     }
 
-    /**
-     * Retrieves the league the team is a part of
-     * @return League the team is a part of
-     */
-    public League getLeague(){
-        // read league from the database
-        return Storage.readLeague(this.leagueInfo);
-    }
 
     public LeagueInfo getLeagueInfo(){
         return this.leagueInfo;
