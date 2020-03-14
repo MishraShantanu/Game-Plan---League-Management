@@ -126,9 +126,8 @@ public class GameTime implements Comparable{
     @Override
     @NonNull
     public String toString(){
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return dateFormat.toString();
+        // use the standard day/month/year format
+        return this.getDateWithFormat(DDMMYYYY_FORMAT);
     }
 
     public String getDateWithFormat(String format){

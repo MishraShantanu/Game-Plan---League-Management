@@ -184,6 +184,16 @@ public class Game implements Comparable{
     }
 
     /**
+     * Returns a String database key for this Game object
+     * @return unique String database key for this Game object
+     */
+    public String getDatabaseKey(){
+        // game keys are structured as date(YYYY/MM/DD)-team1Info-team2Info, this ensures that games are sorted by start date on the database
+        String databaseKey = this.getGameTime().getDateWithFormat(GameTime.YYYYMMDD_FORMAT) + "-" + this.getTeam1Info().getDatabaseKey() + this.getTeam2Info().getDatabaseKey();
+        return databaseKey;
+    }
+
+    /**
      * Returns a string representation of the game
      * @return String representing the game, including the teams playing in the game, and the final scores if the game has been played
      */
