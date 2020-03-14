@@ -3,21 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/round_card_button"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/home_team_text"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:padding="22dp"
-        android:textColor="@color/colorText"
-        android:textSize="24sp" />
+    android:orientation="vertical"
+    android:padding="22dp">
 
     <TextView
         android:id="@+id/home_league_text"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:padding="22dp"
+        android:textColor="@color/colorText"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/home_team_text"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:textColor="@color/colorText"
         android:textSize="24sp" />
 

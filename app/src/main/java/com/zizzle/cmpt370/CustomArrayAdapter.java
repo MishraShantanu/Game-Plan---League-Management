@@ -1,4 +1,4 @@
-package com.zizzle.cmpt370.Activities;
+package com.zizzle.cmpt370;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,13 +21,13 @@ import java.util.ArrayList;
 
 public class CustomArrayAdapter extends BaseAdapter{
 
-    ArrayList<LeagueInfo> leagues;
+    ArrayList<String> leagues;
     ArrayList<TeamInfo> teams;
     Context context;
 
     private static LayoutInflater inflater=null;
 
-    public CustomArrayAdapter(Activity activity, ArrayList<LeagueInfo> leagues, ArrayList<TeamInfo> teams) {
+    public CustomArrayAdapter(Activity activity, ArrayList<String> leagues, ArrayList<TeamInfo> teams) {
         this.leagues = leagues;
         this.teams = teams;
         context = activity;
