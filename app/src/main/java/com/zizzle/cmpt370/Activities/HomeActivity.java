@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
@@ -37,9 +38,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     /** Values inside ListView. */
     ArrayList<TeamInfo> teamsInfo;
+    ArrayList<LeagueInfo> leaguesInfo;
 
     /** Adapter for displaying teams */
-    ArrayAdapter teamArrayAdapter;
+    CustomArrayAdapter teamArrayAdapter;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -79,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
         // read in the current user's teams from the database
         DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
+        DatabaseReference userLeaguesReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("leagueInfoMap");
 
         userTeamsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -118,8 +121,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        leaguesInfo = new ArrayList<>();
+
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);
+        teamArrayAdapter = new CustomArrayAdapter(HomeActivity.this, leaguesInfo, teamsInfo);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
