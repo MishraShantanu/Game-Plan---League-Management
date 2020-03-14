@@ -31,7 +31,7 @@ import com.zizzle.cmpt370.R;
 
 public class TeamsPop extends Activity {
 
-    EditText teamName, typeOfSport;
+    EditText teamName;
     Button submitButton;
 
     @Override
@@ -51,25 +51,16 @@ public class TeamsPop extends Activity {
 
         // Gathering Input =========================================================================
         teamName  = findViewById(R.id.teamName);
-        typeOfSport = findViewById(R.id.sportInput);
         submitButton = findViewById(R.id.submitButton);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String nameOfTeam = teamName.getText().toString();
-                final String sportForTeam = typeOfSport.getText().toString();
+                final String sportForTeam = "TEMP SPORT"; /////TODO ADD SPORT FOR TEAM
 
-                if (nameOfTeam.isEmpty() && sportForTeam.isEmpty()) {
-                    Toast.makeText(TeamsPop.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (nameOfTeam.isEmpty()) {
+                if (nameOfTeam.isEmpty()) {
                     Toast.makeText(TeamsPop.this, "Team name is required", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (sportForTeam.isEmpty()) {
-                    Toast.makeText(TeamsPop.this, "Type of sport is required", Toast.LENGTH_SHORT).show();
                 }
 
                 else {

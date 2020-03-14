@@ -11,7 +11,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
+
+import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,9 +60,71 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // ADD STUFF HERE!!! ==========================================================================
+        // NEXT GAMES =========================================================================
+        ArrayList<String> nextGames = new ArrayList<>();
+        ArrayList<String> pastGames = new ArrayList<>();
+
+        // read in the current team object
 
 
+        // Display ListView contents.
+
+        ArrayAdapter nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
+        ListView nextGameList = findViewById(R.id.next_scores_list);
+        nextGameList.setAdapter(nextGameArrayAdapter);
+
+
+        // clicking on a league in the ListView is handled in here.
+        nextGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+//                 name of the league that was clicked.
+//                final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
+//
+//                Intent teamsIntent = new Intent(LeagueActivity.this, TeamsActivity.class);
+//                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+//                teamsIntent.putExtra("LEAGUE_CLICKED",clickedLeagueName);
+//                startActivity(teamsIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+        // PAST GAMES =========================================================================
+
+
+        // Display ListView contents.
+        ArrayAdapter pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
+        ListView pastGameList = findViewById(R.id.past_scores_list);
+        nextGameList.setAdapter(pastGameArrayAdapter);
+
+
+        // clicking on a league in the ListView is handled in here.
+        nextGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             *
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+//                 name of the league that was clicked.
+//                final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
+//
+//                Intent teamsIntent = new Intent(LeagueActivity.this, TeamsActivity.class);
+//                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+//                teamsIntent.putExtra("LEAGUE_CLICKED",clickedLeagueName);
+//                startActivity(teamsIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
     }
 
 
@@ -66,26 +133,26 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                Intent toHome = new Intent(this, HomeActivity.class);
+                Intent toHome = new Intent(GameActivity.this, HomeActivity.class);
                 toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toHome);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_leagues:
-                startActivity(new Intent(this, LeagueActivity.class));
+                startActivity(new Intent(GameActivity.this, LeagueActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivity(new Intent(GameActivity.this, ProfileActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
-                startActivity(new Intent(this, AboutUsActivity.class));
+                startActivity(new Intent(GameActivity.this, AboutUsActivity.class));
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
-                Intent toLogOut = new Intent(this, SigninActivity.class);
+                Intent toLogOut = new Intent(GameActivity.this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

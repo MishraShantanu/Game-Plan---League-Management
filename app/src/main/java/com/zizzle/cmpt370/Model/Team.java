@@ -21,9 +21,8 @@ public class Team {
     /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
     private HashMap<String,MemberInfo> membersInfoMap;
 
-    /** TreeMap with the games previously played by this team as keys, these keys are kept in sorted order by default,
-     * the values of this map are booleans, a simple true will be stored for each key*/
-    private TreeMap<Game,Boolean> gamesPlayedMap;
+    /** TreeMap with the database keys of games played as keys and the Game objects played as values */
+    private TreeMap<String,Game> gamesPlayedMap;
     //TODO these treemaps won't work, we require string keys, use old idea of unique keys, to get the most recent game, must get a values list then sort
     //TODO could however add an instance variable keeping track of the next most recently scheduled game, how can we check this when writing to the database
 
@@ -33,9 +32,8 @@ public class Team {
     /** Info about the owner of the team */
     private MemberInfo ownerInfo;
 
-    /** TreeMap with the games scheduled for a team as keys, these keys are sorted by default, the values of this
-     * map will be Boolean true's */
-    private TreeMap<Game,Boolean> scheduledGamesMap;
+    /** TreeMap with the database keys of games schedules as keys and the Game objects schedules as values */
+    private TreeMap<String,Game> scheduledGamesMap;
 
     /** Number of wins the team has */
     private int wins;
@@ -262,6 +260,10 @@ public class Team {
      * @return true if the team has at least 1 game scheduled in the future, false otherwise
      */
     public boolean hasGamesScheduled(){
+        // scheduledGamesMap may be null if this object has been read from the database without having any games
+        if(this.scheduledGamesMap == null){
+            return false;
+        }
         return this.scheduledGamesMap.size() > 0;
     }
 
@@ -270,17 +272,15 @@ public class Team {
      * @return Game object that is scheduled to be played closest to now
      * @throws IllegalStateException if the team has no games scheduled
      */
-    /*
     public Game getClosestScheduledGame() throws IllegalStateException{
         // make sure there is a game scheduled
         if(! this.hasGamesScheduled()){
             throw new IllegalStateException("Team: team '" + this.name + "' has no games scheduled");
         }
-
-        // the closest game is always at the front of the list of scheduled games
-        return this.scheduledGames.get(0);
+        // the firstKey of this map will always be the key with lowest value, this lowest value key must
+        // be correspond to the game with closest date
+        return this.scheduledGamesMap.get(this.scheduledGamesMap.firstKey());
     }
-     */
 
     /**
      * Checks if the team has played at least 1 game before

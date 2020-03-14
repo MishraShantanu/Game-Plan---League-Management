@@ -12,11 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,12 +22,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.CustomArrayAdapter;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -37,9 +34,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     /** Values inside ListView. */
     ArrayList<TeamInfo> teamsInfo;
+    ArrayList<String> leaguesName;
 
     /** Adapter for displaying teams */
-    ArrayAdapter teamArrayAdapter;
+    CustomArrayAdapter teamArrayAdapter;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
@@ -92,6 +90,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 teamsInfo.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     teamsInfo.add(ds.getValue(TeamInfo.class));
+
+                    // TODO connect this to the actual league team
+                    leaguesName.add("League Name");
                 }
 
                 // If user is on teams, show their teams.
@@ -118,35 +119,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        leaguesName = new ArrayList<>();
+
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);
+        teamArrayAdapter = new CustomArrayAdapter(HomeActivity.this, leaguesName, teamsInfo);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
-
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /**
-             * performs an action when a ListView item is clicked.
-             *
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // TeamInfo object that was clicked.
-                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
-
-                // Intent for the team clicked.
-                Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
-                // pass the clicked TeamInfo to the Team page through this intent
-                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
-                startActivity(teamIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-
     }
 
     //When item is selected in the menu, open the respective element (fragment or activity)
