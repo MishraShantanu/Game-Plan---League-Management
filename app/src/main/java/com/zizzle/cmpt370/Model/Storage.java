@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
@@ -257,6 +258,9 @@ public class Storage {
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
     }
 
+
+
+
     /**
      * Removes the input Member from the input team, the Member cannot be owner of this team, the input team
      * is removed from the input member and the member is deleted from the team
@@ -277,6 +281,34 @@ public class Storage {
         // remove team from memberToRemove
         database.child("users").child(memberToRemoveInfo.getDatabaseKey()).child("teamsInfo").child(teamInfo.getDatabaseKey()).removeValue();
         // TODO what happens if member isn't on the input team
+    }
+
+
+    /**
+     * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team
+     *
+     * @param teamInfo: TeamInfo object representing the team to remove from the member
+     */
+    public static void removeTeam(TeamInfo teamInfo){
+        // remove team from members teams
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfo").removeEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds:dataSnapshot.getChildren()
+                     ) {
+
+                    database.child("users").child(ds.toString()).child("teamInfoMap").removeValue();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        // remove the member from the team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
     }
 
 
