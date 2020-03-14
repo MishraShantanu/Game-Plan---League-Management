@@ -92,9 +92,8 @@ public class Storage {
      * @param game: Game object denoting game to store
      */
     public static void addGameToTeams(TeamInfo team1Info, TeamInfo team2Info, Game game){
-        // TODO, check that the game is valid for these teams
-        // a game's database key is of the form team1key-team2key-time
-        String gameDatabaseKey = team1Info.getDatabaseKey() + "-" + team2Info.getDatabaseKey() + "-" + game.getGameTime().toString();
+        // TODO check that these input teams are actually playing in this game, check that this game hasn't been played yet etc
+        String gameDatabaseKey = game.getDatabaseKey();
         // add this game to team1
         database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
         // add this game to team2

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 
 /**
@@ -20,9 +21,11 @@ public class Team {
     /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
     private HashMap<String,MemberInfo> membersInfoMap;
 
-    /** Games previously played by the team, this list is ordered so games towards the front of the
-     * list are more recent than those at the back */
-    private ArrayList<Game> gamesPlayed;
+    /** TreeMap with the games previously played by this team as keys, these keys are kept in sorted order by default,
+     * the values of this map are booleans, a simple true will be stored for each key*/
+    private TreeMap<Game,Boolean> gamesPlayedMap;
+    //TODO these treemaps won't work, we require string keys, use old idea of unique keys, to get the most recent game, must get a values list then sort
+    //TODO could however add an instance variable keeping track of the next most recently scheduled game, how can we check this when writing to the database
 
     /** Info about the league the team is a part of */
     private LeagueInfo leagueInfo;
@@ -30,9 +33,9 @@ public class Team {
     /** Info about the owner of the team */
     private MemberInfo ownerInfo;
 
-    /** List of games the team is scheduled to play, this list is ordered such that closer games are
-     * towards the front of the list and further away games are towards the end of the list */
-    private ArrayList<Game> scheduledGames;
+    /** TreeMap with the games scheduled for a team as keys, these keys are sorted by default, the values of this
+     * map will be Boolean true's */
+    private TreeMap<Game,Boolean> scheduledGamesMap;
 
     /** Number of wins the team has */
     private int wins;
@@ -60,8 +63,8 @@ public class Team {
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
-        this.gamesPlayed = new ArrayList<>();
-        this.scheduledGames = new ArrayList<>();
+        this.gamesPlayedMap = new TreeMap<>();
+        this.scheduledGamesMap = new TreeMap<>();
     }
 
     public Team(){
@@ -259,7 +262,7 @@ public class Team {
      * @return true if the team has at least 1 game scheduled in the future, false otherwise
      */
     public boolean hasGamesScheduled(){
-        return this.scheduledGames.size() > 0;
+        return this.scheduledGamesMap.size() > 0;
     }
 
     /**
@@ -284,7 +287,7 @@ public class Team {
      * @return true if the team has played a game, false otherwise
      */
     public boolean hasPlayedGame(){
-        return this.gamesPlayed.size() > 0;
+        return this.gamesPlayedMap.size() > 0;
     }
 
     /**
