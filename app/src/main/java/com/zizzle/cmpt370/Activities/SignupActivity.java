@@ -97,18 +97,16 @@ public class SignupActivity extends AppCompatActivity {
                                 fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful()) {
+                                                if (!task.isSuccessful())
                                                     // this toast is for testing only
                                                     Toast.makeText(SignupActivity.this, "couldn't add display name to user profile", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    // head to main activity
-                                                    Intent intoMain = new Intent(SignupActivity.this, HomeActivity.class);
-                                                    intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                    startActivity(intoMain);
-                                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                                                }
                                             }
                                         });
+                                // head to main activity
+                                Intent intoMain = new Intent(SignupActivity.this, HomeActivity.class);
+                                intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intoMain);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
                         }
                     });
