@@ -32,17 +32,20 @@ import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    /** Values inside ListView. */
+    /**
+     * Values inside ListView.
+     */
     ArrayList<TeamInfo> teamsInfo;
     ArrayList<String> leaguesName;
 
-    /** Adapter for displaying teams */
+    /**
+     * Adapter for displaying teams
+     */
     CustomArrayAdapter teamArrayAdapter;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
-
 
 
     @Override
@@ -92,7 +95,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // called to read data, get the list of teams the member is a part of
                 // first clear this list as this list may be updated as new teams are added and removed
                 teamsInfo.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     teamsInfo.add(ds.getValue(TeamInfo.class));
 
                     // TODO connect this to the actual league team
@@ -118,7 +121,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
             @Override
-            public void onCancelled(DatabaseError databaseError){
+            public void onCancelled(DatabaseError databaseError) {
                 // called when database operations fail,
             }
         });
@@ -167,9 +170,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        else super.onBackPressed();
+        } else super.onBackPressed();
     }
 
     //Button to open menu

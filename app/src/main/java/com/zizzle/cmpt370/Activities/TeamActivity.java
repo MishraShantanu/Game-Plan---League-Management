@@ -41,13 +41,19 @@ import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    /** Values inside ListView. */
+    /**
+     * Values inside ListView.
+     */
     ArrayList<MemberInfo> membersInfo;
 
-    /** Adapter for search bar. */
+    /**
+     * Adapter for search bar.
+     */
     ArrayAdapter memberArrayAdapter;
 
-    /** TeamInfo object representing the current team whose page the user is on*/
+    /**
+     * TeamInfo object representing the current team whose page the user is on
+     */
     TeamInfo currentTeamInfo;
 
     //main roundedCorners ID of homepageWithMenu.xml
@@ -70,7 +76,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
         // get the TeamInfo object stored in the intent
-        currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
+        currentTeamInfo = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
 
         // set the title to the name of the clicked team
         getSupportActionBar().setTitle(currentTeamInfo.getName());
@@ -118,7 +124,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called to read in data
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
                     membersInfo.clear();
                     Team currentTeam = dataSnapshot.getValue(Team.class);
@@ -246,6 +252,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     });
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // called when database operation fails
@@ -332,7 +339,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             MemberInfo currentUserInfo = getCurrentUserInfo();
             // add this current user to the current team, and the current team to the current user
             // we don't need to check if the user is already part of this team, we just rewrite values that are already there in that case
-            Storage.addTeamToMember(currentUserInfo,currentTeamInfo);
+            Storage.addTeamToMember(currentUserInfo, currentTeamInfo);
             return true;
         }
 
