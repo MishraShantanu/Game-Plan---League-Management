@@ -53,18 +53,6 @@
             android:ems="10"
             android:hint="Email"/>
 
-        <EditText
-            android:id="@+id/passwordInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:backgroundTint="@color/colorText"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorTextHint"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:hint="Password"/>
-
         <Button
             android:id="@+id/submitButton"
             android:layout_width="wrap_content"

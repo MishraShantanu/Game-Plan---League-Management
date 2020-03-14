@@ -91,6 +91,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // NOTE: this will give all leagues created by anybody, NOT leagues the current user is a part of
         DatabaseReference leagueDBReference = FirebaseDatabase.getInstance().getReference().child("Leagues");
 
+        
+
         // attaching this listener will read from the database once initially and whenever leagues on the database are changed.
         leagueDBReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -110,6 +112,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
                     // the key of each league is the league's name
                     String leagueName = ds.getKey();
+
                     leagueNames.add(leagueName);
                     leagueArrayAdapter.notifyDataSetChanged();
                 }
