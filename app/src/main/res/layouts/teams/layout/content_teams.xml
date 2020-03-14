@@ -110,5 +110,20 @@
             android:listSelector="@android:color/transparent"
             android:padding="15dp" />
 
+        <!--    remove league button    -->
+        <Button
+            android:id="@+id/remove_league_button"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_marginHorizontal="22dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_card_important_button"
+            android:drawableStart="@drawable/ic_warning"
+            android:padding="22dp"
+            android:text="Remove League"
+            android:textColor="@color/colorText"
+            android:textSize="24dp"
+            android:textStyle="normal" />
+
     </LinearLayout>
 </ScrollView>
