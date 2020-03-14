@@ -127,7 +127,7 @@ public class SigninActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // refresh the current user's member info to get rid of any stale values before the new user signs on
-        CurrentUserInfo.RefreashMemberInfo();
+        CurrentUserInfo.refreshMemberInfo();
         mFirebaseAuth.addAuthStateListener(mAuthstatelistner);
     }
 }

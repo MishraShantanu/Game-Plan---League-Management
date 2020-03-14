@@ -1,14 +1,24 @@
 package com.zizzle.cmpt370.Model;
 
+import android.support.annotation.NonNull;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Class for representing the time a game will be played
  */
-public class GameTime {
+public class GameTime implements Comparable{
 
     /** Calendar storing years, months, days, hours, minutes, seconds when Game will occur */
     private Calendar time;
+
+    /** format used to display the time of this game in the form dd/mm/yyyy */
+    public static String DDMMYYYY_FORMAT = "dd/MM/yyyy";
+
+    /** format used to display the time of this game in the form yyyy/mm/dd */
+    public static String YYYYMMDD_FORMAT = "yyyy/MM/dd";
 
     /**
      * GameTime constructor
@@ -66,14 +76,20 @@ public class GameTime {
     }
 
     /**
-     * Compares this GameTime to another GameTime
+     * Compares this GameTime to another GameTime, this will produce a IllegalArgumentException if other isn't a GameTime
      * @param other: other GameTime object to compare this GameTime to
      * @return 0 if this and other represent the same time, < 0 if this represent a time before the time
      * represented by other, > 0 if this represents a time later than other
      */
-    public int compareTo(GameTime other){
+    @Override
+    public int compareTo(Object other){
+        if(!(other instanceof GameTime)){
+            // other is an invalid type
+            throw new IllegalArgumentException("Cannot compare a GameTime object to an object of type: " + other.getClass().getName());
+        }
+        GameTime otherGameTime = (GameTime) other;
         // compare underlying calendars
-        return this.time.compareTo(other.time);
+        return this.time.compareTo(otherGameTime.time);
     }
 
     /**
@@ -101,6 +117,27 @@ public class GameTime {
             return false;
         }
 
+    }
+
+    /**
+     * Returns a String representation of the GameTime, this returns a time formatted as DD/MM/YYYY
+     * @return String as described above
+     */
+    @Override
+    @NonNull
+    public String toString(){
+        // use the standard day/month/year format
+        return this.getDateWithFormat(DDMMYYYY_FORMAT);
+    }
+
+    public String getDateWithFormat(String format){
+        // make sure that the format is part of the valid recognized formats
+        if(!format.equals(DDMMYYYY_FORMAT) && !format.equals(YYYYMMDD_FORMAT)){
+            throw new IllegalArgumentException(format + " is an invalid format");
+        }
+        // convert our Calendar object to a Date object, display using the input format under the local timezone
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        return dateFormat.toString();
     }
 
 
