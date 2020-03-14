@@ -161,7 +161,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(View view) {
                         // remove the team member from the team
                        // TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
-                        Storage.removeTeam(currentTeamInfo);
+
 
 
                         Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
@@ -170,6 +170,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                         Intent intent = new Intent(TeamActivity.this, HomeActivity.class);
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        Storage.removeTeam(currentTeamInfo);
 
 
 
@@ -193,7 +194,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 MemberInfo currentUser = getCurrentUserInfo();
                     // if member is on the team.
                     if (membersInfo.contains(currentUser)) {
-                        joinButton.setVisible(false); //don't show the "Join" button since the user is part of the team/owner
+                        if (joinButton != null) {
+                            joinButton.setVisible(false); //don't show the "Join" button since the user is part of the team/owner
+                        }
                     }
                     membersInfo.remove(ownerInfo); //remove owner from the team member list
 
@@ -209,7 +212,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                                 MemberInfo currentUser = getCurrentUserInfo();
                                 Storage.removeMemberFromTeam(currentUser, currentTeamInfo);
                                 leaveTeamButton.setVisibility(View.INVISIBLE);
-                                joinButton.setVisible(true); //show join button again
+                                if (joinButton != null) {
+                                    joinButton.setVisible(true);
+                                }
                                 Toast.makeText(TeamActivity.this, "Left the team successfully", Toast.LENGTH_SHORT).show();
                             }
                         });
