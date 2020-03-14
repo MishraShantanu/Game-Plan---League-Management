@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -52,6 +53,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
     private NonScrollableListView teamList;
+
+    private MenuItem joinButton;
 
 
     @Override
@@ -152,31 +155,34 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 // display the members of the team
                 // TODO this is a short term fix, getMembersInfo was returning null when called from this team
                 for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
-                    MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
-                    // don't add the owner to this list, the owner is already displayed
-                    if(!currentMemberInfo.equals(ownerInfo)){
-                        membersInfo.add(ds.getValue(MemberInfo.class));
-                    }
+                    membersInfo.add(ds.getValue(MemberInfo.class));
                 }
                 memberArrayAdapter.notifyDataSetChanged();
 
                 // Leave the team button.
                 MemberInfo currentUser = getCurrentUserInfo();
-                // if member is on the team.
-                if (membersInfo.contains(currentUser)) {
-                    // Make button visible and set click listener.
-                    final Button leaveTeamButton = findViewById(R.id.leave_team_button);
-                    leaveTeamButton.setVisibility(View.VISIBLE);
-                    leaveTeamButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // leave the team
-                            MemberInfo currentUser = getCurrentUserInfo();
-                            Storage.removeMemberFromTeam(currentUser, currentTeamInfo);
-                            leaveTeamButton.setVisibility(View.INVISIBLE);
-                            Toast.makeText(TeamActivity.this, "Left the team successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    // if member is on the team.
+                    if (membersInfo.contains(currentUser)) {
+                        joinButton.setVisible(false); //don't show the "Join" button since the user is part of the team/owner
+                    }
+                    membersInfo.remove(ownerInfo); //remove owner from the team member list
+
+                    if (membersInfo.contains(currentUser)) {
+
+                        // Make button visible and set click listener.
+                        final Button leaveTeamButton = findViewById(R.id.leave_team_button);
+                        leaveTeamButton.setVisibility(View.VISIBLE);
+                        leaveTeamButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // leave the team
+                                MemberInfo currentUser = getCurrentUserInfo();
+                                Storage.removeMemberFromTeam(currentUser, currentTeamInfo);
+                                leaveTeamButton.setVisibility(View.INVISIBLE);
+                                joinButton.setVisible(true); //show join button again
+                                Toast.makeText(TeamActivity.this, "Left the team successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 }
 
 
@@ -310,10 +316,13 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.team_button_menu, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.team_button_menu, menu);
+        this.joinButton = menu.findItem(R.id.join_team_button);
+        if (joinButton != null) {
+            joinButton.setVisible(true);
+        }
         return true;
     }
 }
