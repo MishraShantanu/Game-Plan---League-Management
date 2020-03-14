@@ -165,5 +165,17 @@
             android:textColor="#FFFFFF"
             android:textSize="24sp" />
 
+        <Button
+            android:id="@+id/delete_team_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/round_card_important_button"
+            android:drawableStart="@drawable/ic_warning"
+            android:padding="22dp"
+            android:textColor="@color/colorText"
+            android:textSize="24sp"
+            android:textStyle="normal" />
+
     </LinearLayout>
 </ScrollView>
