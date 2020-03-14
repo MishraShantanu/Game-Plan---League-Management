@@ -227,11 +227,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 // Take the user to the game activity page
-                // TODO - uncomment this when the game page is made.
-//                Intent teamMemberIntent = new Intent(TeamActivity.this, GameActivity.class);
-//                startActivity(teamMemberIntent);
-//                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                Toast.makeText(TeamActivity.this, "Not Implemented.\nWill take you to all games.",Toast.LENGTH_SHORT).show();
+                Intent teamMemberIntent = new Intent(TeamActivity.this, GameActivity.class);
+                startActivity(teamMemberIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 

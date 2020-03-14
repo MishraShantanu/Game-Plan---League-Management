@@ -88,7 +88,8 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
