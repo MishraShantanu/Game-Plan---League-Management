@@ -2,6 +2,7 @@ package com.zizzle.cmpt370;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zizzle.cmpt370.Activities.HomeActivity;
+import com.zizzle.cmpt370.Activities.TeamActivity;
 import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
@@ -25,7 +28,7 @@ public class CustomArrayAdapter extends BaseAdapter{
     ArrayList<TeamInfo> teams;
     Context context;
 
-    private static LayoutInflater inflater=null;
+    private static LayoutInflater inflater = null;
 
     public CustomArrayAdapter(Activity activity, ArrayList<String> leagues, ArrayList<TeamInfo> teams) {
         this.leagues = leagues;
@@ -66,12 +69,20 @@ public class CustomArrayAdapter extends BaseAdapter{
         holder.team = rowView.findViewById(R.id.home_team_text);
         holder.league = rowView.findViewById(R.id.home_league_text);
         holder.team.setText(teams.get(position).toString());
-        holder.league.setText(leagues.get(position).toString());
+        holder.league.setText(leagues.get(position));
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Toast.makeText(context, "You Clicked " + teams.get(position).toString(), Toast.LENGTH_LONG).show();
+
+                // TeamInfo object that was clicked.
+                TeamInfo clickedTeamInfo = teams.get(position);
+
+                // Intent for the team clicked.
+                Intent teamIntent = new Intent(context, TeamActivity.class);
+                // pass the clicked TeamInfo to the Team page through this intent
+                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                context.startActivity(teamIntent);
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
         return rowView;

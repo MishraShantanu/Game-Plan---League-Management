@@ -92,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     teamsInfo.add(ds.getValue(TeamInfo.class));
 
                     // TODO connect this to the actual league team
-                    leaguesName.add("LEAGUE NAME");
+                    leaguesName.add("League Name");
                 }
 
                 // If user is on teams, show their teams.
@@ -125,31 +125,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         teamArrayAdapter = new CustomArrayAdapter(HomeActivity.this, leaguesName, teamsInfo);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
-
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /**
-             * performs an action when a ListView item is clicked.
-             *
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // TeamInfo object that was clicked.
-                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
-
-                // Intent for the team clicked.
-                Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
-                // pass the clicked TeamInfo to the Team page through this intent
-                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
-                startActivity(teamIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-
     }
 
     //When item is selected in the menu, open the respective element (fragment or activity)
