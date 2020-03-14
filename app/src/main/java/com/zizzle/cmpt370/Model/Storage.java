@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 /**
@@ -34,7 +35,7 @@ public class Storage {
     public static final String LEAGUE_SPORT = "sport";
 
     /** constant that should be used if the name field of a league is being updated */
-    public static final String LEAGUE_NAME = "name";
+    public static String LEAGUE_NAME = "name";
 
     /** constant that should be used if the owner field of a league is being updated */
     public static final String LEAGUE_OWNER = "ownerInfo";
@@ -44,7 +45,7 @@ public class Storage {
 
     // constants that should be used to update Teams
     /** constant that should be used if the name of a team is being updated */
-    public static final String TEAM_NAME = "name";
+    public static  String TEAM_NAME = "name";
 
     /** constant that should be used if the sport of a team is being updated */
     public static final String TEAM_SPORT = "sport";
@@ -81,6 +82,8 @@ public class Storage {
 
     /** constant that should be updated if the leagues of a member are being updated */
     public static final String MEMBER_LEAGUES = "leaguesInfo";
+
+
 
 
 
@@ -220,15 +223,21 @@ public class Storage {
      */
     public static void removeTeam(TeamInfo teamInfo){
         // remove team from members teams
-        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfo").removeEventListener(new ValueEventListener() {
+
+        TEAM_NAME = teamInfo.getDatabaseKey();
+
+        LEAGUE_NAME = teamInfo.getLeagueName();
+
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds:dataSnapshot.getChildren()
-                     ) {
+                ) {
 
-                    database.child("users").child(ds.toString()).child("teamInfoMap").removeValue();
+                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(TEAM_NAME).removeValue();
 
                 }
+
             }
 
             @Override
@@ -236,8 +245,16 @@ public class Storage {
 
             }
         });
+
+
+
+
         // remove the member from the team
+
         database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
+
+        database.child("Leagues").child(LEAGUE_NAME).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+
     }
 
 

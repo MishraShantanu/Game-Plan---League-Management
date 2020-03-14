@@ -160,11 +160,20 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(View view) {
                         // remove the team member from the team
-                        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+                       // TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
                         Storage.removeTeam(currentTeamInfo);
 
 
                         Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+
+
+                        Intent intent = new Intent(TeamActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+
+
+
                     }
                 });
 
