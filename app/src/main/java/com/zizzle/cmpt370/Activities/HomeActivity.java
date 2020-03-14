@@ -81,7 +81,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
         // read in the current user's teams from the database
         DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
-        DatabaseReference userLeaguesReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("leagueInfoMap");
 
         userTeamsReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -95,6 +94,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 teamsInfo.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     teamsInfo.add(ds.getValue(TeamInfo.class));
+                    leaguesInfo.add(new LeagueInfo());
                 }
 
                 // If user is on teams, show their teams.
