@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,10 +31,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
+
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class TeamsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -105,6 +110,37 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             });
             // set title to that of the clicked on league
             getSupportActionBar().setTitle(selectedLeague);
+
+
+            // Remove league button
+            final Button removeLeagueButton = findViewById(R.id.remove_league_button);
+            removeLeagueButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    // TODO Delete league.
+
+                }
+            });
+
+
+
+            DatabaseReference leagueOwnerReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
+            leagueOwnerReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // set the league description.
+                    League currentLeague = dataSnapshot.getValue(League.class);
+                    MemberInfo ownerInfo = currentLeague.getOwnerInfo();
+                    MemberInfo currentUserInfo = getCurrentUserInfo();
+                    if (currentUserInfo.equals(ownerInfo)) {
+                        removeLeagueButton.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
+            });
 
 
 
