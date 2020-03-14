@@ -5,7 +5,7 @@ import java.util.Calendar;
 /**
  * Class for representing the time a game will be played
  */
-public class GameTime {
+public class GameTime implements Comparable{
 
     /** Calendar storing years, months, days, hours, minutes, seconds when Game will occur */
     private Calendar time;
@@ -66,14 +66,20 @@ public class GameTime {
     }
 
     /**
-     * Compares this GameTime to another GameTime
+     * Compares this GameTime to another GameTime, this will produce a IllegalArgumentException if other isn't a GameTime
      * @param other: other GameTime object to compare this GameTime to
      * @return 0 if this and other represent the same time, < 0 if this represent a time before the time
      * represented by other, > 0 if this represents a time later than other
      */
-    public int compareTo(GameTime other){
+    @Override
+    public int compareTo(Object other){
+        if(!(other instanceof GameTime)){
+            // other is an invalid type
+            throw new IllegalArgumentException("Cannot compare a GameTime object to an object of type: " + other.getClass().getName());
+        }
+        GameTime otherGameTime = (GameTime) other;
         // compare underlying calendars
-        return this.time.compareTo(other.time);
+        return this.time.compareTo(otherGameTime.time);
     }
 
     /**

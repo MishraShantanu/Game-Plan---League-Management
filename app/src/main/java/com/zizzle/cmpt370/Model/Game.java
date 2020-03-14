@@ -7,7 +7,7 @@ import android.util.Pair;
 /**
  * Parent class, stores generic information about sports games
  */
-public class Game {
+public class Game implements Comparable{
 
     /** first team in the game */
     private TeamInfo team1Info;
@@ -216,7 +216,22 @@ public class Game {
         }
         // Other isn't a game and can't be equal
         return false;
+    }
 
+
+    /**
+     * Compares this Game object to another object, games are compared by scheduled time, so a game starting
+     * earlier is deemed to be lesser.
+     * @param other: Object being compared to this game, this must be a Game object or an IllegalArgumentException is thrown
+     * @return 0 if this and other are equal, < 0 if this game is lesser than other, > 0 if this game is greater than other
+     */
+    public int compareTo(Object other){
+        if(!(other instanceof Game)){
+            throw new IllegalArgumentException("Cannot compare a Game to a: " + other.getClass().getName());
+        }
+        Game otherGame = (Game) other;
+        // compare the underlying times of each game
+        return this.getGameTime().compareTo(otherGame.getGameTime());
     }
 
 
