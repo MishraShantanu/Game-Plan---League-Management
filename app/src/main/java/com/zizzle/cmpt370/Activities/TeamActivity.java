@@ -52,6 +52,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
     private NonScrollableListView teamList;
+    private Button removeTeam;
 
 
     @Override
@@ -146,6 +147,25 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 });
+
+
+
+                // Remove player button ===================================
+                removeTeam = findViewById(R.id.delete_team_button);
+                removeTeam.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // remove the team member from the team
+                        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+                        Storage.removeTeam(currentTeamInfo);
+
+
+                        Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
 
 
 
