@@ -93,10 +93,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // first clear this list as this list may be updated as new teams are added and removed
                 teamsInfo.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    teamsInfo.add(ds.getValue(TeamInfo.class));
-
-                    // TODO connect this to the actual league team
-                    leaguesName.add("League Name");
+                    TeamInfo ti = ds.getValue(TeamInfo.class);
+                    teamsInfo.add(ti);
+                    leaguesName.add(ti.getLeagueName());
                 }
 
                 // If user is on teams, show their teams.
