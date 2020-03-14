@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -16,8 +17,8 @@ public class Team {
     /** Sport the team is playing */
     private String sport;
 
-    /** Info about Members of the team */
-    private ArrayList<MemberInfo> membersInfo;
+    /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
+    private HashMap<String,MemberInfo> membersInfoMap;
 
     /** Games previously played by the team, this list is ordered so games towards the front of the
      * list are more recent than those at the back */
@@ -46,38 +47,25 @@ public class Team {
     /**
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
-     * @param owner: Member object, owner/creator of the team
+     * @param ownerInfo: MemberInfo object, represents the owner/creator of the team
      * @param sport: String sport the team plays, must match the sport of the league
-     * @param league: League object, league the team is a part of, this adds the Team object to the league
-     * @throws IllegalArgumentException if team name isn't unique for this league, or if league sport doesn't
-     * match team sport
+     * @param leagueInfo: LeagueInfo object, representing the league this team belongs to
      */
-    public Team(String name, Member owner, String sport, League league) throws IllegalArgumentException{
-        this.leagueInfo = new LeagueInfo(league);
-        // make sure the team name is unique to this league
-        for (TeamInfo team : league.getTeamInfos()){
-            if(team.getName().equals(name)){
-                // new name isn't unique for the league
-                throw new IllegalArgumentException("Team name: " + name + " isn't unique in league: " + league);
-            }
-        }
-        // make sure team and league sport match
-        if(!league.getSport().equals(sport)){
-            throw new IllegalArgumentException("Team sport: " + sport + " doesn't match league sport: " + league.getSport());
-        }
+    public Team(String name, MemberInfo ownerInfo, String sport, LeagueInfo leagueInfo) {
+        this.leagueInfo = leagueInfo;
         this.name = name;
-        this.ownerInfo = new MemberInfo(owner);
+        this.ownerInfo = ownerInfo;
         this.sport = sport;
-        this.membersInfo = new ArrayList<>();
-        // add the owner to the team, this also updates database
-        setOwner(owner);
+        this.membersInfoMap = new HashMap<>();
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
         this.gamesPlayed = new ArrayList<>();
         this.scheduledGames = new ArrayList<>();
-        // add team to league
-        league.addTeam(this);
+    }
+
+    public Team(){
+
     }
 
     /**
@@ -119,19 +107,18 @@ public class Team {
     }
 
     /**
-     * Sets the owner of the team to the Member specified, if the new owner isn't part of the team,
+     * Sets the owner of the team to the MemberInfo specified, if the new owner isn't part of the team,
      * they will be added to the members of the team, the old owner still remains part of the team
      * and can be removed using removeMember
-     * @param newOwner: Member object, new owner of the team
+     * @param newOwnerInfo: MemberInfo object representing the new owner of the team
      */
-    public void setOwner(Member newOwner){
-        MemberInfo newOwnerInfo = new MemberInfo(newOwner);
+    public void setOwner(MemberInfo newOwnerInfo){
         // if newOwner isn't on the team, add them to the team members
-        if(! membersInfo.contains(newOwnerInfo)){
-            membersInfo.add(newOwnerInfo);
+        if(membersInfoMap!= null && ! membersInfoMap.containsKey(newOwnerInfo.getDatabaseKey())){
+            membersInfoMap.put(newOwnerInfo.getDatabaseKey(),newOwnerInfo);
             // update this team on the database to include this new member
         }
-        this.ownerInfo = new MemberInfo(newOwner);
+        this.ownerInfo = newOwnerInfo;
         // update this team on the database to include this new owner
     }
 
@@ -146,7 +133,7 @@ public class Team {
     public void removeMember(Member memberToRemove) throws IllegalStateException, IllegalArgumentException{
         // make sure memberToRemove is on the team
         MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
-        if(! this.membersInfo.contains(memberToRemoveInfo)){
+        if(! this.membersInfoMap.containsKey(memberToRemoveInfo.getDatabaseKey())){
             throw new IllegalArgumentException("Team: Member: " + memberToRemove.getDisplayName() + " to remove from team: "
                     + this.name + " isn't a member of the team");
         }
@@ -156,7 +143,7 @@ public class Team {
                     this.name + " as this Member is the owner of the team");
         }
 
-        this.membersInfo.remove(memberToRemoveInfo);
+        this.membersInfoMap.remove(memberToRemoveInfo.getDatabaseKey());
         // TODO remove memberToRemove from this team on the database
     }
 
@@ -191,7 +178,7 @@ public class Team {
      */
     public boolean teamHasMember(Member member){
         // TODO: could take in memberInfo
-        return this.membersInfo.contains(new MemberInfo(member));
+        return this.membersInfoMap.containsKey(member.getUserID());
     }
 
     /**
@@ -204,7 +191,7 @@ public class Team {
             throw new IllegalStateException("Member: " + newMember.toString() + " is already on this team");
         }
         MemberInfo newMemberInfo = new MemberInfo(newMember);
-        this.membersInfo.add(newMemberInfo);
+        this.membersInfoMap.put(newMemberInfo.getDatabaseKey(),newMemberInfo);
         // TODO add this new member to the database for this team
     }
 
@@ -214,27 +201,22 @@ public class Team {
      * @return HashSet containing info of the members of the team
      */
     public ArrayList<MemberInfo> getTeamMembersInfo(){
-        // TODO this is dangerous as it returns a reference to an object attribute, should probably shallow clone this
-        return this.membersInfo;
+        // if there are no members on this team, and we read this object from the database, membersInfoMap will be null
+        if(this.membersInfoMap == null){
+            // in this case just return an empty arraylist, as there are no members on the team
+            return new ArrayList<>();
+        }
+        // otherwise convert the values of our map into an arraylist
+        return new ArrayList<>(this.membersInfoMap.values());
     }
 
     /**
-     * Returns the Member who has the specified name from the team
-     * @param memberName: String name of a Member on the team, this name must belong to a Member on the team
-     * @return Member with the name input
-     * @throws IllegalArgumentException if memberName doesn't belong to any Member on the team
+     * Returns the MemberInfo who has the specified user ID from the team
+     * @param userID: String user ID of a Member on the team, if this user ID doesn't belong to a member on the team null is returned
+     * @return MemberInfo representing a member with the input userID
      */
-    public Member getMemberByFirstName(String memberName) throws IllegalArgumentException{
-        // linear search the list of team members for the input name
-        for(MemberInfo currentMemberInfo : this.membersInfo){
-            if(currentMemberInfo.getName().equals(memberName)){
-                // Member found, read the member object in from the database
-                return Storage.readMember(currentMemberInfo);
-            }
-        }
-        // Member not found
-        // TODO could also return null here
-        throw new IllegalArgumentException("Team: Member with name '" + memberName + "' not on team: " + this.name);
+    public MemberInfo getMemberInfoByUserID(String userID) {
+        return this.membersInfoMap.get(userID);
     }
 
     /**
@@ -302,6 +284,7 @@ public class Team {
      * @return Game object that is scheduled to be played closest to now
      * @throws IllegalStateException if the team has no games scheduled
      */
+    /*
     public Game getClosestScheduledGame() throws IllegalStateException{
         // make sure there is a game scheduled
         if(! this.hasGamesScheduled()){
@@ -311,6 +294,7 @@ public class Team {
         // the closest game is always at the front of the list of scheduled games
         return this.scheduledGames.get(0);
     }
+     */
 
     /**
      * Checks if the team has played at least 1 game before
@@ -325,6 +309,7 @@ public class Team {
      * @return Game object, most recently played game
      * @throws IllegalStateException if the team hasn't played any games
      */
+    /*
     public Game getMostRecentPlayedGame() throws IllegalStateException{
         // make sure the team has played at least 1 game
         if(! this.hasPlayedGame()){
@@ -333,6 +318,7 @@ public class Team {
         // most recently played game is always at the front of the list of played games
         return this.gamesPlayed.get(0);
     }
+     */
 
     /**
      * Returns an array of the games played by the team in order, the first game is most recently played
@@ -340,6 +326,7 @@ public class Team {
      * @return Game[] specified above
      * @throws IllegalStateException if the team hasn't played a game yet
      */
+    /*
     public Game[] getPlayedGames() throws IllegalStateException{
         // make sure the team has played at least 1 game
         if(! this.hasPlayedGame()){
@@ -347,6 +334,7 @@ public class Team {
         }
         return (Game[]) this.gamesPlayed.toArray();
     }
+     */
 
     /**
      * Returns an array of games the team is scheduled to play, this array is sorted so the first element
@@ -355,6 +343,7 @@ public class Team {
      * @return Game[] specified above
      * @throws IllegalStateException if the team doesn't have at least 1 game scheduled
      */
+    /*
     public Game[] getScheduledGames() throws IllegalStateException{
         // make sure the team has at least 1 game scheduled
         if(! this.hasGamesScheduled()){
@@ -362,7 +351,9 @@ public class Team {
         }
         return this.scheduledGames.toArray(new Game[this.scheduledGames.size()]);
     }
+     */
 
+    /*
     public void scheduleNewGame(Game newGame) throws IllegalStateException{
         // game must not have already been started
         if(newGame.hasGameStarted() || newGame.hasBeenPlayed()){
@@ -385,7 +376,9 @@ public class Team {
         }
     }
 
+     */
 
+/*
     public void markGameAsPlayed(Game playedGame){
         // make sure that playedGame involves our team
         if((! playedGame.getTeamOne().equals(this)) && (! playedGame.getTeamTwo().equals(this))){
@@ -422,11 +415,14 @@ public class Team {
         }
     }
 
+ */
+
     /**
      * Cancels a game that the team was scheduled to play
      * @param gameToCancel: Game object that the team is scheduled to play
      * @throws IllegalArgumentException if the team isn't scheduled to play gameToCancel
      */
+    /*
     public void cancelGame(Game gameToCancel) throws IllegalArgumentException{
         boolean removedSuccessfully = this.scheduledGames.remove(gameToCancel);
         // true is returned if gameToCancel is found and removed
@@ -434,4 +430,5 @@ public class Team {
             throw new IllegalArgumentException("Team: game: " + gameToCancel + " not scheduled to be played by this team");
         }
     }
+     */
 }

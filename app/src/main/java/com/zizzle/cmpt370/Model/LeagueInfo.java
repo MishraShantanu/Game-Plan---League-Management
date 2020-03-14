@@ -6,14 +6,14 @@ package com.zizzle.cmpt370.Model;
 public class LeagueInfo implements InfoInterface{
 
     /** name of the league being represented by this object*/
-    private String leagueName;
+    private String name; 
 
     /**
      * Creates a LeagueInfo object that stores information about the input league
      * @param league: League object, league to store information about
      */
     public LeagueInfo(League league){
-        leagueName = league.getName();
+        name = league.getName();
     }
 
     /**
@@ -22,7 +22,7 @@ public class LeagueInfo implements InfoInterface{
      * @param leagueName: String name of the league being represented
      */
     public LeagueInfo(String leagueName){
-        this.leagueName = leagueName;
+        this.name = leagueName;
     }
 
     /**
@@ -33,12 +33,12 @@ public class LeagueInfo implements InfoInterface{
     }
 
     public String getName(){
-        return leagueName;
+        return name;
     }
 
     public String getDatabaseKey(){
         // Since each league name is unique, a league's name is also its key in the database
-        return leagueName;
+        return name;
     }
 
 }

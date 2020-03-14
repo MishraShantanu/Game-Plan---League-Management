@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StatAttack</string>
+    <string name="app_name">GamePlan</string>
     <string name="sidebar_navigation_open">Open navigation drawer</string>
     <string name="sidebar_navigation_close">Close navigation drawer</string>
     <string name="title_activity_league">LeagueActivity</string>

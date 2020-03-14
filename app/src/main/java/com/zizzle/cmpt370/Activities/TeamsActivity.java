@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,12 +20,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.League;
-import com.zizzle.cmpt370.Model.Member;
-import com.zizzle.cmpt370.Model.Team;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -32,7 +38,7 @@ import java.util.ArrayList;
 public class TeamsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<Team> teams;
+    ArrayList<TeamInfo> teams;
 
     /** Adapter for search bar. */
     ArrayAdapter teamArrayAdapter;
@@ -52,9 +58,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
-        // TODO 24/02/2020 - Set title to the current team.
-        getSupportActionBar().setTitle("Cool League");
-
         //MENU (button & drawer)
         menuDrawer = findViewById(R.id.teams_layout);
         NavigationView navigationView = findViewById(R.id.teams_nav_view); //ADDED FOR CLICK
@@ -71,30 +74,103 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // add team button =======================================================================
 
-        // launches a pop-up for adding a new class.
-        FloatingActionButton addTeam = findViewById(R.id.add_team_button);
-        addTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-            }
-        });
 
 
         // list of teams =========================================================================
-
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO 18/02/2020 - remove this and replace with teams from database.
-
+        // initialize the list of teams with an empty array list, this empty list is displayed in the case of database errors
+        // and while waiting for values to be read from the database
         teams = new ArrayList<>();
-        Member owner = new Member("Tom Holland", "e@mail.gov", "12345678901","UID88887");
-        League league = new League("league",owner,"SQUASH","fun league"); // stub league
-        for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team " + i, owner, "SQUASH",league));
+
+        // get the name of the league the user clicked on
+        Bundle extras = getIntent().getExtras();
+        if(extras == null){
+            // data wasn't passed between activities, for now print out an error message
+            Toast.makeText(TeamsActivity.this, "clicked league name wasn't passed to this activity", Toast.LENGTH_SHORT).show();
+            // TODO what to do about this error?
         }
+        else{
+            final String selectedLeague = extras.getString("LEAGUE_CLICKED");
+            // add the click listener for the add team button here as we need to pass the current league name
+            // read from the database through to the popup
+            FloatingActionButton addTeam = findViewById(R.id.add_team_button);
+            addTeam.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent popupIntent = new Intent(TeamsActivity.this, TeamsPop.class);
+                    popupIntent.putExtra("CURRENT_LEAGUE_NAME", selectedLeague);
+                    startActivity(popupIntent);
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                }
+            });
+            // set title to that of the clicked on league
+            getSupportActionBar().setTitle(selectedLeague);
+
+
+
+            // set the league description
+            // read the reference for league description.
+            final TextView leagueDescription = findViewById(R.id.league_description);
+            DatabaseReference descriptionReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("description");
+            descriptionReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // set the league description.
+                    leagueDescription.setText(dataSnapshot.getValue(String.class));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
+            });
+
+
+
+            // read the selectedLeague in from the database
+            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
+            // this will read from the database once and whenever the selected league is updated
+            leagueReference.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    // called when a new team is added to this league, we want to add this new team to the front of the list of teams
+                    teams.add(0,dataSnapshot.getValue(TeamInfo.class));
+                    teamArrayAdapter.notifyDataSetChanged();
+
+                    // display the no team text if not apart of any teams.
+                    if (!teams.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_teams_text);
+                        noTeamText.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    // do nothing, may want to update teams displayed if the name of a team is changed
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    // remove the deleted team from our list
+                    teams.remove(dataSnapshot.getValue(TeamInfo.class));
+                    teamArrayAdapter.notifyDataSetChanged();
+
+                    // display the no team text if not apart of any teams.
+                    if (teams.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_teams_text);
+                        noTeamText.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // database operation failed
+                    Toast.makeText(TeamsActivity.this, "Cannot access database, please try again later", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
 
 
         // Display ListView contents.
@@ -113,16 +189,14 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-                // Team object that was clicked.
-                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
+                // TeamInfo object that was clicked.
+                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO 18/02/2020 - Give ListView items functionality
-                startActivity(new Intent(TeamsActivity.this, TeamActivity.class));
+                Intent teamIntent = new Intent(TeamsActivity.this, TeamActivity.class);
+                // pass the teamInfo object clicked
+                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(TeamsActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

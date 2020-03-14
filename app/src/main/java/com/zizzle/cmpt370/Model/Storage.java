@@ -1,11 +1,14 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.InputMismatchException;
@@ -99,14 +102,11 @@ public class Storage {
      */
     public static League readLeague(LeagueInfo leagueInfo) throws DatabaseException{
         // addListenerForSingleValueEvent reads from the database exactly once
-
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addValueEventListener(new ValueEventListener() {
+        Log.d("league database key",":"+leagueInfo.getDatabaseKey()+":");
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // called when data is read from database
-                if(true){
-                    throw new IllegalArgumentException(dataSnapshot.getKey());
-                }
                 retrievedLeague = dataSnapshot.getValue(League.class);
             }
 
@@ -116,6 +116,7 @@ public class Storage {
                 throw new DatabaseException("Failed to read league information from database: " + databaseError.getMessage());
             }
         });
+
         // return the league read from the database, may be null if there is no league with name: leagueName
         return retrievedLeague;
     }
@@ -168,24 +169,15 @@ public class Storage {
 
 
     /**
-     * Adds the input team to the database, this team is also added to its parent league, and any members
-     * present on this team have their database entries updated to reflect this new team
+     * Adds the input team to the database
      * @param newTeam: Team to be added to the database
      */
     public static void writeTeam(Team newTeam){
         // assume newTeam already has a unique name for the league it's in
-        // use a TeamInfo object to get the key to store the Team with
         TeamInfo newTeamInfo = new TeamInfo(newTeam);
+        // write the team to the database
         database.child("Teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeam);
 
-        LeagueInfo parentLeagueInfo = newTeam.getLeagueInfo();
-        // add this new team to the parent league in the database
-        database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamInfo").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
-
-        // add this new team to each member of the team on the database
-        for(MemberInfo currentMemberInfo : newTeam.getTeamMembersInfo()){
-            database.child("users").child("teams").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
-        }
     }
 
 
@@ -197,7 +189,6 @@ public class Storage {
         // new member is added at the path /Users/memberEmail/
         // assume the member being added has a unique email address
         database.child("users").child(member.getUserID()).setValue(member);
-        // TODO if member is part of any teams, add these to the new member on database
     }
 
 
@@ -228,161 +219,42 @@ public class Storage {
         return retrievedMember;
     }
 
-
-    public static void addTeamToLeague(League league, Team newTeam){
-        LeagueInfo leagueInfo = new LeagueInfo(league);
-        TeamInfo newTeamInfo = new TeamInfo(newTeam);
-        // determine length of the list of teams for this league, add new league to the end of this list
-        // assume the team has been added to this league locally
-        Integer arrayKey = (Integer) league.getTeamInfos().size()-1;
-        String arrayKeyString = arrayKey.toString();
-        // TODO race condition if 2 users call this function at the same time, both read same arrayKey and clobber each other
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfo").child(arrayKeyString).setValue(newTeamInfo);
-    }
-
-    // TODO method to add a member to a team and league on the database, if a user joins a team, this team must also be added to the member on the database
-
     /**
-     * Updates a League's data on the database
-     * @param league: league to update
-     * @param field: field or attribute of the league to update, these should be one of the constants defined above, LEAGUE_OWNER for example
-     * @param newValue: new value for this field or attribute to take, must be an appropriate type for the field being updated
-     * @throws InputMismatchException if newValue is an invalid type, for example if updating the owner field, a MemberInfo object is expected
-     * @throws IllegalArgumentException if field input isn't one of the defined constants
+     * Adds the input team to the input league on the database, this assumes that the input team
+     * can be validly added to the input league, and that both league and team are already on the database
+     * @param parentLeagueInfo: LeagueInfo object the team is being added to
+     * @param newTeamInfo: TeamInfo object to be added to the league
      */
-    public static void updateLeagueField(League league, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
-        LeagueInfo leagueInfo = new LeagueInfo(league);
-        // ensure the input field is valid
-        if(field.equals(LEAGUE_NAME) || field.equals(LEAGUE_DESCRIPTION) || field.equals(LEAGUE_SPORT)){
-            // we want to update a String field, make sure newValue is a String
-            if(! (newValue instanceof String)){
-                // invalid input for these fields
-                throw new InputMismatchException("Selected field requires String input");
-            }
-            // add this new field to the database
-            database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newValue);
-        }
-        else if(field.equals(LEAGUE_OWNER)){
-            // expected input is a MemberInfo object
-            if(!(newValue instanceof MemberInfo)){
-                // invalid type of input for this field
-                throw new InputMismatchException("Selected field requires MemberInfo object input");
-            }
-            // update database to have this new member, add MemberInfo where required
-            MemberInfo newOwnerInfo = (MemberInfo)newValue;
-            database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).setValue(newOwnerInfo);
-        }
-        else if(field.equals(LEAGUE_TEAMS)){
-            // expected input is a Team object
-            if(!(newValue instanceof TeamInfo)){
-                throw new InputMismatchException("Selected field requires a TeamInfo object input");
-            }
-            // update league on database to have this new team
-            TeamInfo newTeamInfo = (TeamInfo) newValue;
-            database.child("Leagues").child(leagueInfo.getDatabaseKey()).child(field).child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
-        }
-        else{
-            throw new IllegalArgumentException("Input field: " + field + " isn't recognized");
-        }
-        // TODO uncouple leagues from teams, and leagues from users, update league fields only, call a separate method to update team and user fields
-        // TODO may need to replace sets in objects with maps associating database ids with values
+    public static void addTeamToLeague(LeagueInfo parentLeagueInfo, TeamInfo newTeamInfo){
+        // assume the input team is valid to add to this league
+        // add the team to the league, and the league to the team
+        database.child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName()).setValue(newTeamInfo);
+        // we don't have to add the league to the team, as the team already keeps track of its parent league
     }
 
     /**
-     * Updates the specified field of the input team on the database, note that team members should only be added
-     * with the field TEAM_MEMBER, to remove team members use the removeTeamValue() function
-     * @param team: Team object, team to be updated on the database
-     * @param field: String field of the team to be changed, should be one of the constants defined in this class, TEAM_NAME for example
-     * @param newValue: Object new value for the field being changed, this must have the proper type, for example if the members of a team are being updated
-     *                newValue should be a MemberInfo object
-     * @throws InputMismatchException if newValue has an invalid type for the field being changed
-     * @throws IllegalArgumentException if the input field isn't one of the specified constants
+     * Adds the input member to the input team and vice versa on the database, this assumes that the input
+     * member can and should be added to the input team
+     * @param teamMemberInfo: MemberInfo object describing the member to be added to the input team
+     * @param newTeamInfo: TeamInfo object describing the team to add the input member to
      */
-    public static void updateTeamField(Team team, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
-        // TODO: Allow teams to change to different leagues?
-        TeamInfo teamInfo = new TeamInfo(team);
-        if(field.equals(TEAM_NAME) || field.equals(TEAM_SPORT)){
-            // these fields require string values
-            if(!(newValue instanceof String)){
-                throw new InputMismatchException("Field: " + field + " requires String values");
-            }
-            // write our new value to the database
-            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
-        }
-        else if(field.equals(TEAM_LOSSES) || field.equals(TEAM_TIES) || field.equals(TEAM_WINS)){
-            // these fields require Integer values
-            if(!(newValue instanceof Integer)){
-                throw new InputMismatchException("Field: " + field + " requires Integer values");
-            }
-            // write new values to our database
-            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
-        }
-        else if(field.equals(TEAM_MEMBER)){
-            // we expect a HashSet<MemberInfo> for this field
-            // attempt to cast newValue to the correct type, if this fails, newValue is invalid type
-            if(!(newValue instanceof MemberInfo)){
-                throw new InputMismatchException("Field: " + field + " requires MemberInfo input");
-            }
-            // write new member to our database, here we need to create a new database entry for this member
-            MemberInfo newMemberinfo = (MemberInfo)newValue;
-            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).child(newMemberinfo.getDatabaseKey()).setValue(newValue);
-        }
-        else if(field.equals(TEAM_OWNER)){
-            // we expect a MemberInfo object for this field
-            if(!(newValue instanceof MemberInfo)){
-                throw new InputMismatchException("Field: " + field + " requires MemberInfo values");
-            }
-            // update owner field on the database
-            database.child("Teams").child(teamInfo.getDatabaseKey()).child(field).setValue(newValue);
-        }
-        else{
-            // invalid field
-            throw new IllegalArgumentException("Input field: " + field + " is invalid");
-        }
+    public static void addTeamToMember(MemberInfo teamMemberInfo, TeamInfo newTeamInfo){
+        // add the team to the member
+        database.child("users").child(teamMemberInfo.getDatabaseKey()).child("teamInfoMap").child(newTeamInfo.getDatabaseKey()).setValue(newTeamInfo);
+        // add the member to the team
+        database.child("Teams").child(newTeamInfo.getDatabaseKey()).child("membersInfoMap").child(teamMemberInfo.getDatabaseKey()).setValue(teamMemberInfo);
     }
 
-    // TODO update functions can only add leagues, teams, members, require separate methods for removing these
-    // TODO refactor into individual functions for clarity
     /**
-     * Updates the specified field of the input Member on the database, note that userID cannot be changed
-     * @param member: Member object, member whose fields are being updated on the database
-     * @param field: String field of the member being changed, this should be one of the constants defined in this class
-     * @param newValue: Object, new value for the specified field
-     * @throws InputMismatchException if the type of newValue is invalid for the input field, for example updating the name of a member requires a string newValue
-     * @throws IllegalArgumentException if the input field isn't one of the specified constants
+     * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team
+     * @param memberInfo: MemberInfo object representing the member to remove from the team
+     * @param teamInfo: TeamInfo object representing the team to remove from the member
      */
-    public static void updateMemberField(Member member, String field, Object newValue) throws InputMismatchException, IllegalArgumentException{
-        MemberInfo memberInfo = new MemberInfo(member);
-        if(field.equals(MEMBER_NAME) || field.equals(MEMBER_EMAIL) || field.equals(MEMBER_PHONE_NUMER)){
-            // we expect String input for these fields
-            if(!(newValue instanceof String)){
-                throw new InputMismatchException("Field: " + field + " requires String values");
-            }
-            // write newValue to database for this field
-            database.child("users").child(memberInfo.getDatabaseKey()).child(field).setValue(newValue);
-        }
-        else if(field.equals(MEMBER_LEAGUES)){
-            // we expect LeagueInfo input
-            if(!(newValue instanceof LeagueInfo)){
-                throw new InputMismatchException("Field: " + field + " requires LeagueInfo input");
-            }
-            // write this value to the database, create a new entry for this new league
-            LeagueInfo newLeagueInfo = (LeagueInfo) newValue;
-            database.child("users").child(memberInfo.getDatabaseKey()).child(field).child(newLeagueInfo.getDatabaseKey()).setValue(newValue);
-        }
-        else if(field.equals(MEMBER_TEAMS)){
-            // we expect TeamInfo input
-            if(!(newValue instanceof TeamInfo)){
-                throw new InputMismatchException("Field: " + field + " requires TeamInfo input");
-            }
-            // write this new value to our database, we need to create a new entry for this new team
-            TeamInfo newTeamInfo = (TeamInfo)newValue;
-            database.child("users").child(memberInfo.getDatabaseKey()).child(field).child(newTeamInfo.getDatabaseKey()).setValue(newValue);
-        }
-        else{
-            // invalid field specified
-            throw new IllegalArgumentException("Field: " + field + " is invalid");
-        }
+    public static void removeMemberFromTeam(MemberInfo memberInfo, TeamInfo teamInfo){
+        // remove the team from the member
+        database.child("users").child(memberInfo.getDatabaseKey()).child("teamInfoMap").child(teamInfo.getDatabaseKey()).removeValue();
+        // remove the member from the team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
     }
 
     /**

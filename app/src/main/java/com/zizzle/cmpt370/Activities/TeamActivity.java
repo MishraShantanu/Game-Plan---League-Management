@@ -9,32 +9,49 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.Member;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
+import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.NonScrollableListView;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
 
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
+
 public class TeamActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<Member> members;
+    ArrayList<MemberInfo> membersInfo;
 
     /** Adapter for search bar. */
     ArrayAdapter memberArrayAdapter;
 
+    /** TeamInfo object representing the current team whose page the user is on*/
+    TeamInfo currentTeamInfo;
+
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
+    private NonScrollableListView teamList;
 
 
     @Override
@@ -43,12 +60,15 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_team);
 
-        // add top bar with title 'Teams'
+        // add top bar
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
 
-        // TODO 24/02/2020 - Set title to the current team.
-        getSupportActionBar().setTitle("Cool Team");
+        // get the TeamInfo object stored in the intent
+        currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
+
+        // set the title to the name of the clicked team
+        getSupportActionBar().setTitle(currentTeamInfo.getName());
 
         //MENU (button & drawer)
         menuDrawer = findViewById(R.id.team_layout);
@@ -80,60 +100,146 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
 
         // owner button ==========================================================================
-        Button ownerButton = findViewById(R.id.owner_button);
-        ownerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // TODO 29/02/2020 Take to the member page for owner.
-                Toast.makeText(TeamActivity.this, "YOU JUST GOT OWNED", Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        final Button ownerButton = findViewById(R.id.owner_button);
 
 
         // list of teams =========================================================================
 
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO 18/02/2020 - remove this and replace with teams from database.
+        membersInfo = new ArrayList<>();
+        // read in the current team from the database
+        DatabaseReference teamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
+        // this listener will read from the database once initially and whenever the current team is updated
+        teamReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // called to read in data
+                // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
+                membersInfo.clear();
+                Team currentTeam = dataSnapshot.getValue(Team.class);
 
-        members = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            members.add(new Member("Tod Manter", "mail", "12345678901","uid733334"));
-        }
+                // Set the record
+                TextView wins = findViewById(R.id.record_wins);
+                TextView losses = findViewById(R.id.record_losses);
+
+                // Commented out because they produce a null pointer error
+                wins.setText(String.valueOf(currentTeam.getWins()));
+                losses.setText(String.valueOf(currentTeam.getLosses()));
+
+
+                // set the text of the owner button to the owner's name, add 2 spaces to center the name
+                final MemberInfo ownerInfo = currentTeam.getOwnerInfo();
+                ownerButton.setText("  " + ownerInfo.getName());
+
+                // Owner button
+                // Moved inside here so it can access the database info.
+                ownerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                        Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                        teamMemberIntent.putExtra("CLICKED_MEMBER",ownerInfo);
+                        // add the owner's info of this team to the intent also
+                        teamMemberIntent.putExtra("OWNER_INFO",ownerInfo);
+                        // add the current teamInfo to the intent
+                        teamMemberIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                        startActivity(teamMemberIntent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+                });
+
+
+
+                // display the members of the team
+                // TODO this is a short term fix, getMembersInfo was returning null when called from this team
+                for(DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()){
+                    MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
+                    // don't add the owner to this list, the owner is already displayed
+                    if(!currentMemberInfo.equals(ownerInfo)){
+                        membersInfo.add(ds.getValue(MemberInfo.class));
+                    }
+                }
+                memberArrayAdapter.notifyDataSetChanged();
+
+                // Leave the team button.
+                MemberInfo currentUser = getCurrentUserInfo();
+                // if member is on the team.
+                if (membersInfo.contains(currentUser)) {
+                    // Make button visible and set click listener.
+                    final Button leaveTeamButton = findViewById(R.id.leave_team_button);
+                    leaveTeamButton.setVisibility(View.VISIBLE);
+                    leaveTeamButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // leave the team
+                            MemberInfo currentUser = getCurrentUserInfo();
+                            Storage.removeMemberFromTeam(currentUser, currentTeamInfo);
+                            leaveTeamButton.setVisibility(View.INVISIBLE);
+                            Toast.makeText(TeamActivity.this, "Left the team successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+
+                // clicking on a team in the ListView is handled in here.
+                teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                    /**
+                     * performs an action when a ListView item is clicked.
+                     * @param listItemPosition the index of position for the item in the ListView
+                     */
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+                        // MemberInfo object that was clicked.
+                        MemberInfo clickedMemberInfo = (MemberInfo) parent.getAdapter().getItem(listItemPosition);
+
+                        // Take user to their profile if they clicked on themselves.
+                        if (getCurrentUserInfo().equals(clickedMemberInfo)) {
+                            startActivity(new Intent(TeamActivity.this, ProfileActivity.class));
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
+
+                        // Take user to member profile page if not them
+                        else {
+                            // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                            Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                            teamMemberIntent.putExtra("CLICKED_MEMBER", clickedMemberInfo);
+                            // add the owner's info of this team to the intent also
+                            teamMemberIntent.putExtra("OWNER_INFO", ownerInfo);
+                            // add the current teamInfo to the intent
+                            teamMemberIntent.putExtra("TEAM_INFO", currentTeamInfo);
+                            startActivity(teamMemberIntent);
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        }
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // called when database operation fails
+                // TODO display some error message, telling the user they couldn't connect to database, or asking them to try again
+            }
+        });
+
+
+        // All games button
+        Button allGamesButton = findViewById(R.id.all_games_button);
+        allGamesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Take the user to the game activity page
+                Intent teamMemberIntent = new Intent(TeamActivity.this, GameActivity.class);
+                startActivity(teamMemberIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
 
 
         // Display ListView contents.
-        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, members);
-        NonScrollableListView teamList = findViewById(R.id.members_list);
+        memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, membersInfo);
+        teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
 
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * performs an action when a ListView item is clicked.
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // Member object that was clicked.
-                Member clickedMember = (Member) parent.getAdapter().getItem(listItemPosition);
-
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO 18/02/2020 - Give ListView items functionality
-
-                startActivity(new Intent(TeamActivity.this, TeamMemberActivity.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(TeamActivity.this, "You clicked on " + clickedMember.getDisplayName(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
-
 
 
     //When item is selected in the menu, open the respective element (fragment or activity)
@@ -163,7 +269,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
         //close drawer
         menuDrawer.closeDrawer(GravityCompat.START);
 
@@ -186,9 +293,27 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     //Button to open menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { //allows menu button to show menu on click
+        int id = item.getItemId();
+        if (id == R.id.join_team_button) { //Join Team Text/Button was clicked
+            // add the current user to the current team
+            MemberInfo currentUserInfo = getCurrentUserInfo();
+            // add this current user to the current team, and the current team to the current user
+            // we don't need to check if the user is already part of this team, we just rewrite values that are already there in that case
+            Storage.addTeamToMember(currentUserInfo,currentTeamInfo);
+            return true;
+        }
+
+        //Sidebar navigation menu
         if (toggleDrawer.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.team_button_menu, menu);
+        return true;
     }
 }

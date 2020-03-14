@@ -14,22 +14,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.zizzle.cmpt370.Model.League;
-import com.zizzle.cmpt370.Model.LeagueInfo;
-import com.zizzle.cmpt370.Model.Member;
-import com.zizzle.cmpt370.Model.Storage;
-import com.zizzle.cmpt370.Model.Team;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /** Values inside ListView. */
-    ArrayList<Team> teams;
+    ArrayList<TeamInfo> teamsInfo;
 
     /** Adapter for displaying teams */
     ArrayAdapter teamArrayAdapter;
@@ -37,6 +44,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +75,51 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         // list of teams =========================================================================
+        teamsInfo = new ArrayList<>();
+        final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        // read in the current user's teams from the database
+        DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
 
-        // TESTING - generates a list of teams for testing the displaying functionality.
-        // TODO Feb. 26, 2020 - remove this and replace with teams that a user is in from the database.
+        userTeamsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Remove the progress bar once leagues have been fetched
+                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                leagueLoading.setVisibility(View.GONE);
 
-        teams = new ArrayList<>();
-        Member user = new Member("Elon Musk", "ironman@xyz.com", "12312312341","uid12334");
-        Member owner = new Member("Pope Francis", "rome@popemobile.com", "15935774125","uid543456");
-        League league = new League("Tennis Club", owner, "Tennis", "The tennis club for future World Number 1s");
+                // called to read data, get the list of teams the member is a part of
+                // first clear this list as this list may be updated as new teams are added and removed
+                teamsInfo.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    teamsInfo.add(ds.getValue(TeamInfo.class));
+                }
 
-        for (int i = 0; i < 20; i++) {
-            teams.add(new Team("Team-Name " + i, user, "Tennis", league));
-        }
+                // If user is on teams, show their teams.
+                if (!teamsInfo.isEmpty()) {
+                    TextView myTeamsText = findViewById(R.id.my_teams_text);
+                    myTeamsText.setVisibility(View.VISIBLE);
+                    View myTeamsDivider = findViewById(R.id.my_teams_div);
+                    myTeamsDivider.setVisibility(View.VISIBLE);
+                }
+                // If user not on any teams, show sad text.
+                else {
+                    TextView noTeamText = findViewById(R.id.no_team_text);
+                    noTeamText.setVisibility(View.VISIBLE);
+                }
 
+                // Show the teams found.
+                teamArrayAdapter.notifyDataSetChanged();
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError){
+                // called when database operations fail,
+            }
+        });
 
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teams);
+        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
@@ -96,17 +134,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-                // Team object that was clicked.
-                Team clickedTeam = (Team) parent.getAdapter().getItem(listItemPosition);
+                // TeamInfo object that was clicked.
+                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
 
-                // listItemPosition is the array index for the teams array. can be used such as:
-                // teams.get(listItemPosition)
-                // TODO Feb. 26, 2020 - Give ListView items functionality
-
-                startActivity(new Intent(HomeActivity.this, TeamActivity.class));
+                // Intent for the team clicked.
+                Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
+                // pass the clicked TeamInfo to the Team page through this intent
+                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-                Toast.makeText(HomeActivity.this, "You clicked on " + clickedTeam.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 

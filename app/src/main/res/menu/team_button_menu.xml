@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".Activities.TeamActivity">
+
+
+    <item
+        android:id="@+id/join_team_button"
+        android:title="JOIN"
+        app:showAsAction="always" />
+
+
+    <!--    BELOW CODE IS FOR DROP DOWN MENU-->
+    <!--    <item-->
+    <!--        android:id="@+id/action_settings"-->
+    <!--        android:orderInCategory="100"-->
+    <!--        android:title="@string/action_settings"-->
+    <!--        app:showAsAction="never" />-->
+
+</menu>
