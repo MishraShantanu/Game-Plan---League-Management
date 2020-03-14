@@ -54,7 +54,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle toggleDrawer;
     private NonScrollableListView teamList;
 
-    private Menu menu;
     private MenuItem joinButton;
 
 
@@ -317,28 +316,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-//    //Show the "Join" button which is located in the menu (top bar)
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-////        MenuItem item = menu.findItem(R.id.join_team_button);
-////
-////        MemberInfo currentUser = getCurrentUserInfo();
-////        // if member is on the team.
-////        if (membersInfo.contains(currentUser)) {
-////
-////        }
-//
-//        this.menu = menu;
-//
-//        getMenuInflater().inflate(R.menu.team_button_menu, menu);
-//        return true;
-//    }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.team_button_menu, menu);
-        this.menu = menu;
         this.joinButton = menu.findItem(R.id.join_team_button);
         if (joinButton != null) {
             joinButton.setVisible(true);
