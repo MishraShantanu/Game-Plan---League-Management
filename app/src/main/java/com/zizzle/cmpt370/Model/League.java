@@ -69,16 +69,6 @@ public class League implements Serializable {
 
 
     /**
-     * Retrieves the owner of the league.
-     * @return owner of the league.
-     */
-    public Member getOwner() {
-        // read the owner in from the database using ownerInfo
-        return Storage.readMember(ownerInfo);
-    }
-
-
-    /**
      * Retrieves the sport the league plays.
      * @return sport the league plays.
      */

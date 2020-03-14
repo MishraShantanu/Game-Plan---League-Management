@@ -14,6 +14,9 @@ public class TeamInfo implements InfoInterface, Serializable {
      * database path*/
     private String databaseKey;
 
+    /** name of league this team is a part of*/
+    private String leagueName;
+
     /**
      * Creates a TeamInfo object that stores information about the input team
      * @param team: team to store information for
@@ -23,6 +26,7 @@ public class TeamInfo implements InfoInterface, Serializable {
         String leagueName = team.getLeagueInfo().getName();
         // team names must be unique per league, so we use leagueName-teamName as our database key
         databaseKey = leagueName + "-" + name;
+        this.leagueName = leagueName;
     }
 
     /**
@@ -33,6 +37,7 @@ public class TeamInfo implements InfoInterface, Serializable {
     public TeamInfo(String teamName, String leagueName){
         this.name = teamName;
         this.databaseKey = leagueName + "-" + teamName;
+        this.leagueName = leagueName;
     }
 
     /**
@@ -48,6 +53,14 @@ public class TeamInfo implements InfoInterface, Serializable {
 
     public String getDatabaseKey(){
         return databaseKey;
+    }
+
+    /**
+     * Returns the String name of the league this team is a part of
+     * @return String league name this team is a part of
+     */
+    public String getLeagueName(){
+        return this.leagueName;
     }
 
     /**
