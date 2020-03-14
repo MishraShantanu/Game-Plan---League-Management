@@ -73,11 +73,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         // list of teams =========================================================================
+        // Initialize arrays
         teamsInfo = new ArrayList<>();
-        final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        leaguesName = new ArrayList<>();
+
         // read in the current user's teams from the database
+        final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
         DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
 
+        // Obtain values from the database
         userTeamsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -119,7 +123,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        leaguesName = new ArrayList<>();
 
         // Display ListView contents.
         teamArrayAdapter = new CustomArrayAdapter(HomeActivity.this, leaguesName, teamsInfo);
