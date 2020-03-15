@@ -88,7 +88,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         teams = new ArrayList<>();
 
         // get the name of the league the user clicked on
-        Bundle extras = getIntent().getExtras();
+        final Bundle extras = getIntent().getExtras();
         if(extras == null){
             // data wasn't passed between activities, for now print out an error message
             Toast.makeText(TeamsActivity.this, "clicked league name wasn't passed to this activity", Toast.LENGTH_SHORT).show();
@@ -231,6 +231,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 Intent teamIntent = new Intent(TeamsActivity.this, TeamActivity.class);
                 // pass the teamInfo object clicked
                 teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                teamIntent.putExtra("CURRENT_LEAGUE", extras.getString("LEAGUE_CLICKED"));
                 startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

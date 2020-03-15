@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.GameActivity"/>
+        <activity android:name=".Activities.AllGamesActivity"/>
         <activity android:name=".Activities.TeamMemberActivity" />
         <activity android:name=".Activities.TeamActivity" />
         <activity android:name=".Activities.AboutUsActivity" />
@@ -52,6 +52,9 @@
             android:theme="@style/AppTheme.PopUp" />
         <activity
             android:name=".Activities.TeamsPop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.GamePop"
             android:theme="@style/AppTheme.PopUp" />
     </application>
 
