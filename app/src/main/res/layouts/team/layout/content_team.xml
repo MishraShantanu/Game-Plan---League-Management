@@ -39,6 +39,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
+            <!--      Wins      -->
             <TextView
                 android:id="@+id/record_wins"
                 android:layout_width="wrap_content"
@@ -56,6 +57,25 @@
                 android:textColor="@color/colorText"
                 android:textSize="40sp" />
 
+            <!--     Ties       -->
+            <TextView
+                android:id="@+id/record_ties"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#ebc800"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <!--  Losses  -->
             <TextView
                 android:id="@+id/record_losses"
                 android:layout_width="wrap_content"
