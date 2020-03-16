@@ -1,4 +1,4 @@
-# StatAttack
+# GamePlan
 #### Sports team and league manager
 
 
