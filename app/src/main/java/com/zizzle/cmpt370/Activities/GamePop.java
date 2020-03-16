@@ -1,18 +1,24 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,8 +36,14 @@ import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
-public class GamePop extends Activity implements AdapterView.OnItemSelectedListener {
+public class GamePop extends Activity implements AdapterView.OnItemSelectedListener,
+        View.OnClickListener {
+
+    Button btnDatePicker, btnTimePicker;
+    EditText txtDate, txtTime;
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,13 +51,6 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
 
         // Creating the pop-up =====================================================================
         setContentView(R.layout.game_popup);
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.7));
 
 
         // Spinner =================================================================================
@@ -58,6 +63,8 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<TeamInfo> teamInfos = new ArrayList<>();
                 ArrayList<String> teamNames = new ArrayList<>();
+
+                // Gather all teams inside the same league, excluding user team.
                 for (DataSnapshot ds : dataSnapshot.getChildren()){
                     TeamInfo currentTeamInfo = ds.getValue(TeamInfo.class);
                     teamInfos.add(currentTeamInfo);
@@ -66,18 +73,12 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
                 teamInfos.remove(currentTeam);
                 teamNames.remove(currentTeam.getName());
 
-                System.out.println("TeamNames: " + teamNames);
-                System.out.println("TeamInfos: " + teamInfos);
-
+                // Create a Spinner
                 Spinner againstTeam = findViewById(R.id.team_spinner);
-
-                // Spinner click listener
                 againstTeam.setOnItemSelectedListener(GamePop.this);
 
                 // Creating adapter for spinner
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(GamePop.this, android.R.layout.simple_spinner_item, teamNames);
-
-                // Drop down layout style - list view with radio button
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(GamePop.this, R.layout.game_spinner, teamNames);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                 // attaching data adapter to spinner
@@ -87,18 +88,85 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.game_popup);
+
+        btnDatePicker = findViewById(R.id.btn_date);
+        btnTimePicker = findViewById(R.id.btn_time);
+        txtDate = findViewById(R.id.in_date);
+        txtTime = findViewById(R.id.in_time);
+
+        btnDatePicker.setOnClickListener(this);
+        btnTimePicker.setOnClickListener(this);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // On selecting a spinner item
         String item = parent.getItemAtPosition(position).toString();
-
-        // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
     }
+
+
+    // Date and Time Picker
+    @Override
+    public void onClick(View v) {
+        // Date picker
+        if (v == btnDatePicker) {
+
+            // Get Current Date
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+            DatePickerDialog datePickerDialog;
+            datePickerDialog = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            txtDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            txtDate.setTextColor(ContextCompat.getColor(GamePop.this, R.color.colorText));
+
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        }
+
+        // Time picker
+        if (v == btnTimePicker) {
+
+            // Get Current Time
+            final Calendar c = Calendar.getInstance();
+            mHour = c.get(Calendar.HOUR_OF_DAY);
+            mMinute = c.get(Calendar.MINUTE);
+
+            // Launch Time Picker Dialog
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                    new TimePickerDialog.OnTimeSetListener() {
+
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay,
+                                              int minute) {
+
+                            // Add a zero to pad the time if less than ten minutes.
+                            if (minute < 10) txtTime.setText(hourOfDay + ":0" + minute);
+                            else txtTime.setText(hourOfDay + ":" + minute);
+
+                            txtTime.setTextColor(ContextCompat.getColor(GamePop.this, R.color.colorText));
+                        }
+                    }, mHour, mMinute, false);
+            timePickerDialog.show();
+        }
+    }
+
+
+    // Unused
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
     }
-
 }
