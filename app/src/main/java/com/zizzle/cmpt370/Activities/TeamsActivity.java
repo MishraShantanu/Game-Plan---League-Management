@@ -89,7 +89,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         teams = new ArrayList<>();
 
         // get the name of the league the user clicked on
-        Bundle extras = getIntent().getExtras();
+        final Bundle extras = getIntent().getExtras();
         if (extras == null) {
             // data wasn't passed between activities, for now print out an error message
             Toast.makeText(TeamsActivity.this, "clicked league name wasn't passed to this activity", Toast.LENGTH_SHORT).show();
@@ -194,8 +194,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 }
 
                 @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                }
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -228,6 +227,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 Intent teamIntent = new Intent(TeamsActivity.this, TeamActivity.class);
                 // pass the teamInfo object clicked
                 teamIntent.putExtra("TEAM_INFO_CLICKED", clickedTeamInfo);
+                teamIntent.putExtra("CURRENT_LEAGUE", extras.getString("LEAGUE_CLICKED"));
                 startActivity(teamIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -246,12 +246,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
             // these two are not needed for search but must be override.
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable) {}
         });
     }
 
