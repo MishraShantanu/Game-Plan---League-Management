@@ -145,12 +145,57 @@ public class Storage {
 
             }
         });
-
-
         // remove the member from the team
         database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
         database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
     }
+
+
+    public static void removeLeague(final String LeagueName) {
+        // remove team from members teams
+
+
+        database.child("Leagues").child(LeagueName).child("teamsInfoMap").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    TEAM_NAME = LeagueName+"-"+ds.getKey();
+
+
+                     database.child("Teams").child(TEAM_NAME).child("ownerInfo").child("databaseKey").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                               //remove the ownership of teams from player under league deleted
+                                database.child("users").child(dataSnapshot.getKey()).child("teamInfoMap").child(TEAM_NAME).removeValue();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //remove Teams of a league
+                    database.child("Teams").child(TEAM_NAME).removeValue();
+                }
+
+                //remove league
+                database.child("Leagues").child(LeagueName).removeValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
 
 
 }
