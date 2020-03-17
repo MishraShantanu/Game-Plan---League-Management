@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -112,6 +114,13 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                     String leagueName = ds.getKey();
 
                     leagueNames.add(leagueName);
+
+                    // If there are no leagues, display special text
+                    if (leagueNames.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_leagues_text);
+                        noTeamText.setVisibility(View.VISIBLE);
+                    }
+
                     leagueArrayAdapter.notifyDataSetChanged();
                 }
 
