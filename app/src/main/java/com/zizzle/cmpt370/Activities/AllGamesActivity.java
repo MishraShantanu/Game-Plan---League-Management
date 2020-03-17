@@ -29,13 +29,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
+
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class AllGamesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -132,30 +136,6 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         nextGameList.setAdapter(nextGameArrayAdapter);
 
 
-        // clicking on a league in the ListView is handled in here.
-        nextGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * performs an action when a ListView item is clicked.
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-//                 name of the league that was clicked.
-//                final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
-//
-//                Intent teamsIntent = new Intent(LeagueActivity.this, TeamsActivity.class);
-//                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
-//                teamsIntent.putExtra("LEAGUE_CLICKED",clickedLeagueName);
-//                startActivity(teamsIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-        // PAST GAMES =========================================================================
-
-
         // Display ListView contents.
         pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
         ListView pastGameList = findViewById(R.id.past_scores_list);
@@ -205,7 +185,25 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         });
 
         // add game button =======================================================================
-        FloatingActionButton addGame = findViewById(R.id.add_game_button);
+        final FloatingActionButton addGame = findViewById(R.id.add_game_button);
+
+        // only display this button to users on the selected team
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference currentMemberReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey()).child("membersInfoMap").child(currentUserInfo.getDatabaseKey());
+        currentMemberReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // user isn't on the team, don't display the add game button
+                    addGame.hide();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         addGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
