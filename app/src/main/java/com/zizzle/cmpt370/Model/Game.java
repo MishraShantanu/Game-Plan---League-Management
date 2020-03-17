@@ -23,9 +23,6 @@ public class Game implements Comparable, Serializable {
     /** name of the location the game is/was held at */
     private String location;
 
-    /** name of the sport of the game */
-    private String sport;
-
     private int team1Score;
 
     private int team2Score;
@@ -40,11 +37,10 @@ public class Game implements Comparable, Serializable {
      * @param team2Info: TeamInfo object, second of the teams playing in the game
      * @param gameDate: GameTime object specifying when this game is scheduled to occur
      * @param location: String name of the location the game is being held
-     * @param sport: String name of the sport of the game
      * @throws IllegalArgumentException if the gameDate refers to a time in the past, games must be
      * scheduled for a time in the future
      */
-    public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location, String sport) throws IllegalArgumentException{
+    public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
         this.team1Info = team1Info;
         this.team2Info = team2Info;
@@ -53,7 +49,6 @@ public class Game implements Comparable, Serializable {
         }
         this.date = gameDate;
         this.location = location;
-        this.sport = sport;
         this.played = false;
         this.team1Score = 0;
         this.team2Score = 0;
@@ -81,14 +76,6 @@ public class Game implements Comparable, Serializable {
      */
     public String getLocation(){
         return this.location;
-    }
-
-    /**
-     * Returns the sport of the game
-     * @return String name of the sport of the game
-     */
-    public String getSport(){
-        return this.sport;
     }
 
     /**
@@ -224,7 +211,7 @@ public class Game implements Comparable, Serializable {
             // compare fields
             Game otherGame = (Game) other;
             return otherGame.getGameTime().equals(this.getGameTime()) && otherGame.team1Info.equals(this.team1Info) &&
-                    otherGame.team2Info.equals(this.team2Info) && otherGame.location.equals(this.location) && otherGame.sport.equals(this.sport);
+                    otherGame.team2Info.equals(this.team2Info) && otherGame.location.equals(this.location);
         }
         // Other isn't a game and can't be equal
         return false;
