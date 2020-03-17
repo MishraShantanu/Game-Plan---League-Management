@@ -33,9 +33,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 
 import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
@@ -55,6 +57,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
+
+
 
 
     @Override
@@ -112,19 +116,33 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             getSupportActionBar().setTitle(selectedLeague);
 
 
+            DatabaseReference leagueOwnerReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
             // Remove league button
-            final Button removeLeagueButton = findViewById(R.id.remove_league_button);
+            final Button removeLeagueButton = findViewById(R.id.delete_league_button);
             removeLeagueButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    // TODO Delete league.
+
+                        Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+
+                        Intent toHome = new Intent(TeamsActivity.this, HomeActivity.class);
+                        toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Storage.removeLeague(selectedLeague);
+                        startActivity(toHome);
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+
+
+
+
+
 
                 }
             });
 
 
-            DatabaseReference leagueOwnerReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
+
             leagueOwnerReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,9 +150,11 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                     League currentLeague = dataSnapshot.getValue(League.class);
                     MemberInfo ownerInfo = currentLeague.getOwnerInfo();
                     MemberInfo currentUserInfo = getCurrentUserInfo();
+
+
                     if (currentUserInfo.equals(ownerInfo)) {
                         removeLeagueButton.setVisibility(View.VISIBLE);
-                    }
+                    }else  removeLeagueButton.setVisibility(View.INVISIBLE);
                 }
 
                 @Override

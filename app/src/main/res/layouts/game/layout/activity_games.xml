@@ -31,7 +31,7 @@
 
         </LinearLayout>
 
-        <!-- add league button -->
+        <!-- add game button -->
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_game_button"
             app:fabCustomSize="75dp"

@@ -46,7 +46,7 @@ public class TeamsPop extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.7));
+        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.4));
 
 
         // Gathering Input =========================================================================
@@ -72,7 +72,7 @@ public class TeamsPop extends Activity {
                         final LeagueInfo parentLeagueInfo = new LeagueInfo(currentLeagueName);
                         final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam,currentLeagueName);
                         // check if the input team name is unique for this league
-                        DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child(newTeamInfo.getName());
+                        DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName());
                         newTeamReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
