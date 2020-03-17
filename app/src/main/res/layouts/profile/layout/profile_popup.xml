@@ -36,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:maxLength="11"
             android:backgroundTint="@color/colorText"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint"
