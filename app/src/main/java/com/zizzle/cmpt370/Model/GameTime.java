@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -9,7 +10,7 @@ import java.util.Locale;
 /**
  * Class for representing the time a game will be played
  */
-public class GameTime implements Comparable{
+public class GameTime implements Comparable, Serializable {
 
     /** Calendar storing years, months, days, hours, minutes, seconds when Game will occur */
     private Calendar time;

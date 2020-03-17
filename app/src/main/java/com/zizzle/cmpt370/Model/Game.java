@@ -3,11 +3,13 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import java.io.Serializable;
+
 
 /**
  * Parent class, stores generic information about sports games
  */
-public class Game implements Comparable{
+public class Game implements Comparable, Serializable {
 
     /** first team in the game */
     private TeamInfo team1Info;
