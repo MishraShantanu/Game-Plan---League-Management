@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
@@ -136,17 +137,17 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     wins.setText(String.valueOf(currentTeam.getWins()));
                     losses.setText(String.valueOf(currentTeam.getLosses()));
                     ties.setText(String.valueOf(currentTeam.getTies()));
-                // Set the next scheduled game
-                TextView nextGameText = findViewById(R.id.next_games_text);
+                    // Set the next scheduled game
+                    TextView nextGameText = findViewById(R.id.next_games_text);
 
 
-                wins.setText(String.valueOf(currentTeam.getWins()));
-                losses.setText(String.valueOf(currentTeam.getLosses()));
+                    wins.setText(String.valueOf(currentTeam.getWins()));
+                    losses.setText(String.valueOf(currentTeam.getLosses()));
 
-                if(currentTeam.hasGamesScheduled()){
-                    nextGameText.setText(currentTeam.getClosestScheduledGame().toString());
-                }
-                // otherwise this TextView has the string "No Upcoming Games as a default value"
+                    if(currentTeam.hasGamesScheduled()){
+                        nextGameText.setText(currentTeam.getClosestScheduledGame().toString());
+                    }
+                    // otherwise this TextView has the string "No Upcoming Games as a default value"
 
 
 
@@ -172,8 +173,13 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     });
 
 
-                    // Remove player button ===================================
+                    // Remove team button ===================================
                     removeTeam = findViewById(R.id.delete_team_button);
+                    // only display this button if the current user is the owner of the team
+                    if(!ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())){
+                        removeTeam.setVisibility(View.GONE);
+                    }
+
                     removeTeam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

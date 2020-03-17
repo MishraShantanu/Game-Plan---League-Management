@@ -268,14 +268,13 @@ public class Team {
     }
 
     /**
-     * Gets the closest upcoming game the team has scheduled
+     * Gets the closest upcoming game the team has scheduled, returns null if there are no games scheduled
      * @return Game object that is scheduled to be played closest to now
-     * @throws IllegalStateException if the team has no games scheduled
      */
-    public Game getClosestScheduledGame() throws IllegalStateException{
+    public Game getClosestScheduledGame(){
         // make sure there is a game scheduled
         if(! this.hasGamesScheduled()){
-            throw new IllegalStateException("Team: team '" + this.name + "' has no games scheduled");
+            return null;
         }
         // the firstKey of this map will always be the key with lowest value, this lowest value key must
         // be correspond to the game with closest date
