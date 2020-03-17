@@ -2,7 +2,6 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,22 +12,22 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
+
+import java.util.ArrayList;
+
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class AllGamesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -69,15 +68,48 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         // ADD STUFF HERE!!! ==========================================================================
 
         // add game button =======================================================================
-        FloatingActionButton addGame = findViewById(R.id.add_game_button);
-        addGame.setOnClickListener(new View.OnClickListener() {
+        final MemberInfo currentUser = getCurrentUserInfo();
+
+        DatabaseReference teamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey());
+        // this listener will read from the database once initially and whenever the current team is updated
+        teamReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Intent gameIntent = new Intent(AllGamesActivity.this, GamePop.class);
-                gameIntent.putExtra("TEAM_INFO", teamClicked);
-                startActivity(gameIntent);
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Create the floating action button for adding a game
+                FloatingActionButton addGame = findViewById(R.id.add_game_button);
+                addGame.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent gameIntent = new Intent(AllGamesActivity.this, GamePop.class);
+                        gameIntent.putExtra("TEAM_INFO", teamClicked);
+                        startActivity(gameIntent);
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+                    }
+                });
+                addGame.hide();
+
+                // Get team and team members
+                Team currentTeam = dataSnapshot.getValue(Team.class);
+                ArrayList<MemberInfo> teamMembers = currentTeam.getTeamMembersInfo();
+
+                // Check if user is on the team
+                boolean onTeam = false;
+                for (MemberInfo member : teamMembers) {
+                    if (currentUser.equals(member)) {
+                        onTeam = true;
+                        break;
+                    }
+                }
+
+                // Set add game button to visible if on team
+                if (onTeam) {
+                    addGame.show();
+                }
             }
+
+            // Auto-Generated. Unused
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
