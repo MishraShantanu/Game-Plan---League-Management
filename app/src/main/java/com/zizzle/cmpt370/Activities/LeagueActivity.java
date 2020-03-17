@@ -43,6 +43,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
     private ActionBarDrawerToggle mToggle;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
