@@ -68,49 +68,49 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         // ADD STUFF HERE!!! ==========================================================================
 
         // add game button =======================================================================
-        final MemberInfo currentUser = getCurrentUserInfo();
-
-        DatabaseReference teamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey());
-        // this listener will read from the database once initially and whenever the current team is updated
-        teamReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Create the floating action button for adding a game
-                FloatingActionButton addGame = findViewById(R.id.add_game_button);
-                addGame.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent gameIntent = new Intent(AllGamesActivity.this, GamePop.class);
-                        gameIntent.putExtra("TEAM_INFO", teamClicked);
-                        startActivity(gameIntent);
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-                    }
-                });
-                addGame.hide();
-
-                // Get team and team members
-                Team currentTeam = dataSnapshot.getValue(Team.class);
-                ArrayList<MemberInfo> teamMembers = currentTeam.getTeamMembersInfo();
-
-                // Check if user is on the team
-                boolean onTeam = false;
-                for (MemberInfo member : teamMembers) {
-                    if (currentUser.equals(member)) {
-                        onTeam = true;
-                        break;
-                    }
-                }
-
-                // Set add game button to visible if on team
-                if (onTeam) {
-                    addGame.show();
-                }
-            }
-
-            // Auto-Generated. Unused
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+//        final MemberInfo currentUser = getCurrentUserInfo();
+//
+//        DatabaseReference teamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey());
+//        // this listener will read from the database once initially and whenever the current team is updated
+//        teamReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                // Create the floating action button for adding a game
+//                FloatingActionButton addGame = findViewById(R.id.add_game_button);
+//                addGame.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent gameIntent = new Intent(AllGamesActivity.this, GamePop.class);
+//                        gameIntent.putExtra("TEAM_INFO", teamClicked);
+//                        startActivity(gameIntent);
+//                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+//                    }
+//                });
+////                addGame.hide();
+//
+//                // Get team and team members
+//                Team currentTeam = dataSnapshot.getValue(Team.class);
+//                ArrayList<MemberInfo> teamMembers = currentTeam.getTeamMembersInfo();
+//
+//                // Check if user is on the team
+//                boolean onTeam = false;
+//                for (MemberInfo member : teamMembers) {
+//                    if (currentUser.equals(member)) {
+//                        onTeam = true;
+//                        break;
+//                    }
+//                }
+//
+//                // Set add game button to visible if on team
+//                if (onTeam) {
+//                    addGame.show();
+//                }
+//            }
+//
+//            // Auto-Generated. Unused
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) { }
+//        });
     }
 
 
