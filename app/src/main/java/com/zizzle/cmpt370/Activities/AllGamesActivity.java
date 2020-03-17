@@ -93,7 +93,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 nextGames.clear();
                 pastGames.clear();
-                DataSnapshot nextGamesData = dataSnapshot.child("scheduledGamesMap");
+                DataSnapshot nextGamesData = dataSnapshot.child("scheduledGames");
                 if(!nextGamesData.exists()){
                     // this team has no scheduled games
                     // TODO add some text indicating there are no upcoming games
@@ -108,7 +108,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 nextGameArrayAdapter.notifyDataSetChanged();
 
                 // do the same for the games previously played by this team
-                DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayedMap");
+                DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayed");
                 if(!pastGamesData.exists()){
                     // TODO add text "no previously played games"
                 }
