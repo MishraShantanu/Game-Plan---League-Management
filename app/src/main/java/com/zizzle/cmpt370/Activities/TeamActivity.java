@@ -168,8 +168,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                             // remove the team member from the team
                             // TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
 
-                            System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            //System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
 
+                            //Check if the current user is same as the Owner of the Team else do not delete the team
                             if(currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0){
                                 Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
 
