@@ -98,10 +98,9 @@ public class SignupActivity extends AppCompatActivity {
                                 fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful()) {
+                                                if (!task.isSuccessful())
                                                     // this toast is for testing only
                                                     Toast.makeText(SignupActivity.this, "couldn't add display name to user profile", Toast.LENGTH_SHORT).show();
-                                                }
                                             }
                                         });
                                 // head to main activity

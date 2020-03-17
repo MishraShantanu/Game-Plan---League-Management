@@ -22,45 +22,75 @@ import com.zizzle.cmpt370.R;
 import java.util.ArrayList;
 
 
+/**
+ * Array adapter for the homepage to display league name above the teams
+ */
 public class CustomArrayAdapter extends BaseAdapter{
 
-    ArrayList<String> leagues;
-    ArrayList<TeamInfo> teams;
-    Context context;
+    /** League names */
+    private ArrayList<String> leagues;
 
+    /** Team Info */
+    private ArrayList<TeamInfo> teams;
+
+    /** Activity this is being used in */
+    private Context context;
+
+    /** Inflater */
     private static LayoutInflater inflater = null;
 
+
+    /**
+     * Constructor for CustomArrayAdapter.
+     * @param activity the activity this adapter was made in
+     * @param leagues array of league names that will be displayed
+     * @param teams array of team info that will be clicked
+     */
     public CustomArrayAdapter(Activity activity, ArrayList<String> leagues, ArrayList<TeamInfo> teams) {
         this.leagues = leagues;
         this.teams = teams;
         context = activity;
-
         inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+
+    /**
+     * Return the size of the array.
+     * @return array size
+     */
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return teams.size();
     }
 
+
+    /** Auto-Generated and unused. */
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        return position;
+        return 0;
     }
-
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
-        return position;
+        return 0;
     }
 
+
+    /**
+     * Holder class for containing multiple TextViews.
+     */
     public class Holder {
         TextView team;
         TextView league;
     }
 
+
+    /**
+     * Set up the view for the listview.
+     * @param position position of item clicked
+     * @param convertView View
+     * @param parent parent of the view
+     * @return view
+     */
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder = new Holder();

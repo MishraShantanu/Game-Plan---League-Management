@@ -91,6 +91,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // NOTE: this will give all leagues created by anybody, NOT leagues the current user is a part of
         DatabaseReference leagueDBReference = FirebaseDatabase.getInstance().getReference().child("Leagues");
 
+        
+
         // attaching this listener will read from the database once initially and whenever leagues on the database are changed.
         leagueDBReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,15 +106,16 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 }
                 // method called when data is read from the database, get all league names
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    // Remove the progress bar once leagues have been fetched
-                    ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
-                    leagueLoading.setVisibility(View.GONE);
-
-                    // the key of each league is the league's name
+                                        // the key of each league is the league's name
                     String leagueName = ds.getKey();
+
                     leagueNames.add(leagueName);
                     leagueArrayAdapter.notifyDataSetChanged();
                 }
+
+                // Remove the progress bar once leagues have been fetched
+                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                leagueLoading.setVisibility(View.GONE);
             }
 
             @Override

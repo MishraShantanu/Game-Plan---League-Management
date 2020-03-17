@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_colour"
     android:fitsSystemWindows="true"
-    tools:context=".Activities.GameActivity">
+    tools:context=".Activities.AllGamesActivity">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -30,6 +30,18 @@
             <include layout="@layout/content_games" />
 
         </LinearLayout>
+
+        <!-- add league button -->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_game_button"
+            app:fabCustomSize="75dp"
+            app:backgroundTint="@color/colorFAB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_plus"
+            android:elevation="6dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="25dp"/>
 
     </android.support.design.widget.CoordinatorLayout>
 
