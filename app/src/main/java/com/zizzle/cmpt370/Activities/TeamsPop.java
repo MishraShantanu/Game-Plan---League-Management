@@ -72,7 +72,7 @@ public class TeamsPop extends Activity {
                         final LeagueInfo parentLeagueInfo = new LeagueInfo(currentLeagueName);
                         final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam,currentLeagueName);
                         // check if the input team name is unique for this league
-                        DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child(newTeamInfo.getName());
+                        DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName());
                         newTeamReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

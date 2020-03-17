@@ -20,139 +20,6 @@ public class Storage {
      * Reference to the database
      */
     private static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    /**
-     * Stores the league read in, we require this to overcome scoping issues
-     */
-    private static League retrievedLeague;
-    /**
-     * Stores the member read in, we require this to overcome scoping issues
-     */
-    private static Member retrievedMember;
-    /**
-     * Stores the team read in, we require this to overcome scoping issues
-     */
-    private static Team retrievedTeam;
-
-    // constants to be used when updating fields of the database
-
-    // constants that should be used to update Leagues
-    /**
-     * constant that should be used if the description of a league is being updated
-     */
-    public static final String LEAGUE_DESCRIPTION = "description";
-
-    /**
-     * constant that should be used if the sport of a league is being updated
-     */
-    public static final String LEAGUE_SPORT = "sport";
-
-    /**
-     * constant that should be used if the name field of a league is being updated
-     */
-    public static String LEAGUE_NAME = "name";
-
-    /**
-     * constant that should be used if the owner field of a league is being updated
-     */
-    public static final String LEAGUE_OWNER = "ownerInfo";
-
-    /**
-     * constant that should be used if the teams of a league are being updated
-     */
-    public static final String LEAGUE_TEAMS = "teamsInfo";
-
-    // constants that should be used to update Teams
-    /**
-     * constant that should be used if the name of a team is being updated
-     */
-    public static String TEAM_NAME = "name";
-
-    /**
-     * constant that should be used if the sport of a team is being updated
-     */
-    public static final String TEAM_SPORT = "sport";
-
-    /**
-     * constant that should be used if the members of a team are being updated
-     */
-    public static final String TEAM_MEMBER = "membersInfo";
-
-    /**
-     * constant that should be used if the owner of a team is being updated
-     */
-    public static final String TEAM_OWNER = "ownerInfo";
-
-    /**
-     * constant that should be used if the wins of a team are being updated
-     */
-    public static final String TEAM_WINS = "wins";
-
-    /**
-     * constant that should be used if the losses of a team are being updated
-     */
-    public static final String TEAM_LOSSES = "losses";
-
-    /**
-     * constant that should be used if the ties of a team are being updated
-     */
-    public static final String TEAM_TIES = "ties";
-
-    // TODO add fields that allow you to change games
-
-    // constants that should be used to update Members
-    /**
-     * constant that should be updated if the name of a member is being updated
-     */
-    public static final String MEMBER_NAME = "displayName";
-
-    /**
-     * constant that should be updated if the email of a member is being updated
-     */
-    public static final String MEMBER_EMAIL = "email";
-
-    /**
-     * constant that should be updated if the phone number of a member is being updated
-     */
-    public static final String MEMBER_PHONE_NUMER = "phoneNumber";
-
-    /**
-     * constant that should be updated if the teams of a member are being updated
-     */
-    public static final String MEMBER_TEAMS = "teamsInfo";
-
-    /**
-     * constant that should be updated if the leagues of a member are being updated
-     */
-    public static final String MEMBER_LEAGUES = "leaguesInfo";
-
-
-    /**
-     * Reads the League with the input name from the database
-     *
-     * @param leagueInfo: String, name of the database to read from the database
-     * @return League object with the name input or null if no such league exists
-     * @throws DatabaseException if the database read fails
-     */
-    public static League readLeague(LeagueInfo leagueInfo) throws DatabaseException {
-        // addListenerForSingleValueEvent reads from the database exactly once
-        Log.d("league database key", ":" + leagueInfo.getDatabaseKey() + ":");
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // called when data is read from database
-                retrievedLeague = dataSnapshot.getValue(League.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // database read has failed for some reason, display error message
-                throw new DatabaseException("Failed to read league information from database: " + databaseError.getMessage());
-            }
-        });
-
-        // return the league read from the database, may be null if there is no league with name: leagueName
-        return retrievedLeague;
-    }
 
     /**
      * Adds the input league to the database
@@ -261,17 +128,62 @@ public class Storage {
      */
     public static void removeTeam(TeamInfo teamInfo) {
         // remove team from members teams
+        final String teamDatabaseKey = teamInfo.getDatabaseKey();
 
-        TEAM_NAME = teamInfo.getDatabaseKey();
-
-        LEAGUE_NAME = teamInfo.getLeagueName();
+        String leagueDatabaseKey = teamInfo.getLeagueName();
 
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(TEAM_NAME).removeValue();
+                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        // remove the member from the team
+        database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
+        database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+    }
+
+
+    public static void removeLeague(final String LeagueName) {
+        // remove team from members teams
+
+
+        database.child("Leagues").child(LeagueName).child("teamsInfoMap").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    final String teamKey = LeagueName+"-"+ds.getKey();
+
+
+                     database.child("Teams").child(teamKey).child("ownerInfo").child("databaseKey").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                               //remove the ownership of teams from player under league deleted
+                                database.child("users").child(dataSnapshot.getKey()).child("teamInfoMap").child(teamKey).removeValue();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //remove Teams of a league
+                    database.child("Teams").child(teamKey).removeValue();
+                }
+
+                //remove league
+                database.child("Leagues").child(LeagueName).removeValue();
             }
 
             @Override
@@ -281,11 +193,9 @@ public class Storage {
         });
 
 
-        // remove the member from the team
-        database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
-        database.child("Leagues").child(LEAGUE_NAME).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
 
     }
+
 
 
 }

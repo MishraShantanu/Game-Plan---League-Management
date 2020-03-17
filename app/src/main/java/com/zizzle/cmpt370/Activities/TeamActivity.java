@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
@@ -125,7 +126,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 if (dataSnapshot.exists()) {
                     // clear our list of team members so we don't rewrite the same members multiple times if data is altered and read in again
                     membersInfo.clear();
-                    Team currentTeam = dataSnapshot.getValue(Team.class);
+                    final Team currentTeam = dataSnapshot.getValue(Team.class);
 
                     // Set the record
                     TextView wins = findViewById(R.id.record_wins);
@@ -136,6 +137,18 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     wins.setText(String.valueOf(currentTeam.getWins()));
                     losses.setText(String.valueOf(currentTeam.getLosses()));
                     ties.setText(String.valueOf(currentTeam.getTies()));
+                    // Set the next scheduled game
+                    TextView nextGameText = findViewById(R.id.next_games_text);
+
+
+                    wins.setText(String.valueOf(currentTeam.getWins()));
+                    losses.setText(String.valueOf(currentTeam.getLosses()));
+
+                    if(currentTeam.hasGamesScheduled()){
+                        nextGameText.setText(currentTeam.getClosestScheduledGame().toString());
+                    }
+                    // otherwise this TextView has the string "No Upcoming Games as a default value"
+
 
 
                     // set the text of the owner button to the owner's name, add 2 spaces to center the name
@@ -160,21 +173,33 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     });
 
 
-                    // Remove player button ===================================
+                    // Remove team button ===================================
                     removeTeam = findViewById(R.id.delete_team_button);
+                    // only display this button if the current user is the owner of the team
+                    if(!ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())){
+                        removeTeam.setVisibility(View.GONE);
+                    }
+
                     removeTeam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             // remove the team member from the team
                             // TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
 
-                            Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+                            //System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                            Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
-                            toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(toHome);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                            Storage.removeTeam(currentTeamInfo);
+                            //Check if the current user is same as the Owner of the Team else do not delete the team
+                            if(currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0){
+                                Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+
+                                Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
+                                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(toHome);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                Storage.removeTeam(currentTeamInfo);
+                            }else  Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
+
+
                         }
                     });
 

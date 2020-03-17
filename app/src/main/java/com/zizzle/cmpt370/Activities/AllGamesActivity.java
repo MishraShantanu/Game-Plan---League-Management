@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,13 +13,24 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Team;
@@ -36,6 +48,9 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
     private Toolbar mToolBar; //Added for overlay effect of menu
 
     TeamInfo teamClicked;
+
+    private ArrayAdapter nextGameArrayAdapter;
+    private ArrayAdapter pastGameArrayAdapter;
 
 
     @Override
@@ -66,51 +81,138 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         teamClicked = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
 
         // ADD STUFF HERE!!! ==========================================================================
+        // NEXT GAMES =========================================================================
+        final ArrayList<Game> nextGames = new ArrayList<>();
+        final ArrayList<Game> pastGames = new ArrayList<>();
+
+        // read in the list of games for this team
+        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        DatabaseReference currentTeamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
+        currentTeamReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                nextGames.clear();
+                pastGames.clear();
+                DataSnapshot nextGamesData = dataSnapshot.child("scheduledGames");
+                if(!nextGamesData.exists()){
+                    // this team has no scheduled games
+                    // TODO add some text indicating there are no upcoming games
+                }
+                else{
+                    // add each scheduled game to our list
+                    for(DataSnapshot gameData : nextGamesData.getChildren()){
+                        Game currentGame = gameData.getValue(Game.class);
+                        nextGames.add(currentGame);
+                    }
+                }
+                nextGameArrayAdapter.notifyDataSetChanged();
+
+                // do the same for the games previously played by this team
+                DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayed");
+                if(!pastGamesData.exists()){
+                    // TODO add text "no previously played games"
+                }
+                else{
+                    for(DataSnapshot gameData : pastGamesData.getChildren()){
+                        Game currentGame = gameData.getValue(Game.class);
+                        pastGames.add(currentGame);
+                    }
+                }
+                pastGameArrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        // Display ListView contents.
+
+        nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
+        ListView nextGameList = findViewById(R.id.next_scores_list);
+        nextGameList.setAdapter(nextGameArrayAdapter);
+
+
+        // Display ListView contents.
+        pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
+        ListView pastGameList = findViewById(R.id.past_scores_list);
+        pastGameList.setAdapter(pastGameArrayAdapter);
+
+
+        // clicking on a scheduled game in the ListView is handled in here.
+        nextGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             *
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
+
+                Intent gameIntent = new Intent(AllGamesActivity.this, TeamsActivity.class); // TODO take the user to the page for this particular game
+                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+                gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
+                startActivity(gameIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
+        // clicking on a previously played game in the listview is handled here
+        pastGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             *
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
+
+                Intent gameIntent = new Intent(AllGamesActivity.this, TeamsActivity.class); // TODO take the user to the page for this particular game
+                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+                gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
+                startActivity(gameIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
 
         // add game button =======================================================================
-//        final MemberInfo currentUser = getCurrentUserInfo();
-//
-//        DatabaseReference teamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey());
-//        // this listener will read from the database once initially and whenever the current team is updated
-//        teamReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                // Create the floating action button for adding a game
-//                FloatingActionButton addGame = findViewById(R.id.add_game_button);
-//                addGame.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent gameIntent = new Intent(AllGamesActivity.this, GamePop.class);
-//                        gameIntent.putExtra("TEAM_INFO", teamClicked);
-//                        startActivity(gameIntent);
-//                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-//                    }
-//                });
-////                addGame.hide();
-//
-//                // Get team and team members
-//                Team currentTeam = dataSnapshot.getValue(Team.class);
-//                ArrayList<MemberInfo> teamMembers = currentTeam.getTeamMembersInfo();
-//
-//                // Check if user is on the team
-//                boolean onTeam = false;
-//                for (MemberInfo member : teamMembers) {
-//                    if (currentUser.equals(member)) {
-//                        onTeam = true;
-//                        break;
-//                    }
-//                }
-//
-//                // Set add game button to visible if on team
-//                if (onTeam) {
-//                    addGame.show();
-//                }
-//            }
-//
-//            // Auto-Generated. Unused
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) { }
-//        });
+        final FloatingActionButton addGame = findViewById(R.id.add_game_button);
+
+        // only display this button to users on the selected team
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference currentMemberReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey()).child("membersInfoMap").child(currentUserInfo.getDatabaseKey());
+        currentMemberReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // user isn't on the team, don't display the add game button
+                    addGame.hide();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        addGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gameIntent = new Intent(AllGamesActivity.this, GamePop.class);
+                gameIntent.putExtra("TEAM_INFO", teamClicked);
+                startActivity(gameIntent);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
+            }
+        });
     }
 
 

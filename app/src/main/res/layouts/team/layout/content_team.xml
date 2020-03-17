@@ -106,12 +106,13 @@
 
         <!--    Next Game    -->
         <TextView
+            android:id="@+id/next_games_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/round_card"
             android:padding="22dp"
-            android:text="vs. Death Tigers\n@ Griffen Stadium"
             android:textAlignment="center"
+            android:text="No Upcoming Games"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 

@@ -72,6 +72,22 @@ public class TeamInfo implements InfoInterface, Serializable {
         return this.name;
     }
 
+    /**
+     * Determines whether other is equal to this
+     * @param other: Object being compared to this
+     * @return true if other and this are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(!(other instanceof TeamInfo)){
+            // other isn't a TeamInfo cannot be equal to this TeamInfo object
+            return false;
+        }
+        TeamInfo otherTeamInfo = (TeamInfo) other;
+        // 2 TeamInfos are equal if they have the same name, league and database key
+        return this.name.equals(otherTeamInfo.name) && this.leagueName.equals(otherTeamInfo.leagueName) && this.databaseKey.equals(otherTeamInfo.databaseKey);
+    }
+
 
 
 }
