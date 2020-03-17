@@ -16,7 +16,7 @@ public class GameTime implements Comparable, Serializable {
     private Calendar calendar;
 
     /** Epoch time in milliseconds represented by this GameTime */
-    private long timeInMilliseconds;
+    private Long timeInMilliseconds;
 
     /** format used to display the time of this game in the form hour-minute-day-month-year */
     public static String DDMMYYYY_FORMAT = "HH-mm-dd-MM-yyyy";
@@ -64,6 +64,7 @@ public class GameTime implements Comparable, Serializable {
         if(! this.isInFuture()){
             throw new IllegalArgumentException("GameTime: date specified isn't in the future");
         }
+        this.timeInMilliseconds = this.calendar.getTimeInMillis();
     }
 
     /**
@@ -76,7 +77,7 @@ public class GameTime implements Comparable, Serializable {
      * Returns the epoch time in milliseconds that this GameTime represents
      * @return long time in milliseconds represented by this GameTime
      */
-    public long getTimeInMilliseconds() {
+    public Long getTimeInMilliseconds() {
         return timeInMilliseconds;
     }
 
