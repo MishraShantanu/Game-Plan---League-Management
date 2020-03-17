@@ -155,7 +155,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
                 final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
 
-                Intent gameIntent = new Intent(AllGamesActivity.this, TeamsActivity.class); // TODO take the user to the page for this particular game
+                Intent gameIntent = new Intent(AllGamesActivity.this, GameActivity.class); // TODO take the user to the page for this particular game
                 // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
                 gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
                 startActivity(gameIntent);
