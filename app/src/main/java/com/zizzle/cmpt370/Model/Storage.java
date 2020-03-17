@@ -266,6 +266,8 @@ public class Storage {
 
         LEAGUE_NAME = teamInfo.getLeagueName();
 
+
+
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
