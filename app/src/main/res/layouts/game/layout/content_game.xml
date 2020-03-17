@@ -81,6 +81,55 @@
             android:text="Submit"
             android:textColor="@color/colorText" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Game Details:"
+            android:textColor="@color/colorText"
+            android:textSize="30dp" />
+
+        <TextView
+            android:id="@+id/yourTeamNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Your Team: "
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/opponentTeamNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Opponent Team: "
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/gameDateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Date: "
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/gameTimeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Time: "
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="22sp" />
+
+
     </LinearLayout>
 
 </ScrollView>
