@@ -15,11 +15,11 @@ public class GameTime implements Comparable, Serializable {
     /** Calendar storing years, months, days, hours, minutes, seconds when Game will occur */
     private Calendar time;
 
-    /** format used to display the time of this game in the form dd/mm/yyyy */
-    public static String DDMMYYYY_FORMAT = "dd/MM/yyyy";
+    /** format used to display the time of this game in the form hour-minute-day-month-year */
+    public static String DDMMYYYY_FORMAT = "hh-mm-dd-MM-yyyy";
 
-    /** format used to display the time of this game in the form yyyy/mm/dd */
-    public static String YYYYMMDD_FORMAT = "yyyy/MM/dd";
+    /** format used to display the time of this game in the form yyyy-mm-dd-hh-mm */
+    public static String YYYYMMDD_FORMAT = "yyyy-MM-dd-hh-mm";
 
     /**
      * GameTime constructor
@@ -69,12 +69,14 @@ public class GameTime implements Comparable, Serializable {
      * @return int array of the form [year, month, day, hour, minute] specifying the date and time
      * the game takes place
      */
+    /*
     public int[] getTimeArray(){
         // months are from 0-11, but we expect months to be from 1-12, increment months
         int[] timeArray = {this.time.get(Calendar.YEAR), this.time.get(Calendar.MONTH)+1, this.time.get(Calendar.DATE),
                 this.time.get(Calendar.HOUR_OF_DAY), this.time.get(Calendar.MINUTE)};
         return timeArray;
     }
+    */
 
     /**
      * Compares this GameTime to another GameTime, this will produce a IllegalArgumentException if other isn't a GameTime
@@ -121,7 +123,7 @@ public class GameTime implements Comparable, Serializable {
     }
 
     /**
-     * Returns a String representation of the GameTime, this returns a time formatted as DD/MM/YYYY
+     * Returns a String representation of the GameTime, this returns a time formatted as DD-MM-YYYY-hh-mm
      * @return String as described above
      */
     @Override
@@ -138,7 +140,7 @@ public class GameTime implements Comparable, Serializable {
         }
         // convert our Calendar object to a Date object, display using the input format under the local timezone
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
-        return dateFormat.toString();
+        return dateFormat.format(this.time.getTime());
     }
 
 
