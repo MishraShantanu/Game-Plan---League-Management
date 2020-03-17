@@ -6,39 +6,81 @@
     android:fillViewport="true"
     android:overScrollMode="never"
     android:scrollbars="none"
-    tools:context=".Activities.TeamActivity"
+    tools:context=".Activities.GameActivity"
     tools:showIn="@layout/activity_game">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:layout_height="match_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <!--    Upcoming Games    -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Add the Game Score"
+            android:textColor="@color/colorText"
+            android:textSize="30dp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upcoming Games"
+            android:layout_marginTop="30dp"
+            android:text="Your Team"
+            android:textAlignment="textStart"
             android:textColor="@color/colorText"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
 
-        <!--    divider    -->
-        <View
+        <EditText
+            android:id="@+id/yourScore"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="15dp"
-            android:background="@color/colorText" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="@color/colorTextHint"
+            android:ems="10"
+            android:hint="0"
+            android:inputType="number"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint" />
 
-        <!--    Previous Games    -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Previous Games"
+            android:layout_marginTop="30dp"
+            android:text="Opponent Team"
+            android:textAlignment="textStart"
             android:textColor="@color/colorText"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
 
+        <EditText
+            android:id="@+id/opponentScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="@color/colorTextHint"
+            android:ems="10"
+            android:hint="0"
+            android:inputType="number"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint" />
+
+        <!--    Submit Button    -->
+        <Button
+            android:id="@+id/submitScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@color/submitColor"
+            android:text="Submit"
+            android:textColor="@color/colorText" />
 
     </LinearLayout>
+
 </ScrollView>
