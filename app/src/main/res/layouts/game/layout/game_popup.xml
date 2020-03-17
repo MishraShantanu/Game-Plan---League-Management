@@ -66,6 +66,7 @@
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/colorTextHint"
             android:hint="Location"
+            android:digits="0,1,2,3,4,5,6,7,8,9,qwertzuiopasdfghjklyxcvbnm,_,-"
             android:textColorHint="@color/colorTextHint"
             android:ems="10"
             android:inputType="text"

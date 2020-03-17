@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@drawable/popup_background"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/popup_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:background="@android:color/transparent"
         android:gravity="center_horizontal"
-        android:background="@android:color/transparent">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,22 +26,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:backgroundTint="@color/colorText"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorTextHint"
+            android:digits="0,1,2,3,4,5,6,7,8,9,qwertzuiopasdfghjklyxcvbnm,_,-"
             android:ems="10"
-            android:hint="Display Name"/>
+            android:hint="Display Name"
+            android:inputType="text"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint" />
 
         <EditText
             android:id="@+id/phoneNumberInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:maxLength="11"
             android:backgroundTint="@color/colorText"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorTextHint"
             android:ems="10"
-            android:hint="Phone Number"/>
+            android:hint="Phone Number"
+            android:maxLength="11"
+            android:inputType="number"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint" />
 
         <EditText
             android:id="@+id/emailInput"
@@ -49,10 +52,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:backgroundTint="@color/colorText"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorTextHint"
             android:ems="10"
-            android:hint="Email"/>
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/colorText"
+            android:textColorHint="@color/colorTextHint" />
 
         <Button
             android:id="@+id/submitButton"
@@ -61,7 +65,7 @@
             android:layout_marginTop="30dp"
             android:background="@color/colorAccent"
             android:text="Submit"
-            android:textColor="@color/colorText"/>
+            android:textColor="@color/colorText" />
 
     </LinearLayout>
 
