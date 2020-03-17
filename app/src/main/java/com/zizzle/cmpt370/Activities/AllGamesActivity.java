@@ -29,9 +29,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Team;
-import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
@@ -44,6 +44,9 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
     private Toolbar mToolBar; //Added for overlay effect of menu
 
     TeamInfo teamClicked;
+
+    private ArrayAdapter nextGameArrayAdapter;
+    private ArrayAdapter pastGameArrayAdapter;
 
 
     @Override
@@ -75,8 +78,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
         // ADD STUFF HERE!!! ==========================================================================
         // NEXT GAMES =========================================================================
-        ArrayList<String> nextGames = new ArrayList<>();
-        ArrayList<String> pastGames = new ArrayList<>();
+        final ArrayList<Game> nextGames = new ArrayList<>();
+        final ArrayList<Game> pastGames = new ArrayList<>();
 
         // read in the list of games for this team
         TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
@@ -84,14 +87,34 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         currentTeamReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Team currentTeam = dataSnapshot.getValue(Team.class);
-                if(currentTeam.hasGamesScheduled()){
-                    // add the scheduled games to our list of scheduled names
+                nextGames.clear();
+                pastGames.clear();
+                DataSnapshot nextGamesData = dataSnapshot.child("scheduledGamesMap");
+                if(!nextGamesData.exists()){
+                    // this team has no scheduled games
+                    // TODO add some text indicating there are no upcoming games
                 }
                 else{
-                    // no games are scheduled for this team
+                    // add each scheduled game to our list
+                    for(DataSnapshot gameData : nextGamesData.getChildren()){
+                        Game currentGame = gameData.getValue(Game.class);
+                        nextGames.add(currentGame);
+                    }
                 }
+                nextGameArrayAdapter.notifyDataSetChanged();
 
+                // do the same for the games previously played by this team
+                DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayedMap");
+                if(!pastGamesData.exists()){
+                    // TODO add text "no previously played games"
+                }
+                else{
+                    for(DataSnapshot gameData : pastGamesData.getChildren()){
+                        Game currentGame = gameData.getValue(Game.class);
+                        pastGames.add(currentGame);
+                    }
+                }
+                pastGameArrayAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -104,7 +127,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
         // Display ListView contents.
 
-        ArrayAdapter nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
+        nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
         ListView nextGameList = findViewById(R.id.next_scores_list);
         nextGameList.setAdapter(nextGameArrayAdapter);
 
@@ -134,12 +157,12 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
 
         // Display ListView contents.
-        ArrayAdapter pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
+        pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
         ListView pastGameList = findViewById(R.id.past_scores_list);
-        nextGameList.setAdapter(pastGameArrayAdapter);
+        pastGameList.setAdapter(pastGameArrayAdapter);
 
 
-        // clicking on a league in the ListView is handled in here.
+        // clicking on a scheduled game in the ListView is handled in here.
         nextGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             /**
@@ -150,16 +173,37 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
 
-//                 name of the league that was clicked.
-//                final String clickedLeagueName = (String) parent.getAdapter().getItem(listItemPosition);
-//
-//                Intent teamsIntent = new Intent(LeagueActivity.this, TeamsActivity.class);
-//                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
-//                teamsIntent.putExtra("LEAGUE_CLICKED",clickedLeagueName);
-//                startActivity(teamsIntent);
+                final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
+
+                Intent gameIntent = new Intent(AllGamesActivity.this, TeamsActivity.class); // TODO take the user to the page for this particular game
+                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+                gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
+                startActivity(gameIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+
+        // clicking on a previously played game in the listview is handled here
+        pastGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             *
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
+
+                Intent gameIntent = new Intent(AllGamesActivity.this, TeamsActivity.class); // TODO take the user to the page for this particular game
+                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
+                gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
+                startActivity(gameIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+
         // add game button =======================================================================
         FloatingActionButton addGame = findViewById(R.id.add_game_button);
         addGame.setOnClickListener(new View.OnClickListener() {
