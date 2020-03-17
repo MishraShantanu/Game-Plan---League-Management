@@ -47,7 +47,7 @@ import java.util.Calendar;
 public class GamePop extends Activity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     Button btnDatePicker, btnTimePicker;
-    TextView txtDate, txtTime;
+    EditText txtDate, txtTime;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private TeamInfo opponentInfo;
 
