@@ -96,19 +96,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // add team button =======================================================================
-//
-//        // launches a pop-up for adding a new class.
-//        FloatingActionButton addTeam = findViewById(R.id.add_team_button);
-//        addTeam.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivity( new Intent(TeamsActivity.this, TeamsPop.class));
-//                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-//            }
-//        });
-
-
         // owner button ==========================================================================
         final Button ownerButton = findViewById(R.id.owner_button);
 
@@ -205,7 +192,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
 
                     // display the members of the team
-                    // TODO this is a short term fix, getMembersInfo was returning null when called from this team
                     for (DataSnapshot ds : dataSnapshot.child("membersInfoMap").getChildren()) {
                         membersInfo.add(ds.getValue(MemberInfo.class));
                     }
