@@ -51,14 +51,14 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_games);
+        setContentView(R.layout.activity_game);
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
         //MENU (button & drawer)
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.scores_layout);
-        NavigationView navigationView = findViewById(R.id.games_nav_view); //ADDED FOR CLICK
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.game_layout);
+        NavigationView navigationView = findViewById(R.id.game_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_home); //Highlight respective option in the navigation menu
 
