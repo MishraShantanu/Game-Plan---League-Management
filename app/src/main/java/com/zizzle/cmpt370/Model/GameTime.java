@@ -19,10 +19,10 @@ public class GameTime implements Comparable, Serializable {
     private Long timeInMilliseconds;
 
     /** format used to display the time of this game in the form hour-minute-day-month-year */
-    public static String DDMMYYYY_FORMAT = "HH-mm-dd-MM-yyyy";
+    public static String DDMMYYYY_FORMAT = "HH:mm-dd-MM-yyyy";
 
     /** format used to display the time of this game in the form yyyy-mm-dd-hh-mm */
-    public static String YYYYMMDD_FORMAT = "yyyy-MM-dd-HH-mm";
+    public static String YYYYMMDD_FORMAT = "yyyy-MM-dd-HH:mm";
 
     /**
      * GameTime constructor

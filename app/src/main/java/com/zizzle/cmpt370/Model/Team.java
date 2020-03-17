@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -300,14 +301,14 @@ public class Team {
         // find the closest scheduled or minimum game
         Collection<Game> games = this.scheduledGames.values();
         Iterator gameIterator = games.iterator();
-        Game maxGame = (Game)gameIterator.next();
+        Game minGame = (Game)gameIterator.next();
         while(gameIterator.hasNext()){
             Game currentGame = (Game)gameIterator.next();
-            if(currentGame.compareTo(maxGame)>0){
-                maxGame = currentGame;
+            if(currentGame.compareTo(minGame)<0){
+                minGame = currentGame;
             }
         }
-        return maxGame;
+        return minGame;
     }
 
     /**
