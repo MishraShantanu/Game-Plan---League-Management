@@ -55,6 +55,13 @@ public class Game implements Comparable, Serializable {
     }
 
     /**
+     * Blank constructor required by firebase to read in this object
+     */
+    public Game(){
+
+    }
+
+    /**
      * Returns the first team playing in the game
      * @return TeamInfo object of the first team playing
      */
@@ -129,24 +136,16 @@ public class Game implements Comparable, Serializable {
     /**
      * Retrieves team 1's score, this game must have been played in order to get scores
      * @return int team 1's score in this game
-     * @throws IllegalStateException if the game hasn't been played yet
      */
-    public int getTeam1Score() throws IllegalStateException{
-        if(!this.hasBeenPlayed()){
-            throw new IllegalStateException("Cannot get scores before this game has been played");
-        }
+    public int getTeam1Score(){
         return this.team1Score;
     }
 
     /**
      * Retrieves team 2's score, this game must have been played in order to get scores
      * @return int team 2's score in this game
-     * @throws IllegalStateException if the game hasn't been played yet
      */
-    public int getTeam2Score() throws IllegalStateException{
-        if(!this.hasBeenPlayed()){
-            throw new IllegalStateException("Cannot get scores before this game has been played");
-        }
+    public int getTeam2Score(){
         return this.team2Score;
     }
 
@@ -177,7 +176,7 @@ public class Game implements Comparable, Serializable {
      * @return unique String database key for this Game object
      */
     public String getDatabaseKey(){
-        // game keys are structured as date(YYYY/MM/DD)-team1Info-team2Info, this ensures that games are sorted by start date on the database
+        // game keys are structured as date(YYYY-MM-DD-hh-mm)-team1Info-team2Info, this ensures that games are sorted by start date on the database
         String databaseKey = this.getGameTime().getDateWithFormat(GameTime.YYYYMMDD_FORMAT) + "-" + this.getTeam1Info().getDatabaseKey() + this.getTeam2Info().getDatabaseKey();
         return databaseKey;
     }

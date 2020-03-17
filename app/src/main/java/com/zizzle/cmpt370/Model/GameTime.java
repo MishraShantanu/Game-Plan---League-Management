@@ -16,10 +16,10 @@ public class GameTime implements Comparable, Serializable {
     private Calendar time;
 
     /** format used to display the time of this game in the form hour-minute-day-month-year */
-    public static String DDMMYYYY_FORMAT = "hh-mm-dd-MM-yyyy";
+    public static String DDMMYYYY_FORMAT = "HH-mm-dd-MM-yyyy";
 
     /** format used to display the time of this game in the form yyyy-mm-dd-hh-mm */
-    public static String YYYYMMDD_FORMAT = "yyyy-MM-dd-hh-mm";
+    public static String YYYYMMDD_FORMAT = "yyyy-MM-dd-HH-mm";
 
     /**
      * GameTime constructor
@@ -61,6 +61,13 @@ public class GameTime implements Comparable, Serializable {
         if(! this.isInFuture()){
             throw new IllegalArgumentException("GameTime: date specified isn't in the future");
         }
+
+    }
+
+    /**
+     * Blank constructor required by firebase to read GameTime objects from the database
+     */
+    public GameTime(){
 
     }
 
