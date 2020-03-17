@@ -108,6 +108,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     View myTeamsDivider = findViewById(R.id.my_teams_div);
                     myTeamsDivider.setVisibility(View.VISIBLE);
                 }
+
                 // If user not on any teams, show sad text.
                 else {
                     TextView noTeamText = findViewById(R.id.no_team_text);
