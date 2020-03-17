@@ -160,15 +160,15 @@ public class Storage {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    TEAM_NAME = LeagueName+"-"+ds.getKey();
+                    final String teamKey = LeagueName+"-"+ds.getKey();
 
 
-                     database.child("Teams").child(TEAM_NAME).child("ownerInfo").child("databaseKey").addValueEventListener(new ValueEventListener() {
+                     database.child("Teams").child(teamKey).child("ownerInfo").child("databaseKey").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                //remove the ownership of teams from player under league deleted
-                                database.child("users").child(dataSnapshot.getKey()).child("teamInfoMap").child(TEAM_NAME).removeValue();
+                                database.child("users").child(dataSnapshot.getKey()).child("teamInfoMap").child(teamKey).removeValue();
 
                         }
 
@@ -179,7 +179,7 @@ public class Storage {
                     });
 
                     //remove Teams of a league
-                    database.child("Teams").child(TEAM_NAME).removeValue();
+                    database.child("Teams").child(teamKey).removeValue();
                 }
 
                 //remove league
