@@ -107,6 +107,7 @@
             <TextView
                 android:id="@+id/in_date"
                 android:layout_width="200dp"
+                android:enabled="false"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
@@ -135,6 +136,7 @@
                 android:id="@+id/in_time"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:layout_marginStart="8dp"
                 android:backgroundTint="@color/colorTextHint" />
 
