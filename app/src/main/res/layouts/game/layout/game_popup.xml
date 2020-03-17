@@ -104,7 +104,7 @@
                 android:textColor="@color/colorText"
                 android:textSize="16sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/in_date"
                 android:layout_width="200dp"
                 android:enabled="false"
@@ -132,7 +132,7 @@
                 android:textColor="@color/colorText"
                 android:textSize="16sp" />
 
-            <TextView
+            <EditText
                 android:id="@+id/in_time"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
