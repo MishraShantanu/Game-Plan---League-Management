@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.Team;
+import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -64,7 +66,28 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         ArrayList<String> nextGames = new ArrayList<>();
         ArrayList<String> pastGames = new ArrayList<>();
 
-        // read in the current team object
+        // read in the list of games for this team
+        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        DatabaseReference currentTeamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
+        currentTeamReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Team currentTeam = dataSnapshot.getValue(Team.class);
+                if(currentTeam.hasGamesScheduled()){
+                    // add the scheduled games to our list of scheduled names
+                }
+                else{
+                    // no games are scheduled for this team
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
 
         // Display ListView contents.

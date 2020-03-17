@@ -124,9 +124,18 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 TextView wins = findViewById(R.id.record_wins);
                 TextView losses = findViewById(R.id.record_losses);
 
-                // Commented out because they produce a null pointer error
+                // Set the next scheduled game
+                TextView nextGameText = findViewById(R.id.next_games_text);
+
+
                 wins.setText(String.valueOf(currentTeam.getWins()));
                 losses.setText(String.valueOf(currentTeam.getLosses()));
+
+                if(currentTeam.hasGamesScheduled()){
+                    nextGameText.setText(currentTeam.getClosestScheduledGame().toString());
+                }
+                // otherwise this TextView has the string "No Upcoming Games as a default value"
+
 
 
                 // set the text of the owner button to the owner's name, add 2 spaces to center the name
@@ -233,8 +242,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 // Take the user to the game activity page
-                Intent teamMemberIntent = new Intent(TeamActivity.this, GameActivity.class);
-                startActivity(teamMemberIntent);
+                Intent gamesIntent = new Intent(TeamActivity.this, GameActivity.class);
+                // pass the current TeamInfo to the games page
+                gamesIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                startActivity(gamesIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });

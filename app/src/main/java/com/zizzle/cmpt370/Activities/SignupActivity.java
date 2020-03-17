@@ -90,7 +90,8 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 // add the newly created Member to the database
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), fbUser.getUid());
+                                Member member;
+                                member = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), fbUser.getUid());
                                 Storage.writeMember(member);
                                 // add the user's display name to firebase authentication
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayName.getText().toString()).build();
