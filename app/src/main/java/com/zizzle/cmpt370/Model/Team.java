@@ -3,7 +3,10 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 
@@ -22,7 +25,7 @@ public class Team {
     private HashMap<String,MemberInfo> membersInfoMap;
 
     /** TreeMap with the database keys of games played as keys and the Game objects played as values */
-    private TreeMap<String,Game> gamesPlayedMap;
+    private HashMap<String,Game> gamesPlayed;
     //TODO these treemaps won't work, we require string keys, use old idea of unique keys, to get the most recent game, must get a values list then sort
     //TODO could however add an instance variable keeping track of the next most recently scheduled game, how can we check this when writing to the database
 
@@ -33,7 +36,7 @@ public class Team {
     private MemberInfo ownerInfo;
 
     /** TreeMap with the database keys of games schedules as keys and the Game objects schedules as values */
-    private TreeMap<String,Game> scheduledGamesMap;
+    private HashMap<String,Game> scheduledGames;
 
     /** Number of wins the team has */
     private int wins;
@@ -61,12 +64,30 @@ public class Team {
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
-        this.gamesPlayedMap = new TreeMap<>();
-        this.scheduledGamesMap = new TreeMap<>();
+        this.gamesPlayed = new HashMap<>();
+        this.scheduledGames = new HashMap<>();
     }
 
     public Team(){
 
+    }
+
+    /**
+     * Returns a TreeMap with string game keys and Game values of the games this team has played
+     * @return TreeMap as described above
+     */
+    public HashMap<String,Game> getGamesPlayed(){
+        // In order for firebase to recognize our instance variable gamesPlayed, we must make a public getter or setter
+        return this.gamesPlayed;
+    }
+
+    /**
+     * Returns a TreeMap with string game keys and Game values of the games scheduled to be played by this team
+     * @return TreeMap as described above
+     */
+    public HashMap<String,Game> getScheduledGames(){
+        // In order for firebase to recognize our instance variable scheduledGames, we must make a public getter or setter
+        return this.scheduledGames;
     }
 
     /**
@@ -261,10 +282,10 @@ public class Team {
      */
     public boolean hasGamesScheduled(){
         // scheduledGamesMap may be null if this object has been read from the database without having any games
-        if(this.scheduledGamesMap == null){
+        if(this.scheduledGames == null){
             return false;
         }
-        return this.scheduledGamesMap.size() > 0;
+        return this.scheduledGames.size() > 0;
     }
 
     /**
@@ -276,9 +297,17 @@ public class Team {
         if(! this.hasGamesScheduled()){
             return null;
         }
-        // the firstKey of this map will always be the key with lowest value, this lowest value key must
-        // be correspond to the game with closest date
-        return this.scheduledGamesMap.get(this.scheduledGamesMap.firstKey());
+        // find the closest scheduled or minimum game
+        Collection<Game> games = this.scheduledGames.values();
+        Iterator gameIterator = games.iterator();
+        Game maxGame = (Game)gameIterator.next();
+        while(gameIterator.hasNext()){
+            Game currentGame = (Game)gameIterator.next();
+            if(currentGame.compareTo(maxGame)>0){
+                maxGame = currentGame;
+            }
+        }
+        return maxGame;
     }
 
     /**
@@ -286,7 +315,7 @@ public class Team {
      * @return true if the team has played a game, false otherwise
      */
     public boolean hasPlayedGame(){
-        return this.gamesPlayedMap.size() > 0;
+        return this.gamesPlayed.size() > 0;
     }
 
     /**

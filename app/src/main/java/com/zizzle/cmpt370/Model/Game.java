@@ -18,7 +18,7 @@ public class Game implements Comparable, Serializable {
     private TeamInfo team2Info;
 
     /** date (year, month, day, hour, minute) the game is being/was played */
-    private GameTime date;
+    private GameTime gameTime;
 
     /** name of the location the game is/was held at */
     private String location;
@@ -47,7 +47,7 @@ public class Game implements Comparable, Serializable {
         if(!gameDate.isInFuture()){
             throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
         }
-        this.date = gameDate;
+        this.gameTime = gameDate;
         this.location = location;
         this.played = false;
         this.team1Score = 0;
@@ -90,7 +90,7 @@ public class Game implements Comparable, Serializable {
      * @return GameTime object describing the time the game is scheduled to be played
      */
     public GameTime getGameTime(){
-        return this.date;
+        return this.gameTime;
     }
 
     /**
@@ -99,7 +99,7 @@ public class Game implements Comparable, Serializable {
      */
     public boolean hasGameStarted(){
         // if this game isn't scheduled for the future, it must have started
-        return !this.date.isInFuture();
+        return !this.gameTime.isInFuture();
     }
 
     /**
@@ -167,7 +167,7 @@ public class Game implements Comparable, Serializable {
         }
         else{
             // new time is valid
-            this.date = newTime;
+            this.gameTime = newTime;
         }
     }
 
@@ -189,6 +189,7 @@ public class Game implements Comparable, Serializable {
     @NonNull
     public String toString(){
         String gameString = this.team1Info + " vs " + this.team2Info;
+        gameString += "\n@" + this.gameTime.toString();
         gameString += "\nFinal Score: ";
         if(this.hasBeenPlayed()){
             gameString += this.team1Score + "-" + this.team2Score;
