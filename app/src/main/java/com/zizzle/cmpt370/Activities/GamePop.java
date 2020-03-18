@@ -158,7 +158,7 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
                     Game newGame = new Game(currentTeam, opponentInfo, gameDate, gameLocation);
 
                     // add this game to the teams playing
-                    Storage.addGameToTeams(currentTeam,opponentInfo,newGame);
+                    Storage.writeGame(newGame);
                     finish();
                 }
             }

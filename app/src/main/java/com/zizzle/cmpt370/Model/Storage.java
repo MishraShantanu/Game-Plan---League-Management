@@ -106,18 +106,15 @@ public class Storage {
 
     /**
      * Stores the input Game object under the input teams on the database
-     *
-     * @param team1Info: TeamInfo object representing the first team playing in this game
-     * @param team2Info: TeamInfo object representing the second team playing in this game
      * @param game:      Game object denoting game to store
      */
-    public static void addGameToTeams(TeamInfo team1Info, TeamInfo team2Info, Game game) {
-        // TODO check that these input teams are actually playing in this game, check that this game hasn't been played yet etc
-        String gameDatabaseKey = game.getDatabaseKey();
+    public static void writeGame(Game game) {
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
         // add this game to team1
-        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).setValue(game);
         // add this game to team2
-        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).setValue(game);
     }
 
     /**

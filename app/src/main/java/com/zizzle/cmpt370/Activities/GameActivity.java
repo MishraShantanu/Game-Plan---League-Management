@@ -108,7 +108,7 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // only allow the user to change the score fields if the game has started, this prevents users from resolving a game that hasn't been played yet
-        if(currentGame.hasGameStarted()){
+        if(currentGame.hasGameStarted()){ // TODO only display this stuff to members of this team, and if the game hasn't already been played
             currentTeamScoreText.setEnabled(true);
             opponentTeamScoreText.setEnabled(true);
             // display the button to submit score changes
