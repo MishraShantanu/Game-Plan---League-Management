@@ -86,7 +86,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         final ArrayList<Game> pastGames = new ArrayList<>();
 
         // read in the list of games for this team
-        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
         DatabaseReference currentTeamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
         currentTeamReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -155,9 +155,10 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
                 final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
 
-                Intent gameIntent = new Intent(AllGamesActivity.this, GameActivity.class); // TODO take the user to the page for this particular game
-                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
-                gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
+                Intent gameIntent = new Intent(AllGamesActivity.this, GameActivity.class);
+                // pass the current team info and the game clicked to our GameActivity
+                gameIntent.putExtra("GAME_CLICKED",clickedGame);
+                gameIntent.putExtra("TEAM_INFO",currentTeamInfo);
                 startActivity(gameIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

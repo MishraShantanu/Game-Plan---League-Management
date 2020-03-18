@@ -1,14 +1,10 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TreeMap;
 
 
 /**

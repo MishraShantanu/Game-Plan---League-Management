@@ -11,12 +11,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -72,15 +74,35 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // ADD STUFF HERE!!! ==========================================================================
+
+        EditText currentTeamScore = findViewById(R.id.yourScore);
+        EditText opponentTeamScore = findViewById(R.id.opponentScore);
+        TextView currentTeamText = findViewById(R.id.yourTeamNameText);
+        TextView opponentTeamText = findViewById(R.id.opponentTeamNameText);
+        TextView gameDateText = findViewById(R.id.gameDateText);
+        TextView gameTimeText = findViewById(R.id.gameTimeText);
 
 
+        Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
+        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        // set the fields for this page
+        currentTeamText.setText(currentTeamText.getText().toString() + currentTeamInfo.getName());
+        gameDateText.setText(gameDateText.getText().toString() + currentGame.getGameTime().toString());
+        gameTimeText.setText(gameTimeText.getText().toString() + currentGame.getGameTime().toString());
 
-
-
-
-
-
+        // determine if our current team is team1 or 2 of this game
+        if(currentGame.getTeam1Info().equals(currentTeamInfo)){
+            // current team is team1 in this game
+            currentTeamScore.setText(currentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam1Score()));
+            opponentTeamText.setText(opponentTeamText.getText().toString() + currentGame.getTeam2Info().getName());
+            opponentTeamScore.setText(opponentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam2Score()));
+        }
+        else{
+            // current team is team2 in this game
+            currentTeamScore.setText(currentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam2Score()));
+            opponentTeamText.setText(opponentTeamText.getText().toString() + currentGame.getTeam1Info().getName());
+            opponentTeamScore.setText(opponentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam1Score()));
+        }
     }
 
 
