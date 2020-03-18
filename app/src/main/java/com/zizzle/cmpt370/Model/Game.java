@@ -23,8 +23,10 @@ public class Game implements Comparable, Serializable {
     /** name of the location the game is/was held at */
     private String location;
 
+    /** score of team1 in this game */
     private int team1Score;
 
+    /** score of team2 in this game */
     private int team2Score;
 
     /** boolean true if the game has been played, false otherwise */
@@ -176,9 +178,8 @@ public class Game implements Comparable, Serializable {
      * @return unique String database key for this Game object
      */
     public String getDatabaseKey(){
-        // game keys are structured as date(YYYY-MM-DD-hh-mm)-team1Info-team2Info, this ensures that games are sorted by start date on the database
-        String databaseKey = this.getGameTime().getDateWithFormat(GameTime.YYYYMMDD_FORMAT) + "-" + this.getTeam1Info().getDatabaseKey() + this.getTeam2Info().getDatabaseKey();
-        return databaseKey;
+        // simply use the scheduled date and time of this game as a database key, as no team can have 2 games scheduled at the same time
+        return this.getGameTime().toString();
     }
 
     /**
