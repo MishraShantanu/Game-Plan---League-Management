@@ -81,14 +81,16 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         TextView opponentTeamText = findViewById(R.id.opponentTeamNameText);
         TextView gameDateText = findViewById(R.id.gameDateText);
         TextView gameTimeText = findViewById(R.id.gameTimeText);
+        TextView gameLocationText = findViewById(R.id.locationText);
 
 
         Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
         TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
         // set the fields for this page
         currentTeamText.setText(currentTeamText.getText().toString() + currentTeamInfo.getName());
-        gameDateText.setText(gameDateText.getText().toString() + currentGame.getGameTime().toString());
-        gameTimeText.setText(gameTimeText.getText().toString() + currentGame.getGameTime().toString());
+        gameDateText.setText(gameDateText.getText().toString() + currentGame.getGameTime().getDateString());
+        gameTimeText.setText(gameTimeText.getText().toString() + currentGame.getGameTime().getClockTime());
+        gameLocationText.setText(gameLocationText.getText().toString() + currentGame.getLocation());
 
         // determine if our current team is team1 or 2 of this game
         if(currentGame.getTeam1Info().equals(currentTeamInfo)){
