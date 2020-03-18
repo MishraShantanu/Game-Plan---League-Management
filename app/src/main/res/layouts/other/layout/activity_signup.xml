@@ -37,7 +37,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/colorText"
-        android:digits="0,1,2,3,4,5,6,7,8,9,qwertzuiopasdfghjklyxcvbnm,_,-"
+        android:digits="0,1,2,3,4,5,6,7,8,9,qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-, "
         android:ems="10"
         android:hint="Display Name"
         android:inputType="text"
