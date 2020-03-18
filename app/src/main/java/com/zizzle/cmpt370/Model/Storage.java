@@ -120,6 +120,27 @@ public class Storage {
         database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
     }
 
+    /**
+     * Writes the input played game to the database
+     * @param game: Game object that has been played
+     * @throws IllegalArgumentException if the input game hasn't been played
+     */
+    public static void writePlayedGame(Game game) throws IllegalArgumentException{
+        if(!game.hasBeenPlayed()){
+            throw new IllegalArgumentException("game " + game + " hasn't been played");
+        }
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
+        // the input game should already be on the database as a scheduled game for team1 and team2
+        // remove this game as a scheduled game from these teams
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+
+        // add this game as a played game to both team1 and team2
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+    }
+
 
     /**
      * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team

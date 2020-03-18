@@ -35,6 +35,7 @@ import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
@@ -130,7 +131,9 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                         currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
                     }
                     // add this played game to the database
-                    
+                    Storage.writePlayedGame(currentGame);
+
+                    finish();
                 }
             });
         }
