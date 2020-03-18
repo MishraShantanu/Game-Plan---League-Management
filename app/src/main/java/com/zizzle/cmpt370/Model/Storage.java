@@ -1,7 +1,9 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -9,6 +11,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -118,7 +122,8 @@ public class Storage {
     }
 
     /**
-     * Writes the input played game to the database
+     * Writes the input played game to the database, updates the records of the teams playing this game to reflect
+     * a win, loss or tie of this game
      * @param game: Game object that has been played
      * @throws IllegalArgumentException if the input game hasn't been played
      */
@@ -136,6 +141,46 @@ public class Storage {
         // add this game as a played game to both team1 and team2
         database.child("Teams").child(team1Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
         database.child("Teams").child(team2Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+
+        // use a transaction to increment the wins/losses/ties of the teams in this game to avoid race conditions
+        Transaction.Handler incrementHandler = new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    // if the team has no wins/losses/ties recorded, set the teams's wins/losses/ties to 1
+                    mutableData.setValue(1);
+                }
+                else{
+                    // otherwise increment the wins/losses/ties of this team
+                    mutableData.setValue((Integer)mutableData.getValue() + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean committed, @Nullable DataSnapshot dataSnapshot) {
+                if(!committed){
+                    // TODO an error occured
+                }
+            }
+        };
+
+        if(game.getTeam1Score()>game.getTeam2Score()){
+            // team1 has won increment team1's wins and team2's losses
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+        }
+        else if(game.getTeam1Score()<game.getTeam2Score()){
+            // team2 has won, increment team2's wins and team1's losses
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+        }
+        else{
+            // the teams tied, increment the ties for each team
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+        }
     }
 
 
