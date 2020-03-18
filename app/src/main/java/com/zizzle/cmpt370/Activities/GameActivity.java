@@ -75,8 +75,8 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-        EditText currentTeamScore = findViewById(R.id.yourScore);
-        EditText opponentTeamScore = findViewById(R.id.opponentScore);
+        final EditText currentTeamScoreText = findViewById(R.id.yourScore);
+        final EditText opponentTeamScoreText = findViewById(R.id.opponentScore);
         TextView currentTeamText = findViewById(R.id.yourTeamNameText);
         TextView opponentTeamText = findViewById(R.id.opponentTeamNameText);
         TextView gameDateText = findViewById(R.id.gameDateText);
@@ -84,26 +84,55 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         TextView gameLocationText = findViewById(R.id.locationText);
 
 
-        Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
-        TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        final Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
+        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
         // set the fields for this page
-        currentTeamText.setText(currentTeamText.getText().toString() + currentTeamInfo.getName());
-        gameDateText.setText(gameDateText.getText().toString() + currentGame.getGameTime().getDateString());
-        gameTimeText.setText(gameTimeText.getText().toString() + currentGame.getGameTime().getClockTime());
-        gameLocationText.setText(gameLocationText.getText().toString() + currentGame.getLocation());
+        currentTeamText.append(currentTeamInfo.getName());
+        gameDateText.append(currentGame.getGameTime().getDateString());
+        gameTimeText.append(currentGame.getGameTime().getClockTime());
+        gameLocationText.append(currentGame.getLocation());
 
         // determine if our current team is team1 or 2 of this game
         if(currentGame.getTeam1Info().equals(currentTeamInfo)){
             // current team is team1 in this game
-            currentTeamScore.setText(currentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam1Score()));
-            opponentTeamText.setText(opponentTeamText.getText().toString() + currentGame.getTeam2Info().getName());
-            opponentTeamScore.setText(opponentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam2Score()));
+            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+            opponentTeamText.append(currentGame.getTeam2Info().getName());
+            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
         }
         else{
             // current team is team2 in this game
-            currentTeamScore.setText(currentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam2Score()));
-            opponentTeamText.setText(opponentTeamText.getText().toString() + currentGame.getTeam1Info().getName());
-            opponentTeamScore.setText(opponentTeamScore.getText().toString() + String.valueOf(currentGame.getTeam1Score()));
+            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+            opponentTeamText.append(currentGame.getTeam1Info().getName());
+            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+        }
+
+        // only allow the user to change the score fields if the game has started, this prevents users from resolving a game that hasn't been played yet
+        if(currentGame.hasGameStarted()){
+            currentTeamScoreText.setEnabled(true);
+            opponentTeamScoreText.setEnabled(true);
+            // display the button to submit score changes
+            Button submitButton = findViewById(R.id.submitScore);
+            submitButton.setVisibility(View.VISIBLE);
+            submitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO possibly display some popup asking the user to confirm the final scores for this game
+                    // get the input scores for this game
+                    int currentTeamScore = Integer.valueOf(currentTeamScoreText.getText().toString());
+                    int opponentTeamScore = Integer.valueOf(opponentTeamScoreText.getText().toString());
+                    // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
+                    if(currentTeamInfo.equals(currentGame.getTeam1Info())){
+                        // current team is team1
+                        currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+                    }
+                    else{
+                        // current team is team2
+                        currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
+                    }
+                    // add this played game to the database
+                    
+                }
+            });
         }
     }
 
