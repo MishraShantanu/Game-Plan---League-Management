@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -116,8 +117,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // set title to that of the clicked on league
             getSupportActionBar().setTitle(selectedLeague);
 
-
-            DatabaseReference leagueOwnerReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
             // Remove league button
             final Button removeLeagueButton = findViewById(R.id.delete_league_button);
             removeLeagueButton.setOnClickListener(new View.OnClickListener() {
@@ -142,9 +141,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 }
             });
 
-
-
-            leagueOwnerReference.addValueEventListener(new ValueEventListener() {
+            DatabaseReference selectedLeagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
+            selectedLeagueReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // set the league description.
@@ -152,7 +150,24 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                     MemberInfo ownerInfo = currentLeague.getOwnerInfo();
                     MemberInfo currentUserInfo = getCurrentUserInfo();
 
+                    // set the league description
+                    TextView leagueDescription = findViewById(R.id.league_description);
+                    leagueDescription.setText(currentLeague.getDescription());
 
+                    // get the teams of this league
+                    teams.clear();
+                    teams.addAll(currentLeague.getSortedTeamInfos());
+                    // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
+
+
+                    // display the no team text if not apart of any teams.
+                    if (!teams.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_teams_text);
+                        noTeamText.setVisibility(View.GONE);
+                    }
+                    teamArrayAdapter.notifyDataSetChanged();
+
+                    // only display the remove league button to the owner of the league
                     if (currentUserInfo.equals(ownerInfo)) {
                         removeLeagueButton.setVisibility(View.VISIBLE);
                     }else  removeLeagueButton.setVisibility(View.INVISIBLE);
@@ -160,68 +175,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
-            });
-
-
-            // set the league description
-            // read the reference for league description.
-            final TextView leagueDescription = findViewById(R.id.league_description);
-            DatabaseReference descriptionReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("description");
-            descriptionReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // set the league description.
-                    leagueDescription.setText(dataSnapshot.getValue(String.class));
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
-            });
-
-
-            // read the selectedLeague in from the database
-            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
-            // this will read from the database once and whenever the selected league is updated
-            leagueReference.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // called when a new team is added to this league, we want to add this new team to the front of the list of teams
-                    teams.add(0, dataSnapshot.getValue(TeamInfo.class));
-                    teamArrayAdapter.notifyDataSetChanged();
-
-                    // display the no team text if not apart of any teams.
-                    if (!teams.isEmpty()) {
-                        TextView noTeamText = findViewById(R.id.no_teams_text);
-                        noTeamText.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // do nothing, may want to update teams displayed if the name of a team is changed
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    // remove the deleted team from our list
-                    teams.remove(dataSnapshot.getValue(TeamInfo.class));
-                    teamArrayAdapter.notifyDataSetChanged();
-
-                    // display the no team text if not apart of any teams.
-                    if (teams.isEmpty()) {
-                        TextView noTeamText = findViewById(R.id.no_teams_text);
-                        noTeamText.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // database operation failed
-                    Toast.makeText(TeamsActivity.this, "Cannot access database, please try again later", Toast.LENGTH_SHORT).show();
-                }
             });
         }
 
