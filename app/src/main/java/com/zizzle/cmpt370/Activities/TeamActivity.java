@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
@@ -132,7 +133,20 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     losses.setText(String.valueOf(currentTeam.getLosses()));
 
                     if(currentTeam.hasGamesScheduled()){
-                        nextGameText.setText(currentTeam.getClosestScheduledGame().toString());
+                        final Game closestGame = currentTeam.getClosestScheduledGame();
+                        nextGameText.setText(closestGame.toString());
+                        // take the user to the page for this game if they clicked this next game text
+                        nextGameText.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent gameIntent = new Intent(TeamActivity.this, GameActivity.class);
+                                // pass the current team info and the game clicked to our GameActivity
+                                gameIntent.putExtra("GAME_CLICKED",closestGame);
+                                gameIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                                startActivity(gameIntent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
+                        });
                     }
                     // otherwise this TextView has the string "No Upcoming Games as a default value"
 

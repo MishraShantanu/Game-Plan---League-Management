@@ -32,13 +32,7 @@ public final class CurrentUserInfo {
             }
             else{
                 // user is signed on, use the information stored by firebase to create an info object
-
-                Log.d("displayNameisnull",Boolean.toString(fbUser.getDisplayName()==null));
-                Log.d("userIdisnull",Boolean.toString(fbUser.getUid()==null));
                 currentUserInfo = new MemberInfo(fbUser.getDisplayName(),fbUser.getUid());
-                Log.d("currentUserisnull",Boolean.toString(currentUserInfo==null));
-                Log.d("currentUsernameisnull",Boolean.toString(currentUserInfo.getName()==null));
-                Log.d("currentUseridisnull",Boolean.toString(currentUserInfo.getDatabaseKey()==null));
             }
         }
         // currentUser now stores info about the current user of the app
