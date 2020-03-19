@@ -107,12 +107,14 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
             opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
         }
 
-        // only allow the user to change the score fields if the game has started, this prevents users from resolving a game that hasn't been played yet
-        if(currentGame.hasGameStarted()){ // TODO only display this stuff to members of this team, and if the game hasn't already been played
+        Button submitButton = findViewById(R.id.submitScore);
+
+        // only allow the user to change the score fields if the game has started and hasn't already been played
+        // this restricts a user so they can only set the scores for a game once after the game has started
+        if(currentGame.hasGameStarted() && !currentGame.isPlayed()){
             currentTeamScoreText.setEnabled(true);
             opponentTeamScoreText.setEnabled(true);
             // display the button to submit score changes
-            Button submitButton = findViewById(R.id.submitScore);
             submitButton.setVisibility(View.VISIBLE);
             submitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,6 +138,13 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                     finish();
                 }
             });
+        }
+        else{
+            // prevent the user from changing the score fields and seeing the submit button
+            currentTeamScoreText.setEnabled(false);
+            opponentTeamScoreText.setEnabled(false);
+            // display the button to submit score changes
+            submitButton.setVisibility(View.GONE);
         }
     }
 

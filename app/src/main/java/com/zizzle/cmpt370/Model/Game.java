@@ -108,7 +108,7 @@ public class Game implements Comparable, Serializable {
      * Checks if the game has been played, a game is played when the setGameAsPlayed() method is used
      * @return true if the game has been played, false otherwise
      */
-    public boolean hasBeenPlayed(){
+    public boolean isPlayed(){
         return this.played;
     }
 
@@ -160,7 +160,7 @@ public class Game implements Comparable, Serializable {
      */
     public void rescheduleGame(GameTime newTime) throws IllegalStateException{
         // can't reschedule game if it's already started or been played
-        if(this.hasBeenPlayed() || this.hasGameStarted()){
+        if(this.isPlayed() || this.hasGameStarted()){
             throw new IllegalStateException("Game: game cannot be rescheduled if it has already started or been played");
         }
         // cannot reschedule a game for a time not in the future
@@ -192,7 +192,7 @@ public class Game implements Comparable, Serializable {
         String gameString = this.team1Info + " vs " + this.team2Info;
         gameString += "\n@" + this.gameTime.toString();
         gameString += "\nFinal Score: ";
-        if(this.hasBeenPlayed()){
+        if(this.isPlayed()){
             gameString += this.team1Score + "-" + this.team2Score;
         }
         else{

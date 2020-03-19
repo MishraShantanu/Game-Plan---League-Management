@@ -141,9 +141,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         ListView pastGameList = findViewById(R.id.past_scores_list);
         pastGameList.setAdapter(pastGameArrayAdapter);
 
-
-        // clicking on a scheduled game in the ListView is handled in here.
-        nextGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // clicking on a scheduled game in the ListView is handled with this listener
+        AdapterView.OnItemClickListener gameClickListener = new AdapterView.OnItemClickListener() {
 
             /**
              * performs an action when a ListView item is clicked.
@@ -162,28 +161,10 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 startActivity(gameIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-        });
+        };
 
-        // clicking on a previously played game in the listview is handled here
-        pastGameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            /**
-             * performs an action when a ListView item is clicked.
-             *
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
-
-                Intent gameIntent = new Intent(AllGamesActivity.this, TeamsActivity.class); // TODO take the user to the page for this particular game
-                // pass the name of the league clicked on to this intent, so it can be accessed from the TeamsActivity
-                gameIntent.putExtra("GAME_CLICKED",clickedGame); // TODO try to pass the game itself, if this fails, we can pass the database key of the clicked game
-                startActivity(gameIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
+        nextGameList.setOnItemClickListener(gameClickListener);
+        pastGameList.setOnItemClickListener(gameClickListener);
 
         // add game button =======================================================================
         final FloatingActionButton addGame = findViewById(R.id.add_game_button);

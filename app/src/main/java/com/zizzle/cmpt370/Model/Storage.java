@@ -128,7 +128,7 @@ public class Storage {
      * @throws IllegalArgumentException if the input game hasn't been played
      */
     public static void writePlayedGame(Game game) throws IllegalArgumentException{
-        if(!game.hasBeenPlayed()){
+        if(!game.isPlayed()){
             throw new IllegalArgumentException("game " + game + " hasn't been played");
         }
         TeamInfo team1Info = game.getTeam1Info();
