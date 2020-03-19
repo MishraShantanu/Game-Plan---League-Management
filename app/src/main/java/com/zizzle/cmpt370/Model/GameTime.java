@@ -18,12 +18,6 @@ public class GameTime implements Comparable, Serializable {
     /** Epoch time in milliseconds represented by this GameTime */
     private Long timeInMilliseconds;
 
-    /** format used to display the time of this game in the form hour-minute-day-month-year */
-    public static String DDMMYYYY_FORMAT = "HH:mm-dd-MM-yyyy";
-
-    /** format used to display the time of this game in the form yyyy-mm-dd-hh-mm */
-    public static String YYYYMMDD_FORMAT = "yyyy-MM-dd-HH:mm";
-
     /**
      * GameTime constructor
      * @param year: int, the year the game will take place e.g. 2020
@@ -151,30 +145,112 @@ public class GameTime implements Comparable, Serializable {
             // other isn't a gameTime
             return false;
         }
-
     }
 
     /**
-     * Returns a String representation of the GameTime, this returns a time formatted as DD-MM-YYYY-hh-mm
+     * Returns the clock time represented by this GameTime, ie hour:minutes
+     * @return String described above
+     */
+    public String getClockTime(){
+        recreateCalendar();
+        int hour = this.calendar.get(Calendar.HOUR_OF_DAY);
+        // convert our hour from 0-23 to an hour 1-12 with an am/pm
+        boolean isAM = false;
+        if(hour<12){
+            // hour is before 12 pm, represents time in the am
+            isAM = true;
+        }
+        else{
+            // convert our hours above 12 down to
+            hour -= 12;
+        }
+
+        if(hour == 0){
+            // 0 now represents the hour 12, either am or pm
+            hour = 12;
+        }
+
+        String hourString = String.valueOf(hour);
+
+        int minute = this.calendar.get(Calendar.MINUTE);
+        String minuteString = "";
+        // if our minute value is less than 10, add a leading 0, this gives us 12:07 instead of 12:7
+        if(minute<10){
+            minuteString = "0";
+        }
+        minuteString += String.valueOf(minute);
+
+        // add the am/pm after the minutes
+        if(isAM){
+            minuteString+="am";
+        }
+        else{
+            minuteString+="pm";
+        }
+        return hourString + ":" + minuteString;
+    }
+
+    /**
+     * Returns the date represented by this GameTime in the format month-day-year
+     * @return String described above
+     */
+    public String getDateString(){
+        recreateCalendar();
+        // months in calendars are normally from 0-11, convert these to 1-12
+        int month = this.calendar.get(Calendar.MONTH)+1;
+        String monthString = "";
+        switch(month){
+            case 1:
+                monthString = "January";
+                break;
+            case 2:
+                monthString = "February";
+                break;
+            case 3:
+                monthString = "March";
+                break;
+            case 4:
+                monthString = "April";
+                break;
+            case 5:
+                monthString = "May";
+                break;
+            case 6:
+                monthString = "June";
+                break;
+            case 7:
+                monthString = "July";
+                break;
+            case 8:
+                monthString = "August";
+                break;
+            case 9:
+                monthString = "September";
+                break;
+            case 10:
+                monthString = "October";
+                break;
+            case 11:
+                monthString = "November";
+                break;
+            case 12:
+                monthString = "December";
+                break;
+        }
+        String dayString = String.valueOf(this.calendar.get(Calendar.DATE));
+        String yearString = String.valueOf(this.calendar.get(Calendar.YEAR));
+        return monthString + "-" + dayString + "-" + yearString;
+    }
+
+    /**
+     * Returns a String representation of the GameTime, this returns a time formatted as month-day-year-hour:minute
      * @return String as described above
      */
     @Override
     @NonNull
     public String toString(){
         recreateCalendar();
-        // use the standard day/month/year format
-        return this.getDateWithFormat(DDMMYYYY_FORMAT);
-    }
-
-    public String getDateWithFormat(String format){
-        recreateCalendar();
-        // make sure that the format is part of the valid recognized formats
-        if(!format.equals(DDMMYYYY_FORMAT) && !format.equals(YYYYMMDD_FORMAT)){
-            throw new IllegalArgumentException(format + " is an invalid format");
-        }
-        // convert our Calendar object to a Date object, display using the input format under the local timezone
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
-        return dateFormat.format(this.calendar.getTime());
+        return this.getDateString() + "-" + this.getClockTime();
     }
 
 

@@ -18,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
@@ -90,9 +91,12 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 // add the newly created Member to the database
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                                Member member;
-                                member = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), fbUser.getUid());
-                                Storage.writeMember(member);
+                                String newMemberID = fbUser.getUid();
+                                Member newMember = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), newMemberID);
+                                Storage.writeMember(newMember);
+
+                                // initialize our information about the current user
+                                CurrentUserInfo.initializeMemberInfo(newMemberID,displayName.getText().toString());
                                 // add the user's display name to firebase authentication
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayName.getText().toString()).build();
                                 fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {

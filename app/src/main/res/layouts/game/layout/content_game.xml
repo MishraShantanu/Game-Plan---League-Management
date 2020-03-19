@@ -44,6 +44,7 @@
             android:ems="10"
             android:hint="0"
             android:inputType="number"
+            android:enabled="false"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint" />
@@ -67,6 +68,7 @@
             android:ems="10"
             android:hint="0"
             android:inputType="number"
+            android:enabled="false"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint" />
@@ -79,6 +81,7 @@
             android:layout_marginTop="30dp"
             android:background="@color/submitColor"
             android:text="Submit"
+            android:visibility="gone"
             android:textColor="@color/colorText" />
 
         <TextView
@@ -105,6 +108,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="Opponent Team: "
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Location: "
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textSize="22sp" />

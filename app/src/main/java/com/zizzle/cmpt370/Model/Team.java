@@ -4,11 +4,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TreeMap;
 
 
 /**
@@ -302,8 +300,10 @@ public class Team {
         Collection<Game> games = this.scheduledGames.values();
         Iterator gameIterator = games.iterator();
         Game minGame = (Game)gameIterator.next();
+        Log.d("minGame",minGame.toString()); // TODO code works with these logs, removing these crashes the app, why???
         while(gameIterator.hasNext()){
             Game currentGame = (Game)gameIterator.next();
+            Log.d("currentGame",currentGame.toString());
             if(currentGame.compareTo(minGame)<0){
                 minGame = currentGame;
             }

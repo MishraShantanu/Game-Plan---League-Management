@@ -1,7 +1,9 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -9,6 +11,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -106,18 +110,77 @@ public class Storage {
 
     /**
      * Stores the input Game object under the input teams on the database
-     *
-     * @param team1Info: TeamInfo object representing the first team playing in this game
-     * @param team2Info: TeamInfo object representing the second team playing in this game
      * @param game:      Game object denoting game to store
      */
-    public static void addGameToTeams(TeamInfo team1Info, TeamInfo team2Info, Game game) {
-        // TODO check that these input teams are actually playing in this game, check that this game hasn't been played yet etc
-        String gameDatabaseKey = game.getDatabaseKey();
+    public static void writeGame(Game game) {
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
         // add this game to team1
-        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).setValue(game);
         // add this game to team2
-        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).setValue(game);
+    }
+
+    /**
+     * Writes the input played game to the database, updates the records of the teams playing this game to reflect
+     * a win, loss or tie of this game
+     * @param game: Game object that has been played
+     * @throws IllegalArgumentException if the input game hasn't been played
+     */
+    public static void writePlayedGame(Game game) throws IllegalArgumentException{
+        if(!game.isPlayed()){
+            throw new IllegalArgumentException("game " + game + " hasn't been played");
+        }
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
+        // the input game should already be on the database as a scheduled game for team1 and team2
+        // remove this game as a scheduled game from these teams
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+
+        // add this game as a played game to both team1 and team2
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+
+        // use a transaction to increment the wins/losses/ties of the teams in this game to avoid race conditions
+        Transaction.Handler incrementHandler = new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    // if the team has no wins/losses/ties recorded, set the teams's wins/losses/ties to 1
+                    mutableData.setValue(1);
+                }
+                else{
+                    // otherwise increment the wins/losses/ties of this team
+                    mutableData.setValue((Long)mutableData.getValue() + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean committed, @Nullable DataSnapshot dataSnapshot) {
+                if(!committed){
+                    // TODO an error occured
+                }
+            }
+        };
+
+        if(game.getTeam1Score()>game.getTeam2Score()){
+            // team1 has won increment team1's wins and team2's losses
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+        }
+        else if(game.getTeam1Score()<game.getTeam2Score()){
+            // team2 has won, increment team2's wins and team1's losses
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+        }
+        else{
+            // the teams tied, increment the ties for each team
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+        }
     }
 
 

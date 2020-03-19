@@ -154,12 +154,58 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
                     int month = Integer.valueOf(monthString);
                     int year = Integer.valueOf(yearString);
 
-                    GameTime gameDate = new GameTime(year,month,day,hour,minutes);
-                    Game newGame = new Game(currentTeam, opponentInfo, gameDate, gameLocation);
+                    try{
+                        // illegal argument exception is thrown if we try to create a GameTime with a time in the past
+                        GameTime gameDate = new GameTime(year,month,day,hour,minutes);
+                        final Game newGame = new Game(currentTeam, opponentInfo, gameDate, gameLocation);
 
-                    // add this game to the teams playing
-                    Storage.addGameToTeams(currentTeam,opponentInfo,newGame);
-                    finish();
+                        // determine if the newly created game can be scheduled at this time or if these 2 teams have another game
+                        // scheduled at this time
+                        DatabaseReference currentTeamGameReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeam.getDatabaseKey()).child("scheduledGames").child(newGame.getDatabaseKey());
+                        final DatabaseReference opponentTeamGameReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(opponentInfo.getDatabaseKey()).child("scheduledGames").child(newGame.getDatabaseKey());
+                        currentTeamGameReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    // there is already a game scheduled for the current team at this selected time, we cannot schedule this new game
+                                    Game conflictingGame = dataSnapshot.getValue(Game.class);
+                                    Toast.makeText(GamePop.this,"Cannot create this new game, your team already has the game: " + conflictingGame.toString() + " scheduled at this time",Toast.LENGTH_LONG).show();
+                                }
+                                else{
+                                    // determine if the opposing team has any games scheduled in this timeslot
+                                    opponentTeamGameReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if(dataSnapshot.exists()){
+                                                // opposing team has a conflicting game at this new game's time
+                                                Game conflictingGame = dataSnapshot.getValue(Game.class);
+                                                Toast.makeText(GamePop.this,"Cannot create this new game, opposing team already has the game: " + conflictingGame.toString() + " scheduled at this time",Toast.LENGTH_LONG).show();
+                                            }
+                                            else{
+                                                // the specified game can be scheduled without conflicts, add this new game to the database
+                                                Storage.writeGame(newGame);
+                                                finish();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }catch(IllegalArgumentException e){
+                        // this exception is thrown from trying to create a GameTime object that represents a time in the past
+                        Toast.makeText(GamePop.this,"Cannot create a game with this date in the past", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
