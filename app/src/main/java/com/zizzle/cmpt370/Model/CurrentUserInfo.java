@@ -32,7 +32,13 @@ public final class CurrentUserInfo {
             }
             else{
                 // user is signed on, use the information stored by firebase to create an info object
+
+                Log.d("displayNameisnull",Boolean.toString(fbUser.getDisplayName()==null));
+                Log.d("userIdisnull",Boolean.toString(fbUser.getUid()==null));
                 currentUserInfo = new MemberInfo(fbUser.getDisplayName(),fbUser.getUid());
+                Log.d("currentUserisnull",Boolean.toString(currentUserInfo==null));
+                Log.d("currentUsernameisnull",Boolean.toString(currentUserInfo.getName()==null));
+                Log.d("currentUseridisnull",Boolean.toString(currentUserInfo.getDatabaseKey()==null));
             }
         }
         // currentUser now stores info about the current user of the app
@@ -46,6 +52,21 @@ public final class CurrentUserInfo {
     public static void refreshMemberInfo(){
         // set the current user of the app to null so we have to reset the MemberInfo to reflect a new user
         currentUserInfo = null;
+    }
+
+
+    /**
+     * Initializes the current user's info with the information provided
+     * @param userID: String userID of the current user
+     * @param displayName: String username of the current user
+     * @throws IllegalStateException: if information for the current user is already stored
+     */
+    public static void initializeMemberInfo(String userID, String displayName) throws IllegalStateException{
+        // enforce that we can only set the current user info if not already set
+        if(currentUserInfo != null){
+            throw new IllegalStateException("Cannot initialize current user info, current user info is already set");
+        }
+        currentUserInfo = new MemberInfo(displayName,userID);
     }
 
 
