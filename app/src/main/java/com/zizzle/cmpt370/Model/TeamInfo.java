@@ -103,7 +103,7 @@ public class TeamInfo implements InfoInterface, Serializable, Comparable {
     }
 
     /**
-     * Compares this to the input Object other
+     * Compares this to the input Object other, if a TeamInfo has more wins, its considered to be lesser than a TeamInfo with less wins
      * @param other: Object to be compared to this, must be a TeamInfo object
      * @return < 0 if this<other, > 0 if this>other, 0 if this==other
      */
@@ -115,10 +115,10 @@ public class TeamInfo implements InfoInterface, Serializable, Comparable {
         TeamInfo otherTeamInfo = (TeamInfo) other;
         // TeamInfos are compared based on the number of wins, a TeamInfo with more wins is considered greater
         if(this.wins>otherTeamInfo.getWins()){
-            return 1; // > 0, as this is greater than otherTeamInfo
+            return -1; // < 0, as this is greater than otherTeamInfo
         }
         else if(this.wins<otherTeamInfo.getWins()){
-            return -1; // < 0, as this is lesser than otherTeamInfo
+            return 1; // > 0, as this is lesser than otherTeamInfo
         }
         else{
             // both TeamInfos are equal

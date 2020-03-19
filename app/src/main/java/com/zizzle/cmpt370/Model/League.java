@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -107,6 +108,9 @@ public class League implements Serializable {
         // otherwise create an arraylist from the values of our hashmap
         ArrayList<TeamInfo> teamInfos = new ArrayList<>(this.teamsInfoMap.values());
         Collections.sort(teamInfos);
+        for(TeamInfo ti : teamInfos){
+            Log.d("ti",ti.toString());
+        }
         return teamInfos;
     }
 
