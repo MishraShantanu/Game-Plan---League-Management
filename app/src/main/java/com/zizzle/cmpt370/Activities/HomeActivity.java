@@ -74,40 +74,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
-
-        // Upcoming game =========================================================================
-
-        // Heading stuff
-        TextView nextText = findViewById(R.id.upcoming_text);
-        View nextDivider = findViewById(R.id.upcoming_div);
-
-        // Card with next game information
-        TextView nextGame = findViewById(R.id.next_game_home);
-
-        // Sad text.
-        TextView nextSadText = findViewById(R.id.next_game_sad_text_home);
-
-        // Game to display.
-        String nextGameString;
-
-
-        // TODO - Determine if the user has an upcoming game, and which one.
-        nextGameString = "Polaroids vs TacoRaco\nJan 15, 2pm\n404 - 310";
-
-        // Heading gets shown always.
-        nextText.setVisibility(View.VISIBLE);
-        nextDivider.setVisibility(View.VISIBLE);
-
-        // User has an upcoming game.
-        if (/* User has an upcoming game */ true) {
-            nextGame.setText(nextGameString);
-            nextGame.setVisibility(View.VISIBLE);
-        }
-        // User does not have any scheduled games.
-        else nextSadText.setVisibility(View.VISIBLE);
-
-
-
             // list of teams =========================================================================
         // Initialize arrays
         teamsInfo = new ArrayList<>();

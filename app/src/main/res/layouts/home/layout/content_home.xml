@@ -16,61 +16,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <!--    Upcoming games    -->
-        <TextView
-            android:id="@+id/upcoming_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:paddingHorizontal="22dp"
-            android:paddingTop="16dp"
-            android:text="Next Game"
-            android:textAlignment="textStart"
-            android:textColor="@color/colorText"
-            android:textSize="26sp"
-            android:visibility="gone" />
-
-        <!--    divider    -->
-        <View
-            android:id="@+id/upcoming_div"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="15dp"
-            android:background="@color/colorText"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/next_game_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_card"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:padding="22dp"
-            android:paddingTop="16dp"
-            android:text=""
-            android:textAlignment="center"
-            android:textColor="@color/colorText"
-            android:textSize="22sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/next_game_sad_text_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:padding="24dp"
-            android:paddingTop="16dp"
-            android:text="No upcoming games"
-            android:textAlignment="center"
-            android:textColor="@color/colorText"
-            android:textSize="22sp"
-            android:visibility="gone" />
-
         <!--    My Teams    -->
         <TextView
             android:id="@+id/my_teams_text"

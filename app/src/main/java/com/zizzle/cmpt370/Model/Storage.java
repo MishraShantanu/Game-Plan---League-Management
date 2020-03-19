@@ -153,7 +153,7 @@ public class Storage {
                 }
                 else{
                     // otherwise increment the wins/losses/ties of this team
-                    mutableData.setValue((Integer)mutableData.getValue() + 1);
+                    mutableData.setValue((Long)mutableData.getValue() + 1);
                 }
                 return Transaction.success(mutableData);
             }
