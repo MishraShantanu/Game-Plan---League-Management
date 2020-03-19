@@ -25,22 +25,25 @@ public class TeamInfo implements InfoInterface, Serializable, Comparable {
      * @param team: team to store information for
      */
     public TeamInfo(Team team){
-        name = team.getName();
+        this.name = team.getName();
         String leagueName = team.getLeagueInfo().getName();
         // team names must be unique per league, so we use leagueName-teamName as our database key
-        databaseKey = leagueName + "-" + name;
+        this.databaseKey = leagueName + "-" + name;
         this.leagueName = leagueName;
+        this.wins = team.getWins();
     }
 
     /**
      * Creates a TeamInfo object that stores information about the input team
      * @param teamName: name of the team being represented
      * @param leagueName: name of the league this team is a part of
+     * @param wins: int wins this team has
      */
-    public TeamInfo(String teamName, String leagueName){
+    public TeamInfo(String teamName, String leagueName, int wins){
         this.name = teamName;
         this.databaseKey = leagueName + "-" + teamName;
         this.leagueName = leagueName;
+        this.wins = wins;
     }
 
     /**
