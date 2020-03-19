@@ -52,6 +52,15 @@ public class League implements Serializable {
 
     }
 
+    /**
+     * Returns a HashMap<String,TeamInfo> with string names of teams and TeamInfo values of teams in this league
+     * @return HashMap<String,TeamInfo> described above
+     */
+    public HashMap<String,TeamInfo>getTeamsInfoMap(){
+        // this method is only used to allow firebase to recognize and store our instance variable teamsInfoMap
+        return this.teamsInfoMap;
+    }
+
 
     /**
      * Retrieves the name of the league.
