@@ -70,7 +70,7 @@ public class TeamsPop extends Activity {
                         // get the current league name
                         final String currentLeagueName = extras.getString("CURRENT_LEAGUE_NAME");
                         final LeagueInfo parentLeagueInfo = new LeagueInfo(currentLeagueName);
-                        int initialWins = 0;
+                        int initialWins = 0; // new team initially has no wins
                         final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam,currentLeagueName,initialWins);
                         // check if the input team name is unique for this league
                         DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName());

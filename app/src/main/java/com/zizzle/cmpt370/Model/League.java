@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 
@@ -92,17 +94,20 @@ public class League implements Serializable {
 
 
     /**
-     * Retrieves a list of TeamInfo objects for the teams of the league
-     * @return list of TeamInfo for the teams in the league.
+     * Retrieves a sorted ArrayList of TeamInfo objects for the teams of the league, this list is sorted
+     * by wins of each team so TeamInfos with more wins will appear first in the list
+     * @return sorted ArrayList of TeamInfo for the teams in the league.
      */
-    public ArrayList<TeamInfo> getTeamInfos() {
+    public ArrayList<TeamInfo> getSortedTeamInfos() {
         // this.teamsInfoMap may be null if we've don't yet have any teams and have read this league from the database
         if(this.teamsInfoMap == null){
             // if this is the case, simply return an empty arraylist
-            return new ArrayList<>();
+            return new ArrayList<TeamInfo>();
         }
         // otherwise create an arraylist from the values of our hashmap
-        return new ArrayList<>(this.teamsInfoMap.values());
+        ArrayList<TeamInfo> teamInfos = new ArrayList<>(this.teamsInfoMap.values());
+        Collections.sort(teamInfos);
+        return teamInfos;
     }
 
 
@@ -202,7 +207,7 @@ public class League implements Serializable {
         if(other instanceof League){
             // compare league fields, equal leagues have same: name, sport, description, teams, and owner
             League otherLeague = (League) other;
-            boolean teamsEqual = this.getTeamInfos().equals(otherLeague.getTeamInfos());
+            boolean teamsEqual = this.getSortedTeamInfos().equals(otherLeague.getSortedTeamInfos());
             boolean ownerEqual = this.ownerInfo.equals(otherLeague.getOwnerInfo());
             return teamsEqual && ownerEqual && this.description.equals(otherLeague.description) && this.name.equals(otherLeague.name) && this.sport.equals(otherLeague.sport);
         }

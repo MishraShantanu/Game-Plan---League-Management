@@ -166,15 +166,20 @@ public class Storage {
             }
         };
 
+        LeagueInfo currentLeagueInfo = new LeagueInfo(game.getTeam1Info().getLeagueName());
         if(game.getTeam1Score()>game.getTeam2Score()){
             // team1 has won increment team1's wins and team2's losses
             database.child("Teams").child(team1Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
             database.child("Teams").child(team2Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+            // also update the TeamInfo objects stored for this league to reflect the new win by team1
+            database.child("Leagues").child(currentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(team1Info.getName()).child("wins").runTransaction(incrementHandler);
         }
         else if(game.getTeam1Score()<game.getTeam2Score()){
             // team2 has won, increment team2's wins and team1's losses
             database.child("Teams").child(team1Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
             database.child("Teams").child(team2Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+            // also update the TeamInfo objects stored for this league to reflect the new win by team2
+            database.child("Leagues").child(currentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(team2Info.getName()).child("wins").runTransaction(incrementHandler);
         }
         else{
             // the teams tied, increment the ties for each team

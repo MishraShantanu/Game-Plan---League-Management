@@ -155,7 +155,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
                     // get the teams of this league
                     teams.clear();
-                    teams.addAll(currentLeague.getTeamInfos());
+                    teams.addAll(currentLeague.getSortedTeamInfos());
+                    // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
+
 
                     // display the no team text if not apart of any teams.
                     if (!teams.isEmpty()) {
