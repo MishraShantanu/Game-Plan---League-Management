@@ -189,9 +189,9 @@ public class Game implements Comparable, Serializable {
     @Override
     @NonNull
     public String toString(){
-        String gameString = this.team1Info + " vs " + this.team2Info;
-        gameString += "\n@" + this.gameTime.toString();
-        gameString += "\nFinal Score: ";
+        String gameString = this.team1Info + " vs " + this.team2Info + "\n";
+        gameString += this.gameTime.toString() + "\n";
+        gameString += "Final Score: ";
         if(this.isPlayed()){
             gameString += this.team1Score + "-" + this.team2Score;
         }

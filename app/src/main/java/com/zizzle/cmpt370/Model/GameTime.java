@@ -182,10 +182,10 @@ public class GameTime implements Comparable, Serializable {
 
         // add the am/pm after the minutes
         if(isAM){
-            minuteString+="am";
+            minuteString+=" am";
         }
         else{
-            minuteString+="pm";
+            minuteString+=" pm";
         }
         return hourString + ":" + minuteString;
     }
@@ -239,7 +239,7 @@ public class GameTime implements Comparable, Serializable {
         }
         String dayString = String.valueOf(this.calendar.get(Calendar.DATE));
         String yearString = String.valueOf(this.calendar.get(Calendar.YEAR));
-        return monthString + "-" + dayString + "-" + yearString;
+        return monthString + " " + dayString + ", " + yearString;
     }
 
     /**
@@ -250,7 +250,7 @@ public class GameTime implements Comparable, Serializable {
     @NonNull
     public String toString(){
         recreateCalendar();
-        return this.getDateString() + "-" + this.getClockTime();
+        return this.getDateString() + " " + this.getClockTime();
     }
 
 
