@@ -148,15 +148,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     TextView nextGameText = findViewById(R.id.next_games_text);
 
 
-                    //Why is this written again??????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-                    wins.setText(String.valueOf(currentTeam.getWins())); ////////////////////////////////////////////////////////////////////////////////////////
-                    losses.setText(String.valueOf(currentTeam.getLosses()));
-
                     // Graph to Show the Wins/Ties/Losses ==========================================================================
 
                     barChart = (BarChart) findViewById(R.id.barGraph);
 
-                    if (numWins==0 && numTies==0 && numLosses==0) { //don't display graph if team hasn't played any games yet
+                    if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if team hasn't played any games yet
                         barChart.setVisibility(View.GONE);
                     }
 
@@ -194,34 +190,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     barChart.getXAxis().setGranularityEnabled(true); //removes duplicate first X Axis value
                     barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); //Position X Axis at the bottom
 
+                    // ==========================================================================
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    if(currentTeam.hasGamesScheduled()){
+                    if (currentTeam.hasGamesScheduled()) {
                         final Game closestGame = currentTeam.getClosestScheduledGame();
                         nextGameText.setText(closestGame.toString());
                         // take the user to the page for this game if they clicked this next game text
@@ -230,15 +202,14 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                             public void onClick(View v) {
                                 Intent gameIntent = new Intent(TeamActivity.this, GameActivity.class);
                                 // pass the current team info and the game clicked to our GameActivity
-                                gameIntent.putExtra("GAME_CLICKED",closestGame);
-                                gameIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                                gameIntent.putExtra("GAME_CLICKED", closestGame);
+                                gameIntent.putExtra("TEAM_INFO", currentTeamInfo);
                                 startActivity(gameIntent);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
                         });
                     }
                     // otherwise this TextView has the string "No Upcoming Games as a default value"
-
 
 
                     // set the text of the owner button to the owner's name, add 2 spaces to center the name
@@ -266,7 +237,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     // Remove team button ===================================
                     removeTeam = findViewById(R.id.delete_team_button);
                     // only display this button if the current user is the owner of the team
-                    if(!ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())){
+                    if (!ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())) {
                         removeTeam.setVisibility(View.GONE);
                     }
 
@@ -279,7 +250,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                             //System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                             //Check if the current user is same as the Owner of the Team else do not delete the team
-                            if(currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0){
+                            if (currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0) {
                                 Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
 
                                 Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
@@ -287,7 +258,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                                 startActivity(toHome);
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                 Storage.removeTeam(currentTeamInfo);
-                            }else  Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
 
 
                         }

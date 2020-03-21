@@ -90,9 +90,9 @@
 
         <!--    Bar Graph    -->
         <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barGraph"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/barGraph">
+            android:layout_height="200dp">
         </com.github.mikephil.charting.charts.BarChart>
 
 
@@ -120,8 +120,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/round_card"
             android:padding="22dp"
-            android:textAlignment="center"
             android:text="No Upcoming Games"
+            android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 
