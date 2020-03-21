@@ -39,6 +39,7 @@ import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
+import com.zizzle.cmpt370.TeamsArrayAdapter;
 
 import java.security.acl.Owner;
 import java.util.ArrayList;
@@ -53,9 +54,14 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     ArrayList<TeamInfo> teams;
 
     /**
+     * Values inside ListView.
+     */
+    ArrayList<String> teamsRank;
+
+    /**
      * Adapter for search bar.
      */
-    ArrayAdapter teamArrayAdapter;
+    TeamsArrayAdapter teamArrayAdapter;
 
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
@@ -96,6 +102,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         // initialize the list of teams with an empty array list, this empty list is displayed in the case of database errors
         // and while waiting for values to be read from the database
         teams = new ArrayList<>();
+        teamsRank = new ArrayList<>();
 
         // get the name of the league the user clicked on
         final Bundle extras = getIntent().getExtras();
@@ -159,11 +166,14 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                         // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
 
 
-                        // display the no team text if not apart of any teams.
+                        // dont display the no team text if apart of any teams.
                         if (!teams.isEmpty()) {
                             TextView noTeamText = findViewById(R.id.no_teams_text);
                             noTeamText.setVisibility(View.GONE);
+                            for (int i = 1; i <= teams.size(); i++) teamsRank.add(i + ".");
                         }
+
+
                         teamArrayAdapter.notifyDataSetChanged();
 
                         // only display the remove league button to the owner of the league
@@ -180,7 +190,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
 
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.teams_listview, teams);
+        teamArrayAdapter = new TeamsArrayAdapter(TeamsActivity.this, teamsRank, teams);
         ListView teamList = findViewById(R.id.teams_list);
         teamList.setAdapter(teamArrayAdapter);
 
@@ -215,7 +225,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // changes the shown list items based on characters in search bar.
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                (TeamsActivity.this).teamArrayAdapter.getFilter().filter(charSequence);
+//                (TeamsActivity.this).teamArrayAdapter.getFilter().filter(charSequence);
             }
 
             // these two are not needed for search but must be override.

@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -125,10 +126,7 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
 
                 String dateString = txtDate.getText().toString();
 
-                if(gameLocation.isEmpty()){
-                    Toast.makeText(GamePop.this, "Game location is required", Toast.LENGTH_SHORT).show();
-                }
-                else if(timeString.isEmpty()){
+                if(timeString.isEmpty()){
                     Toast.makeText(GamePop.this, "Time of game is required", Toast.LENGTH_SHORT).show();
                 }
                 else if(dateString.isEmpty()){
@@ -138,6 +136,10 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
                     Toast.makeText(GamePop.this, "Opponent team is required", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    if(gameLocation.isEmpty()){
+                        gameLocation = "Unspecified";
+                    }
+
                     // convert our timeString into hours, and minutes, this time string will have the format hour:minutes, hours from 1-23
                     String[] timeArray = timeString.split(":");
                     String hourString = timeArray[0];
@@ -189,9 +191,7 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
                                         }
 
                                         @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
+                                        public void onCancelled(@NonNull DatabaseError databaseError) { }
                                     });
                                 }
                             }
@@ -202,7 +202,7 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
                             }
                         });
 
-                    }catch(IllegalArgumentException e){
+                    } catch(IllegalArgumentException e) {
                         // this exception is thrown from trying to create a GameTime object that represents a time in the past
                         Toast.makeText(GamePop.this,"Cannot create a game with this date in the past", Toast.LENGTH_LONG).show();
                     }
@@ -222,6 +222,9 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
     // Date and Time Picker
     @Override
     public void onClick(View v) {
+        // Hide the keyboard
+        hideKeyboard(GamePop.this);
+
         // Date picker
         if (v == btnDatePicker) {
 
@@ -276,6 +279,19 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
     // Unused
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
+    }
+
+
+    // Used to hide keyboard.
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
