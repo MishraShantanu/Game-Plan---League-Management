@@ -87,6 +87,15 @@
 
         </LinearLayout>
 
+
+        <!--    Bar Graph    -->
+        <com.github.mikephil.charting.charts.BarChart
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/barGraph">
+        </com.github.mikephil.charting.charts.BarChart>
+
+
         <!--    Next Game    -->
         <TextView
             android:layout_width="match_parent"
