@@ -206,16 +206,18 @@ public class Storage {
 
        final String leagueDatabaseKey = teamInfo.getLeagueName();
 
+       // remove this team from each member on the team
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
+                    MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
+                    database.child("users").child(currentMemberInfo.getDatabaseKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
                 }
-
-
-                database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
+                // remove this team from the league its a part of
                 database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+                // remove this team from the database
+                database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
 
             }
 
@@ -226,10 +228,14 @@ public class Storage {
         });
     }
 
-
-    public static void removeLeague(final String LeagueName) {
+    /**
+     * Removes the league corresponding to the input LeagueInfo and all teams that are a part of this league
+     * from the database
+     * @param leagueInfo: LeagueInfo object describing the league to be removed from the database
+     */
+    public static void removeLeague(final LeagueInfo leagueInfo) {
         // remove the teams of this league
-        database.child("Leagues").child(LeagueName).child("teamsInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
@@ -237,7 +243,7 @@ public class Storage {
                     removeTeam(currentTeamInfo);
                 }
                 //remove league
-                database.child("Leagues").child(LeagueName).removeValue();
+                database.child("Leagues").child(leagueInfo.getDatabaseKey()).removeValue();
             }
 
             @Override

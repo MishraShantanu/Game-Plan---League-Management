@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.League;
+import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.TeamInfo;
@@ -104,6 +105,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // TODO what to do about this error?
         } else {
             final String selectedLeague = extras.getString("LEAGUE_CLICKED");
+            final LeagueInfo currentLeagueInfo = new LeagueInfo(selectedLeague);
             // add the click listener for the add team button here as we need to pass the current league name
             // read from the database through to the popup
             FloatingActionButton addTeam = findViewById(R.id.add_team_button);
@@ -130,7 +132,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
                         Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
                         toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        Storage.removeLeague(selectedLeague);
+                        Storage.removeLeague(currentLeagueInfo);
                         finish();
                         startActivity(toHome);
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
