@@ -158,10 +158,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     ArrayList<BarEntry> barEntries = new ArrayList<>();
                     // x and y coordinate
-                    //TODO uncomment below and delete following three lines
-                    barEntries.add(new BarEntry(1f, numWins)); //entries must be floats
-                    barEntries.add(new BarEntry(2f, numTies));
-                    barEntries.add(new BarEntry(3f, numLosses));
+                    barEntries.add(new BarEntry(0f, numWins)); //entries must be floats
+                    barEntries.add(new BarEntry(1f, numTies));
+                    barEntries.add(new BarEntry(2f, numLosses));
                     BarDataSet barDataSet = new BarDataSet(barEntries, "Games");
 
                     barDataSet.setDrawValues(false); //hide values of the bar heights (i.e. number of games)
@@ -182,7 +181,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     d.setText("");
                     barChart.setDescription(d); //remove description
                     barChart.getLegend().setEnabled(false); //remove legend
-                    barChart.getAxisLeft().setDrawLabels(false); //remove x axis
+                    barChart.getAxisLeft().setDrawLabels(false); //remove left axis
                     barChart.getAxisRight().setDrawLabels(false); //remove right axis
                     String[] barLabels = {"Win", "Tie", "Loss"};
                     barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(barLabels)); //show X Label (Win, Tie, loss)
