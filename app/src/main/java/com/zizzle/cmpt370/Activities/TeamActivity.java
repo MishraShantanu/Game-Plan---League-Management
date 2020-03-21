@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,6 +74,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     private Button removeTeam;
 
     private MenuItem joinButton;
+
+    /**
+     * Bar Chart to display scores
+     */
+    BarChart barChart;
 
 
     @Override
@@ -122,17 +138,62 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     TextView ties = findViewById(R.id.record_ties);
 
                     // Display the W/T/L record
-                    wins.setText(String.valueOf(currentTeam.getWins()));
-                    losses.setText(String.valueOf(currentTeam.getLosses()));
-                    ties.setText(String.valueOf(currentTeam.getTies()));
+                    int numWins = currentTeam.getWins();
+                    int numLosses = currentTeam.getLosses();
+                    int numTies = currentTeam.getTies();
+                    wins.setText(String.valueOf(numWins));
+                    losses.setText(String.valueOf(numLosses));
+                    ties.setText(String.valueOf(numTies));
                     // Set the next scheduled game
                     TextView nextGameText = findViewById(R.id.next_games_text);
 
 
-                    wins.setText(String.valueOf(currentTeam.getWins()));
-                    losses.setText(String.valueOf(currentTeam.getLosses()));
+                    // Graph to Show the Wins/Ties/Losses ==========================================================================
 
-                    if(currentTeam.hasGamesScheduled()){
+                    barChart = (BarChart) findViewById(R.id.barGraph);
+
+                    if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if team hasn't played any games yet
+                        barChart.setVisibility(View.GONE);
+                    }
+
+                    ArrayList<BarEntry> barEntries = new ArrayList<>();
+                    // x and y coordinate
+                    //TODO uncomment below and delete following three lines
+                    barEntries.add(new BarEntry(1f, numWins)); //entries must be floats
+                    barEntries.add(new BarEntry(2f, numTies));
+                    barEntries.add(new BarEntry(3f, numLosses));
+                    BarDataSet barDataSet = new BarDataSet(barEntries, "Games");
+
+                    barDataSet.setDrawValues(false); //hide values of the bar heights (i.e. number of games)
+
+                    //bar colors (same shades as numbers above the graph)
+                    int green = Color.argb(255, 153, 204, 0);
+                    int yellow = Color.argb(255, 235, 200, 0);
+                    int red = Color.argb(255, 255, 68, 68);
+                    int[] barColors = {green, yellow, red};
+                    barDataSet.setColors(barColors);
+
+                    BarData data = new BarData(barDataSet);
+                    barChart.setData(data);
+
+                    barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                    barChart.animateY(1500);
+                    Description d = new Description();
+                    d.setText("");
+                    barChart.setDescription(d); //remove description
+                    barChart.getLegend().setEnabled(false); //remove legend
+                    barChart.getAxisLeft().setDrawLabels(false); //remove x axis
+                    barChart.getAxisRight().setDrawLabels(false); //remove right axis
+                    String[] barLabels = {"Win", "Tie", "Loss"};
+                    barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(barLabels)); //show X Label (Win, Tie, loss)
+                    barChart.getXAxis().setTextColor(Color.WHITE); //set X Axis text color
+                    barChart.getXAxis().setGranularityEnabled(true); //removes duplicate first X Axis value
+                    barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); //Position X Axis at the bottom
+
+                    // ==========================================================================
+
+
+                    if (currentTeam.hasGamesScheduled()) {
                         final Game closestGame = currentTeam.getClosestScheduledGame();
                         nextGameText.setText(closestGame.toString());
                         // take the user to the page for this game if they clicked this next game text
@@ -141,15 +202,14 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                             public void onClick(View v) {
                                 Intent gameIntent = new Intent(TeamActivity.this, GameActivity.class);
                                 // pass the current team info and the game clicked to our GameActivity
-                                gameIntent.putExtra("GAME_CLICKED",closestGame);
-                                gameIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                                gameIntent.putExtra("GAME_CLICKED", closestGame);
+                                gameIntent.putExtra("TEAM_INFO", currentTeamInfo);
                                 startActivity(gameIntent);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
                         });
                     }
                     // otherwise this TextView has the string "No Upcoming Games as a default value"
-
 
 
                     // set the text of the owner button to the owner's name, add 2 spaces to center the name
@@ -177,7 +237,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     // Remove team button ===================================
                     removeTeam = findViewById(R.id.delete_team_button);
                     // only display this button if the current user is the owner of the team
-                    if(!ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())){
+                    if (!ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo())) {
                         removeTeam.setVisibility(View.GONE);
                     }
 
@@ -190,7 +250,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                             //System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                             //Check if the current user is same as the Owner of the Team else do not delete the team
-                            if(currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid())==0){
+                            if (currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0) {
                                 Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
 
                                 Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
@@ -198,7 +258,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                                 startActivity(toHome);
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                                 Storage.removeTeam(currentTeamInfo);
-                            }else  Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
 
 
                         }

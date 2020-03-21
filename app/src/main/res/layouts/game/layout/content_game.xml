@@ -22,15 +22,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="Add the Game Score"
+            android:text="Add Score"
             android:textColor="@color/colorText"
             android:textSize="30dp" />
 
         <TextView
+            android:id="@+id/yourTeamNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Your Team"
+            android:text="Your Team: "
             android:textAlignment="textStart"
             android:textColor="@color/colorText"
             android:textSize="22sp" />
@@ -42,19 +43,20 @@
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/colorTextHint"
             android:ems="10"
+            android:enabled="false"
             android:hint="0"
             android:inputType="number"
-            android:enabled="false"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint" />
 
 
         <TextView
+            android:id="@+id/opponentTeamNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Opponent Team"
+            android:text="Opponent Team: "
             android:textAlignment="textStart"
             android:textColor="@color/colorText"
             android:textSize="22sp" />
@@ -66,9 +68,9 @@
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/colorTextHint"
             android:ems="10"
+            android:enabled="false"
             android:hint="0"
             android:inputType="number"
-            android:enabled="false"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textColorHint="@color/colorTextHint" />
@@ -81,8 +83,8 @@
             android:layout_marginTop="30dp"
             android:background="@color/submitColor"
             android:text="Submit"
-            android:visibility="gone"
-            android:textColor="@color/colorText" />
+            android:textColor="@color/colorText"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,30 +95,10 @@
             android:textSize="30dp" />
 
         <TextView
-            android:id="@+id/yourTeamNameText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Your Team: "
-            android:textAlignment="center"
-            android:textColor="@color/colorText"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/opponentTeamNameText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Opponent Team: "
-            android:textAlignment="center"
-            android:textColor="@color/colorText"
-            android:textSize="22sp" />
-
-        <TextView
             android:id="@+id/locationText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:text="Location: "
             android:textAlignment="center"
             android:textColor="@color/colorText"
