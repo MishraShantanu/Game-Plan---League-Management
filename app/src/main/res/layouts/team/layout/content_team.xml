@@ -200,6 +200,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:background="@drawable/round_card_important_button"
             android:drawableStart="@drawable/ic_warning"
             android:padding="22dp"

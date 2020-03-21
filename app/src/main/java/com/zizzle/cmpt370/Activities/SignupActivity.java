@@ -126,6 +126,7 @@ public class SignupActivity extends AppCompatActivity {
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Switch to the sign in page.
                 Intent i = new Intent(SignupActivity.this, SigninActivity.class);
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
