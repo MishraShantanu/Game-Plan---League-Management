@@ -74,8 +74,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
-
-        // list of teams =========================================================================
+            // list of teams =========================================================================
         // Initialize arrays
         teamsInfo = new ArrayList<>();
         leaguesName = new ArrayList<>();
@@ -102,14 +101,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 // If user is on teams, show their teams.
-                if (!teamsInfo.isEmpty()) {
-                    TextView myTeamsText = findViewById(R.id.my_teams_text);
-                    myTeamsText.setVisibility(View.VISIBLE);
-                    View myTeamsDivider = findViewById(R.id.my_teams_div);
-                    myTeamsDivider.setVisibility(View.VISIBLE);
-                }
+                TextView myTeamsText = findViewById(R.id.my_teams_text);
+                myTeamsText.setVisibility(View.VISIBLE);
+                View myTeamsDivider = findViewById(R.id.my_teams_div);
+                myTeamsDivider.setVisibility(View.VISIBLE);
+
                 // If user not on any teams, show sad text.
-                else {
+                if (teamsInfo.isEmpty()) {
                     TextView noTeamText = findViewById(R.id.no_team_text);
                     noTeamText.setVisibility(View.VISIBLE);
                 }
@@ -153,6 +151,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
+                // clear the info stored for this user
+                CurrentUserInfo.refreshMemberInfo();
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);

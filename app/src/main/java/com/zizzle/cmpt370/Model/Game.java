@@ -3,11 +3,13 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import java.io.Serializable;
+
 
 /**
  * Parent class, stores generic information about sports games
  */
-public class Game implements Comparable{
+public class Game implements Comparable, Serializable {
 
     /** first team in the game */
     private TeamInfo team1Info;
@@ -16,16 +18,15 @@ public class Game implements Comparable{
     private TeamInfo team2Info;
 
     /** date (year, month, day, hour, minute) the game is being/was played */
-    private GameTime date;
+    private GameTime gameTime;
 
     /** name of the location the game is/was held at */
     private String location;
 
-    /** name of the sport of the game */
-    private String sport;
-
+    /** score of team1 in this game */
     private int team1Score;
 
+    /** score of team2 in this game */
     private int team2Score;
 
     /** boolean true if the game has been played, false otherwise */
@@ -38,23 +39,28 @@ public class Game implements Comparable{
      * @param team2Info: TeamInfo object, second of the teams playing in the game
      * @param gameDate: GameTime object specifying when this game is scheduled to occur
      * @param location: String name of the location the game is being held
-     * @param sport: String name of the sport of the game
      * @throws IllegalArgumentException if the gameDate refers to a time in the past, games must be
      * scheduled for a time in the future
      */
-    public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location, String sport) throws IllegalArgumentException{
+    public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
         this.team1Info = team1Info;
         this.team2Info = team2Info;
         if(!gameDate.isInFuture()){
             throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
         }
-        this.date = gameDate;
+        this.gameTime = gameDate;
         this.location = location;
-        this.sport = sport;
         this.played = false;
         this.team1Score = 0;
         this.team2Score = 0;
+    }
+
+    /**
+     * Blank constructor required by firebase to read in this object
+     */
+    public Game(){
+
     }
 
     /**
@@ -82,19 +88,11 @@ public class Game implements Comparable{
     }
 
     /**
-     * Returns the sport of the game
-     * @return String name of the sport of the game
-     */
-    public String getSport(){
-        return this.sport;
-    }
-
-    /**
      * Returns the time the game was scheduled to be played at
      * @return GameTime object describing the time the game is scheduled to be played
      */
     public GameTime getGameTime(){
-        return this.date;
+        return this.gameTime;
     }
 
     /**
@@ -103,14 +101,14 @@ public class Game implements Comparable{
      */
     public boolean hasGameStarted(){
         // if this game isn't scheduled for the future, it must have started
-        return !this.date.isInFuture();
+        return !this.gameTime.isInFuture();
     }
 
     /**
      * Checks if the game has been played, a game is played when the setGameAsPlayed() method is used
      * @return true if the game has been played, false otherwise
      */
-    public boolean hasBeenPlayed(){
+    public boolean isPlayed(){
         return this.played;
     }
 
@@ -140,24 +138,16 @@ public class Game implements Comparable{
     /**
      * Retrieves team 1's score, this game must have been played in order to get scores
      * @return int team 1's score in this game
-     * @throws IllegalStateException if the game hasn't been played yet
      */
-    public int getTeam1Score() throws IllegalStateException{
-        if(!this.hasBeenPlayed()){
-            throw new IllegalStateException("Cannot get scores before this game has been played");
-        }
+    public int getTeam1Score(){
         return this.team1Score;
     }
 
     /**
      * Retrieves team 2's score, this game must have been played in order to get scores
      * @return int team 2's score in this game
-     * @throws IllegalStateException if the game hasn't been played yet
      */
-    public int getTeam2Score() throws IllegalStateException{
-        if(!this.hasBeenPlayed()){
-            throw new IllegalStateException("Cannot get scores before this game has been played");
-        }
+    public int getTeam2Score(){
         return this.team2Score;
     }
 
@@ -170,7 +160,7 @@ public class Game implements Comparable{
      */
     public void rescheduleGame(GameTime newTime) throws IllegalStateException{
         // can't reschedule game if it's already started or been played
-        if(this.hasBeenPlayed() || this.hasGameStarted()){
+        if(this.isPlayed() || this.hasGameStarted()){
             throw new IllegalStateException("Game: game cannot be rescheduled if it has already started or been played");
         }
         // cannot reschedule a game for a time not in the future
@@ -179,7 +169,7 @@ public class Game implements Comparable{
         }
         else{
             // new time is valid
-            this.date = newTime;
+            this.gameTime = newTime;
         }
     }
 
@@ -188,9 +178,8 @@ public class Game implements Comparable{
      * @return unique String database key for this Game object
      */
     public String getDatabaseKey(){
-        // game keys are structured as date(YYYY/MM/DD)-team1Info-team2Info, this ensures that games are sorted by start date on the database
-        String databaseKey = this.getGameTime().getDateWithFormat(GameTime.YYYYMMDD_FORMAT) + "-" + this.getTeam1Info().getDatabaseKey() + this.getTeam2Info().getDatabaseKey();
-        return databaseKey;
+        // simply use the scheduled date and time of this game as a database key, as no team can have 2 games scheduled at the same time
+        return this.getGameTime().toString();
     }
 
     /**
@@ -200,9 +189,10 @@ public class Game implements Comparable{
     @Override
     @NonNull
     public String toString(){
-        String gameString = this.team1Info + " vs " + this.team2Info;
-        gameString += "\nFinal Score: ";
-        if(this.hasBeenPlayed()){
+        String gameString = this.team1Info + " vs " + this.team2Info + "\n";
+        gameString += this.gameTime.toString() + "\n";
+        gameString += "Final Score: ";
+        if(this.isPlayed()){
             gameString += this.team1Score + "-" + this.team2Score;
         }
         else{
@@ -222,7 +212,7 @@ public class Game implements Comparable{
             // compare fields
             Game otherGame = (Game) other;
             return otherGame.getGameTime().equals(this.getGameTime()) && otherGame.team1Info.equals(this.team1Info) &&
-                    otherGame.team2Info.equals(this.team2Info) && otherGame.location.equals(this.location) && otherGame.sport.equals(this.sport);
+                    otherGame.team2Info.equals(this.team2Info) && otherGame.location.equals(this.location);
         }
         // Other isn't a game and can't be equal
         return false;

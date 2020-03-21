@@ -65,7 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:backgroundTint="@color/colorTextHint"
-            android:hint="Soccer Field"
+            android:hint="Location"
+            android:digits="0,1,2,3,4,5,6,7,8,9,qwertzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-, "
             android:textColorHint="@color/colorTextHint"
             android:ems="10"
             android:inputType="text"
@@ -107,6 +108,7 @@
             <EditText
                 android:id="@+id/in_date"
                 android:layout_width="200dp"
+                android:enabled="false"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
@@ -135,6 +137,7 @@
                 android:id="@+id/in_time"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:layout_marginStart="8dp"
                 android:backgroundTint="@color/colorTextHint" />
 

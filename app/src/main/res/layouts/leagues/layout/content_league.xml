@@ -15,6 +15,19 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/no_leagues_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="250dp"
+            android:paddingLeft="35dp"
+            android:paddingRight="35dp"
+            android:text="Looking for a League?\n\nMake one!"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="24dp"
+            android:visibility="gone" />
+
         <!-- search bar-->
         <EditText
             android:id="@+id/league_search_bar"
@@ -53,5 +66,11 @@
             android:listSelector="@android:color/transparent"
             android:padding="15dp" />
 
+
+
     </LinearLayout>
+
+
+
+
 </ScrollView>

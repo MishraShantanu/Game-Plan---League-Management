@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,11 +32,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
+import java.security.acl.Owner;
 import java.util.ArrayList;
 
 import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
@@ -57,11 +61,15 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     private ActionBarDrawerToggle toggleDrawer;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_teams);
+
+
 
         // add top bar with title 'Teams'
         Toolbar toolbar = findViewById(R.id.top_bar);
@@ -111,96 +119,60 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // set title to that of the clicked on league
             getSupportActionBar().setTitle(selectedLeague);
 
-
             // Remove league button
-            final Button removeLeagueButton = findViewById(R.id.remove_league_button);
+            final Button removeLeagueButton = findViewById(R.id.delete_league_button);
             removeLeagueButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    // TODO Delete league.
 
+                        Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+
+                        Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
+                        toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Storage.removeLeague(selectedLeague);
+                        finish();
+                        startActivity(toHome);
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }
             });
 
-
-            DatabaseReference leagueOwnerReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
-            leagueOwnerReference.addValueEventListener(new ValueEventListener() {
+            DatabaseReference selectedLeagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague);
+            selectedLeagueReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // set the league description.
-                    League currentLeague = dataSnapshot.getValue(League.class);
-                    MemberInfo ownerInfo = currentLeague.getOwnerInfo();
-                    MemberInfo currentUserInfo = getCurrentUserInfo();
-                    if (currentUserInfo.equals(ownerInfo)) {
-                        removeLeagueButton.setVisibility(View.VISIBLE);
+                    if(dataSnapshot.exists()){
+                        League currentLeague = dataSnapshot.getValue(League.class);
+                        MemberInfo ownerInfo = currentLeague.getOwnerInfo();
+                        MemberInfo currentUserInfo = getCurrentUserInfo();
+
+                        // set the league description
+                        TextView leagueDescription = findViewById(R.id.league_description);
+                        leagueDescription.setText(currentLeague.getDescription());
+
+                        // get the teams of this league
+                        teams.clear();
+                        teams.addAll(currentLeague.getSortedTeamInfos());
+                        // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
+
+
+                        // display the no team text if not apart of any teams.
+                        if (!teams.isEmpty()) {
+                            TextView noTeamText = findViewById(R.id.no_teams_text);
+                            noTeamText.setVisibility(View.GONE);
+                        }
+                        teamArrayAdapter.notifyDataSetChanged();
+
+                        // only display the remove league button to the owner of the league
+                        if (currentUserInfo.equals(ownerInfo)) {
+                            removeLeagueButton.setVisibility(View.VISIBLE);
+                        }else  removeLeagueButton.setVisibility(View.INVISIBLE);
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
-            });
-
-
-            // set the league description
-            // read the reference for league description.
-            final TextView leagueDescription = findViewById(R.id.league_description);
-            DatabaseReference descriptionReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("description");
-            descriptionReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    // set the league description.
-                    leagueDescription.setText(dataSnapshot.getValue(String.class));
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) { /* Not Used */ }
-            });
-
-
-            // read the selectedLeague in from the database
-            DatabaseReference leagueReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(selectedLeague).child("teamsInfoMap");
-            // this will read from the database once and whenever the selected league is updated
-            leagueReference.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // called when a new team is added to this league, we want to add this new team to the front of the list of teams
-                    teams.add(0, dataSnapshot.getValue(TeamInfo.class));
-                    teamArrayAdapter.notifyDataSetChanged();
-
-                    // display the no team text if not apart of any teams.
-                    if (!teams.isEmpty()) {
-                        TextView noTeamText = findViewById(R.id.no_teams_text);
-                        noTeamText.setVisibility(View.GONE);
-                    }
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    // do nothing, may want to update teams displayed if the name of a team is changed
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    // remove the deleted team from our list
-                    teams.remove(dataSnapshot.getValue(TeamInfo.class));
-                    teamArrayAdapter.notifyDataSetChanged();
-
-                    // display the no team text if not apart of any teams.
-                    if (teams.isEmpty()) {
-                        TextView noTeamText = findViewById(R.id.no_teams_text);
-                        noTeamText.setVisibility(View.VISIBLE);
-                    }
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // database operation failed
-                    Toast.makeText(TeamsActivity.this, "Cannot access database, please try again later", Toast.LENGTH_SHORT).show();
-                }
             });
         }
 
@@ -277,6 +249,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
+                // clear the info stored for this user
+                CurrentUserInfo.refreshMemberInfo();
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);

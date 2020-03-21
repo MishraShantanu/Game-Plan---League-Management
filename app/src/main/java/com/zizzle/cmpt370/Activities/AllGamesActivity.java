@@ -13,8 +13,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +29,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
+
+import java.util.ArrayList;
+
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class AllGamesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,6 +48,9 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
     private Toolbar mToolBar; //Added for overlay effect of menu
 
     TeamInfo teamClicked;
+
+    private ArrayAdapter nextGameArrayAdapter;
+    private ArrayAdapter pastGameArrayAdapter;
 
 
     @Override
@@ -67,9 +81,111 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         teamClicked = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
 
         // ADD STUFF HERE!!! ==========================================================================
+        // NEXT GAMES =========================================================================
+        final ArrayList<Game> nextGames = new ArrayList<>();
+        final ArrayList<Game> pastGames = new ArrayList<>();
+
+        // read in the list of games for this team
+        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        DatabaseReference currentTeamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
+        currentTeamReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                nextGames.clear();
+                pastGames.clear();
+                DataSnapshot nextGamesData = dataSnapshot.child("scheduledGames");
+                if(!nextGamesData.exists()){
+                    // this team has no scheduled games
+                    // TODO add some text indicating there are no upcoming games
+                }
+                else{
+                    // add each scheduled game to our list
+                    for(DataSnapshot gameData : nextGamesData.getChildren()){
+                        Game currentGame = gameData.getValue(Game.class);
+                        nextGames.add(currentGame);
+                    }
+                }
+                nextGameArrayAdapter.notifyDataSetChanged();
+
+                // do the same for the games previously played by this team
+                DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayed");
+                if(!pastGamesData.exists()){
+                    // TODO add text "no previously played games"
+                }
+                else{
+                    for(DataSnapshot gameData : pastGamesData.getChildren()){
+                        Game currentGame = gameData.getValue(Game.class);
+                        pastGames.add(currentGame);
+                    }
+                }
+                pastGameArrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        // Display ListView contents.
+
+        nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
+        ListView nextGameList = findViewById(R.id.next_scores_list);
+        nextGameList.setAdapter(nextGameArrayAdapter);
+
+
+        // Display ListView contents.
+        pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
+        ListView pastGameList = findViewById(R.id.past_scores_list);
+        pastGameList.setAdapter(pastGameArrayAdapter);
+
+        // clicking on a scheduled game in the ListView is handled with this listener
+        AdapterView.OnItemClickListener gameClickListener = new AdapterView.OnItemClickListener() {
+
+            /**
+             * performs an action when a ListView item is clicked.
+             *
+             * @param listItemPosition the index of position for the item in the ListView
+             */
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
+
+                final Game clickedGame = (Game) parent.getAdapter().getItem(listItemPosition);
+
+                Intent gameIntent = new Intent(AllGamesActivity.this, GameActivity.class);
+                // pass the current team info and the game clicked to our GameActivity
+                gameIntent.putExtra("GAME_CLICKED",clickedGame);
+                gameIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                startActivity(gameIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        };
+
+        nextGameList.setOnItemClickListener(gameClickListener);
+        pastGameList.setOnItemClickListener(gameClickListener);
 
         // add game button =======================================================================
-        FloatingActionButton addGame = findViewById(R.id.add_game_button);
+        final FloatingActionButton addGame = findViewById(R.id.add_game_button);
+
+        // only display this button to users on the selected team
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference currentMemberReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(teamClicked.getDatabaseKey()).child("membersInfoMap").child(currentUserInfo.getDatabaseKey());
+        currentMemberReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // user isn't on the team, don't display the add game button
+                    addGame.hide();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         addGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +222,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
+                // clear the info stored for this user
+                CurrentUserInfo.refreshMemberInfo();
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);

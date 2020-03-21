@@ -1,7 +1,9 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -9,7 +11,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Activities.TeamActivity;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -20,139 +28,8 @@ public class Storage {
      * Reference to the database
      */
     private static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-    /**
-     * Stores the league read in, we require this to overcome scoping issues
-     */
-    private static League retrievedLeague;
-    /**
-     * Stores the member read in, we require this to overcome scoping issues
-     */
-    private static Member retrievedMember;
-    /**
-     * Stores the team read in, we require this to overcome scoping issues
-     */
-    private static Team retrievedTeam;
-
-    // constants to be used when updating fields of the database
-
-    // constants that should be used to update Leagues
-    /**
-     * constant that should be used if the description of a league is being updated
-     */
-    public static final String LEAGUE_DESCRIPTION = "description";
-
-    /**
-     * constant that should be used if the sport of a league is being updated
-     */
-    public static final String LEAGUE_SPORT = "sport";
-
-    /**
-     * constant that should be used if the name field of a league is being updated
-     */
-    public static String LEAGUE_NAME = "name";
-
-    /**
-     * constant that should be used if the owner field of a league is being updated
-     */
-    public static final String LEAGUE_OWNER = "ownerInfo";
-
-    /**
-     * constant that should be used if the teams of a league are being updated
-     */
-    public static final String LEAGUE_TEAMS = "teamsInfo";
-
-    // constants that should be used to update Teams
-    /**
-     * constant that should be used if the name of a team is being updated
-     */
-    public static String TEAM_NAME = "name";
-
-    /**
-     * constant that should be used if the sport of a team is being updated
-     */
-    public static final String TEAM_SPORT = "sport";
-
-    /**
-     * constant that should be used if the members of a team are being updated
-     */
-    public static final String TEAM_MEMBER = "membersInfo";
-
-    /**
-     * constant that should be used if the owner of a team is being updated
-     */
-    public static final String TEAM_OWNER = "ownerInfo";
-
-    /**
-     * constant that should be used if the wins of a team are being updated
-     */
-    public static final String TEAM_WINS = "wins";
-
-    /**
-     * constant that should be used if the losses of a team are being updated
-     */
-    public static final String TEAM_LOSSES = "losses";
-
-    /**
-     * constant that should be used if the ties of a team are being updated
-     */
-    public static final String TEAM_TIES = "ties";
-
-    // TODO add fields that allow you to change games
-
-    // constants that should be used to update Members
-    /**
-     * constant that should be updated if the name of a member is being updated
-     */
-    public static final String MEMBER_NAME = "displayName";
-
-    /**
-     * constant that should be updated if the email of a member is being updated
-     */
-    public static final String MEMBER_EMAIL = "email";
-
-    /**
-     * constant that should be updated if the phone number of a member is being updated
-     */
-    public static final String MEMBER_PHONE_NUMER = "phoneNumber";
-
-    /**
-     * constant that should be updated if the teams of a member are being updated
-     */
-    public static final String MEMBER_TEAMS = "teamsInfo";
-
-    /**
-     * constant that should be updated if the leagues of a member are being updated
-     */
-    public static final String MEMBER_LEAGUES = "leaguesInfo";
 
 
-    /**
-     * Reads the League with the input name from the database
-     *
-     * @param leagueInfo: String, name of the database to read from the database
-     * @return League object with the name input or null if no such league exists
-     * @throws DatabaseException if the database read fails
-     */
-    public static League readLeague(LeagueInfo leagueInfo) throws DatabaseException {
-        // addListenerForSingleValueEvent reads from the database exactly once
-        Log.d("league database key", ":" + leagueInfo.getDatabaseKey() + ":");
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // called when data is read from database
-                retrievedLeague = dataSnapshot.getValue(League.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // database read has failed for some reason, display error message
-                throw new DatabaseException("Failed to read league information from database: " + databaseError.getMessage());
-            }
-        });
-
-        // return the league read from the database, may be null if there is no league with name: leagueName
-        return retrievedLeague;
-    }
 
     /**
      * Adds the input league to the database
@@ -239,18 +116,82 @@ public class Storage {
 
     /**
      * Stores the input Game object under the input teams on the database
-     *
-     * @param team1Info: TeamInfo object representing the first team playing in this game
-     * @param team2Info: TeamInfo object representing the second team playing in this game
      * @param game:      Game object denoting game to store
      */
-    public static void addGameToTeams(TeamInfo team1Info, TeamInfo team2Info, Game game) {
-        // TODO check that these input teams are actually playing in this game, check that this game hasn't been played yet etc
-        String gameDatabaseKey = game.getDatabaseKey();
+    public static void writeGame(Game game) {
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
         // add this game to team1
-        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).setValue(game);
         // add this game to team2
-        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(gameDatabaseKey).setValue(game);
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).setValue(game);
+    }
+
+    /**
+     * Writes the input played game to the database, updates the records of the teams playing this game to reflect
+     * a win, loss or tie of this game
+     * @param game: Game object that has been played
+     * @throws IllegalArgumentException if the input game hasn't been played
+     */
+    public static void writePlayedGame(Game game) throws IllegalArgumentException{
+        if(!game.isPlayed()){
+            throw new IllegalArgumentException("game " + game + " hasn't been played");
+        }
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
+        // the input game should already be on the database as a scheduled game for team1 and team2
+        // remove this game as a scheduled game from these teams
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+
+        // add this game as a played game to both team1 and team2
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
+
+        // use a transaction to increment the wins/losses/ties of the teams in this game to avoid race conditions
+        Transaction.Handler incrementHandler = new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
+                if(mutableData.getValue() == null){
+                    // if the team has no wins/losses/ties recorded, set the teams's wins/losses/ties to 1
+                    mutableData.setValue(1);
+                }
+                else{
+                    // otherwise increment the wins/losses/ties of this team
+                    mutableData.setValue((Long)mutableData.getValue() + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, boolean committed, @Nullable DataSnapshot dataSnapshot) {
+                if(!committed){
+                    // TODO an error occured
+                }
+            }
+        };
+
+        LeagueInfo currentLeagueInfo = new LeagueInfo(game.getTeam1Info().getLeagueName());
+        if(game.getTeam1Score()>game.getTeam2Score()){
+            // team1 has won increment team1's wins and team2's losses
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+            // also update the TeamInfo objects stored for this league to reflect the new win by team1
+            database.child("Leagues").child(currentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(team1Info.getName()).child("wins").runTransaction(incrementHandler);
+        }
+        else if(game.getTeam1Score()<game.getTeam2Score()){
+            // team2 has won, increment team2's wins and team1's losses
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
+            // also update the TeamInfo objects stored for this league to reflect the new win by team2
+            database.child("Leagues").child(currentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(team2Info.getName()).child("wins").runTransaction(incrementHandler);
+        }
+        else{
+            // the teams tied, increment the ties for each team
+            database.child("Teams").child(team1Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+            database.child("Teams").child(team2Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+        }
     }
 
 
@@ -259,19 +200,72 @@ public class Storage {
      *
      * @param teamInfo: TeamInfo object representing the team to remove from the member
      */
-    public static void removeTeam(TeamInfo teamInfo) {
+    public static void removeTeam(final TeamInfo teamInfo) {
         // remove team from members teams
+        final String teamDatabaseKey = teamInfo.getDatabaseKey();
 
-        TEAM_NAME = teamInfo.getDatabaseKey();
+       final String leagueDatabaseKey = teamInfo.getLeagueName();
 
-        LEAGUE_NAME = teamInfo.getLeagueName();
+       // final  CountDownLatch done = new CountDownLatch(s);
 
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(TEAM_NAME).removeValue();
+                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
                 }
+
+
+                database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
+                database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+
+         //       done.countDown();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        // remove the member from the team
+//        try {
+//            done.await();
+//        } catch(InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
+    }
+
+
+    public static void removeLeague(final String LeagueName) {
+        // remove team from members teams
+
+
+
+        database.child("Leagues").child(LeagueName).child("teamsInfoMap").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                ArrayList<TeamInfo> teamsInfo = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+
+                    final String teamKey = LeagueName+"-"+ds.getKey();
+
+                     teamsInfo.add(ds.getValue(TeamInfo.class)) ;
+
+
+                    //remove Teams of a league
+                   // database.child("Teams").child(teamKey).removeValue();
+                }
+
+                for (int i=0;i<teamsInfo.size();i++){
+                    removeTeam(teamsInfo.get(i));
+                }
+
+                //remove league
+                database.child("Leagues").child(LeagueName).removeValue();
             }
 
             @Override
@@ -281,11 +275,9 @@ public class Storage {
         });
 
 
-        // remove the member from the team
-        database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
-        database.child("Leagues").child(LEAGUE_NAME).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
 
     }
+
 
 
 }

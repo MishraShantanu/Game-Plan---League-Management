@@ -2,6 +2,8 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,45 +11,59 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.Game;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
-public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.ArrayList;
+
+import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
+
+public class GameActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
-    private Button removePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_team_member);
+        setContentView(R.layout.activity_game);
         //add top bar from top_bar as action bar
         mToolBar = (Toolbar) findViewById(R.id.top_bar);
         setSupportActionBar(mToolBar); //sets toolbar as action bar
 
         //MENU (button & drawer)
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.team_member_layout);
-        NavigationView navigationView = findViewById(R.id.team_member_nav_view); //ADDED FOR CLICK
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.game_layout);
+        NavigationView navigationView = findViewById(R.id.game_nav_view); //ADDED FOR CLICK
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_leagues); //Highlight respective option in the navigation menu
+        navigationView.setCheckedItem(R.id.nav_home); //Highlight respective option in the navigation menu
 
         //four parameters: the activity (either "this" or getActivity()"), instance of drawer layout, toolbar, open String (see strings.xml in values folder), close String (see strings.xml)
         // ActionBarDrawerToggle sets up the app icon on the left of the top bar to open & close the navigation drawer
@@ -59,67 +75,77 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
-        // Temporary User created ==========================================================================
-        //TODO Mar. 4 2020: change this to get member from the database
 
-        // the clicked on member is passed via intent
-        final MemberInfo clickedMemberInfo = (MemberInfo)getIntent().getSerializableExtra("CLICKED_MEMBER");
+        final EditText currentTeamScoreText = findViewById(R.id.yourScore);
+        final EditText opponentTeamScoreText = findViewById(R.id.opponentScore);
+        TextView currentTeamText = findViewById(R.id.yourTeamNameText);
+        TextView opponentTeamText = findViewById(R.id.opponentTeamNameText);
+        TextView gameDateText = findViewById(R.id.gameDateText);
+        TextView gameTimeText = findViewById(R.id.gameTimeText);
+        TextView gameLocationText = findViewById(R.id.locationText);
 
-        // read the clicked member in from the database
-        DatabaseReference clickedMemberReference = FirebaseDatabase.getInstance().getReference().child("users").child(clickedMemberInfo.getDatabaseKey());
-        clickedMemberReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // called when data is read from the database
-                Member clickedMember = dataSnapshot.getValue(Member.class);
 
-                // Set the title of the page to user name.
-                getSupportActionBar().setTitle(clickedMember.getDisplayName() + "'s Information");
+        final Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
+        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        // set the fields for this page
+        currentTeamText.append(currentTeamInfo.getName());
+        gameDateText.append(currentGame.getGameTime().getDateString());
+        gameTimeText.append(currentGame.getGameTime().getClockTime());
+        gameLocationText.append(currentGame.getLocation());
 
-                // DisplayName Text ==========================================================================
-                TextView userName = (TextView) findViewById(R.id.TeamMember_DisplayName);
-                userName.setText(clickedMember.getDisplayName());
+        // determine if our current team is team1 or 2 of this game
+        if(currentGame.getTeam1Info().equals(currentTeamInfo)){
+            // current team is team1 in this game
+            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+            opponentTeamText.append(currentGame.getTeam2Info().getName());
+            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+        }
+        else{
+            // current team is team2 in this game
+            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+            opponentTeamText.append(currentGame.getTeam1Info().getName());
+            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+        }
 
-                // Email Text ==========================================================================
-                TextView email = (TextView) findViewById(R.id.TeamMember_Email);
-                email.setText(clickedMember.getEmail());
+        Button submitButton = findViewById(R.id.submitScore);
 
-                // Phone Number Text ==========================================================================
-                TextView phoneNumber = (TextView) findViewById(R.id.TeamMember_PhoneNumber);
-                phoneNumber.setText(clickedMember.getPhoneNumber());
+        // only allow the user to change the score fields if the game has started and hasn't already been played
+        // this restricts a user so they can only set the scores for a game once after the game has started
+        if(currentGame.hasGameStarted() && !currentGame.isPlayed()){
+            currentTeamScoreText.setEnabled(true);
+            opponentTeamScoreText.setEnabled(true);
+            // display the button to submit score changes
+            submitButton.setVisibility(View.VISIBLE);
+            submitButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO possibly display some popup asking the user to confirm the final scores for this game
+                    // get the input scores for this game
+                    int currentTeamScore = Integer.valueOf(currentTeamScoreText.getText().toString());
+                    int opponentTeamScore = Integer.valueOf(opponentTeamScoreText.getText().toString());
+                    // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
+                    if(currentTeamInfo.equals(currentGame.getTeam1Info())){
+                        // current team is team1
+                        currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+                    }
+                    else{
+                        // current team is team2
+                        currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
+                    }
+                    // add this played game to the database
+                    Storage.writePlayedGame(currentGame);
 
-                // if the current user of the app is the owner of the current team, display the remove member button
-                // get the owner info again from our intent
-                MemberInfo ownerInfo = (MemberInfo)getIntent().getSerializableExtra("OWNER_INFO");
-
-                // Remove Player Button ==========================================================================
-                // Show the remove player button if you are the owner and the player to remove is not you.
-                if (ownerInfo.equals(CurrentUserInfo.getCurrentUserInfo()) &&
-                        !ownerInfo.equals(clickedMemberInfo)) {
-                    removePlayer.setVisibility(View.VISIBLE);
+                    finish();
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // called when database operations fail, display an error message
-                Toast.makeText(TeamMemberActivity.this, "Cannot connect to database, please try again later", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
-        // Remove player button ===================================
-        removePlayer = findViewById(R.id.remove_player);
-        removePlayer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // remove the team member from the team
-                TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
-                Storage.removeMemberFromTeam(clickedMemberInfo,currentTeamInfo);
-                Toast.makeText(TeamMemberActivity.this, "Team member removed successfully", Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        }
+        else{
+            // prevent the user from changing the score fields and seeing the submit button
+            currentTeamScoreText.setEnabled(false);
+            opponentTeamScoreText.setEnabled(false);
+            // display the button to submit score changes
+            submitButton.setVisibility(View.GONE);
+        }
     }
 
 
@@ -152,7 +178,8 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
 

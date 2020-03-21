@@ -1,10 +1,12 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.Iterator;
 
 
 /**
@@ -21,9 +23,8 @@ public class Team {
     /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
     private HashMap<String,MemberInfo> membersInfoMap;
 
-    /** TreeMap with the games previously played by this team as keys, these keys are kept in sorted order by default,
-     * the values of this map are booleans, a simple true will be stored for each key*/
-    private TreeMap<Game,Boolean> gamesPlayedMap;
+    /** TreeMap with the database keys of games played as keys and the Game objects played as values */
+    private HashMap<String,Game> gamesPlayed;
     //TODO these treemaps won't work, we require string keys, use old idea of unique keys, to get the most recent game, must get a values list then sort
     //TODO could however add an instance variable keeping track of the next most recently scheduled game, how can we check this when writing to the database
 
@@ -33,9 +34,8 @@ public class Team {
     /** Info about the owner of the team */
     private MemberInfo ownerInfo;
 
-    /** TreeMap with the games scheduled for a team as keys, these keys are sorted by default, the values of this
-     * map will be Boolean true's */
-    private TreeMap<Game,Boolean> scheduledGamesMap;
+    /** TreeMap with the database keys of games schedules as keys and the Game objects schedules as values */
+    private HashMap<String,Game> scheduledGames;
 
     /** Number of wins the team has */
     private int wins;
@@ -63,12 +63,30 @@ public class Team {
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
-        this.gamesPlayedMap = new TreeMap<>();
-        this.scheduledGamesMap = new TreeMap<>();
+        this.gamesPlayed = new HashMap<>();
+        this.scheduledGames = new HashMap<>();
     }
 
     public Team(){
 
+    }
+
+    /**
+     * Returns a TreeMap with string game keys and Game values of the games this team has played
+     * @return TreeMap as described above
+     */
+    public HashMap<String,Game> getGamesPlayed(){
+        // In order for firebase to recognize our instance variable gamesPlayed, we must make a public getter or setter
+        return this.gamesPlayed;
+    }
+
+    /**
+     * Returns a TreeMap with string game keys and Game values of the games scheduled to be played by this team
+     * @return TreeMap as described above
+     */
+    public HashMap<String,Game> getScheduledGames(){
+        // In order for firebase to recognize our instance variable scheduledGames, we must make a public getter or setter
+        return this.scheduledGames;
     }
 
     /**
@@ -262,32 +280,43 @@ public class Team {
      * @return true if the team has at least 1 game scheduled in the future, false otherwise
      */
     public boolean hasGamesScheduled(){
-        return this.scheduledGamesMap.size() > 0;
+        // scheduledGamesMap may be null if this object has been read from the database without having any games
+        if(this.scheduledGames == null){
+            return false;
+        }
+        return this.scheduledGames.size() > 0;
     }
 
     /**
-     * Gets the closest upcoming game the team has scheduled
+     * Gets the closest upcoming game the team has scheduled, returns null if there are no games scheduled
      * @return Game object that is scheduled to be played closest to now
-     * @throws IllegalStateException if the team has no games scheduled
      */
-    /*
-    public Game getClosestScheduledGame() throws IllegalStateException{
+    public Game getClosestScheduledGame(){
         // make sure there is a game scheduled
         if(! this.hasGamesScheduled()){
-            throw new IllegalStateException("Team: team '" + this.name + "' has no games scheduled");
+            return null;
         }
-
-        // the closest game is always at the front of the list of scheduled games
-        return this.scheduledGames.get(0);
+        // find the closest scheduled or minimum game
+        Collection<Game> games = this.scheduledGames.values();
+        Iterator gameIterator = games.iterator();
+        Game minGame = (Game)gameIterator.next();
+        Log.d("minGame",minGame.toString()); // TODO code works with these logs, removing these crashes the app, why???
+        while(gameIterator.hasNext()){
+            Game currentGame = (Game)gameIterator.next();
+            Log.d("currentGame",currentGame.toString());
+            if(currentGame.compareTo(minGame)<0){
+                minGame = currentGame;
+            }
+        }
+        return minGame;
     }
-     */
 
     /**
      * Checks if the team has played at least 1 game before
      * @return true if the team has played a game, false otherwise
      */
     public boolean hasPlayedGame(){
-        return this.gamesPlayedMap.size() > 0;
+        return this.gamesPlayed.size() > 0;
     }
 
     /**
