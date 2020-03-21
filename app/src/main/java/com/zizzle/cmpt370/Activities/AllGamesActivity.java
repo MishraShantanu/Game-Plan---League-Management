@@ -37,6 +37,8 @@ import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
@@ -95,8 +97,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGames.clear();
                 DataSnapshot nextGamesData = dataSnapshot.child("scheduledGames");
                 if(!nextGamesData.exists()){
-                    // this team has no scheduled games
-                    // TODO add some text indicating there are no upcoming games
+                    TextView noComingText = findViewById(R.id.no_upcoming_games_text);
+                    noComingText.setVisibility(View.VISIBLE);
                 }
                 else{
                     // add each scheduled game to our list
@@ -110,7 +112,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 // do the same for the games previously played by this team
                 DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayed");
                 if(!pastGamesData.exists()){
-                    // TODO add text "no previously played games"
+                    TextView noPastText = findViewById(R.id.no_past_games_text);
+                    noPastText.setVisibility(View.VISIBLE);
                 }
                 else{
                     for(DataSnapshot gameData : pastGamesData.getChildren()){
@@ -186,6 +189,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
             }
         });
+
+
         addGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
