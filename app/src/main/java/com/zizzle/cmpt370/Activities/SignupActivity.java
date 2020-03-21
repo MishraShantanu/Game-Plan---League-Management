@@ -80,6 +80,12 @@ public class SignupActivity extends AppCompatActivity {
                     phoneNumber.requestFocus();
                 }
 
+                else if(phone.length()!=10 && phone.length()!=11){
+                    // phone number has invalid length/format
+                    phoneNumber.setError("Phone number must be either 10 or 11 digits long");
+                    phoneNumber.requestFocus();
+                }
+
                 else if (!(pass.isEmpty() && email.isEmpty())) {
                     System.out.println(email);
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
