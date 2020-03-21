@@ -100,14 +100,14 @@ public class TeamsArrayAdapter extends BaseAdapter implements Filterable {
         rowView = inflater.inflate(R.layout.teams_listview, null);
         holder.team = rowView.findViewById(R.id.teams_list);
         holder.teamsRank = rowView.findViewById(R.id.teams_rank_list);
-        holder.team.setText(teams.get(position).toString());
+        holder.team.setText(teamsFiltered.get(position).toString());
         holder.teamsRank.setText(teamRank.get(position));
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // TeamInfo object that was clicked.
-                TeamInfo clickedTeamInfo = teams.get(position);
+                TeamInfo clickedTeamInfo = teamsFiltered.get(position);
 
                 // Intent for the team clicked.
                 Intent teamIntent = new Intent(context, TeamActivity.class);
@@ -144,12 +144,12 @@ public class TeamsArrayAdapter extends BaseAdapter implements Filterable {
                     for (TeamInfo team : teams) {
                         if (team.toString().toUpperCase().contains(constraint)) {
                             filteredResult.add(team);
-                            System.out.println(team);
                         }
                     }
 
                     results.count = filteredResult.size();
                     results.values = filteredResult;
+                    System.out.println(filteredResult);
                 }
 
                 return results;
