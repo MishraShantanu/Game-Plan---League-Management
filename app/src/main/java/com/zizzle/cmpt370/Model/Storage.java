@@ -196,29 +196,30 @@ public class Storage {
 
 
     /**
-     * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team
-     *
-     * @param teamInfo: TeamInfo object representing the team to remove from the member
+     * Removes the Team from the database corresponding to the input TeamInfo, any Members on this team are
+     * removed, and any teams with games scheduled against this team have these games removed
+     * @param teamToDeleteInfo: TeamInfo object representing the Team to be removed
      */
-    public static void removeTeam(final TeamInfo teamInfo) {
-        // remove team from members teams
-        final String teamDatabaseKey = teamInfo.getDatabaseKey();
+    public static void removeTeam(final TeamInfo teamToDeleteInfo) {
+       final String leagueDatabaseKey = teamToDeleteInfo.getLeagueName();
 
-       final String leagueDatabaseKey = teamInfo.getLeagueName();
-
-       // remove this team from each member on the team
-        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
+       // read in the specified team
+        database.child("Teams").child(teamToDeleteInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    MemberInfo currentMemberInfo = ds.getValue(MemberInfo.class);
-                    database.child("users").child(currentMemberInfo.getDatabaseKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
+                Team teamToDelete = dataSnapshot.getValue(Team.class);
+                // remove the members from this team
+                for(MemberInfo currentMemberInfo : teamToDelete.getTeamMembersInfo()){
+                    removeMemberFromTeam(currentMemberInfo, teamToDeleteInfo);
+                }
+                // if this team has any scheduled games against other teams, remove these games for the other teams
+                for(Game scheduledGame : teamToDelete.getScheduledGames().values()){
+                    removeGameFromTeams(scheduledGame);
                 }
                 // remove this team from the league its a part of
-                database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+                database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamToDeleteInfo.getName()).removeValue();
                 // remove this team from the database
-                database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
-
+                database.child("Teams").child(teamToDeleteInfo.getDatabaseKey()).removeValue();
             }
 
             @Override
