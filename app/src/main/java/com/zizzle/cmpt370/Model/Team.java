@@ -269,6 +269,15 @@ public class Team {
         return false;
     }
 
+    /**
+     * Returns a HashMap with String user ID keys, and MemberInfo values for the members of this team
+     * @return HashMap<String,MemberInfo> as described above
+     */
+    public HashMap<String, MemberInfo> getMembersInfoMap(){
+        // this method is required by Firebase to actually store a Team's members on the database
+        return this.membersInfoMap;
+    }
+
 
 
     ////////////////////////////////////////////////////////
