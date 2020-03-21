@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,6 +74,11 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     private Button removeTeam;
 
     private MenuItem joinButton;
+
+    /**
+     * Bar Chart to display scores
+     */
+    BarChart barChart;
 
 
     @Override
@@ -129,8 +145,65 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     TextView nextGameText = findViewById(R.id.next_games_text);
 
 
-                    wins.setText(String.valueOf(currentTeam.getWins()));
+                    //Why is this written again??????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+                    wins.setText(String.valueOf(currentTeam.getWins())); ////////////////////////////////////////////////////////////////////////////////////////
                     losses.setText(String.valueOf(currentTeam.getLosses()));
+
+                    // Graph to Show the Wins/Ties/Losses ==========================================================================
+
+                    barChart = (BarChart) findViewById(R.id.barGraph);
+
+                    ArrayList<BarEntry> barEntries = new ArrayList<>();
+                    // x and y coordinate
+                    //TODO uncomment below and delete following three lines
+//                    barEntries.add(new BarEntry(1f, currentTeam.getWins())); //entries must be floats
+//                    barEntries.add(new BarEntry(2f, currentTeam.getTies()));
+//                    barEntries.add(new BarEntry(3f, currentTeam.getLosses()));
+                    barEntries.add(new BarEntry(0f, 6)); //entries must be floats
+                    barEntries.add(new BarEntry(1f, 2));
+                    barEntries.add(new BarEntry(2f, 3));
+                    BarDataSet barDataSet = new BarDataSet(barEntries, "Games");
+
+                    barDataSet.setDrawValues(false); //hide values of the bar heights (i.e. number of games)
+
+                    //bar colors (same shades as numbers above the graph)
+                    int green = Color.argb(255, 153, 204, 0);
+                    int yellow = Color.argb(255, 235, 200, 0);
+                    int red = Color.argb(255, 255, 68, 68);
+                    int[] barColors = {green, yellow, red};
+                    barDataSet.setColors(barColors);
+
+                    BarData data = new BarData(barDataSet);
+                    barChart.setData(data);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     if(currentTeam.hasGamesScheduled()){
                         final Game closestGame = currentTeam.getClosestScheduledGame();
