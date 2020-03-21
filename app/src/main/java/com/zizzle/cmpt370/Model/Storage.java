@@ -113,6 +113,19 @@ public class Storage {
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
     }
 
+    /**
+     * Removes the input Game from the teams playing in the game on the database
+     * @param game: Game object to be removed from the teams playing in this game
+     */
+    public static void removeGameFromTeams(Game game){
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
+        // remove this game from the first team playing
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+        // remove this game from the second team
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+    }
+
 
     /**
      * Stores the input Game object under the input teams on the database
