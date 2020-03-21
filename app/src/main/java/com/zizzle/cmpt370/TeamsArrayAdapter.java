@@ -3,29 +3,36 @@ package com.zizzle.cmpt370;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.zizzle.cmpt370.Activities.TeamActivity;
 import com.zizzle.cmpt370.Model.TeamInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Array adapter for the homepage to display league name above the teams
  */
-public class TeamsArrayAdapter extends BaseAdapter{
+public class TeamsArrayAdapter extends BaseAdapter implements Filterable {
 
     /** Teams names */
     private ArrayList<String> teamRank;
 
     /** Team Info */
     private ArrayList<TeamInfo> teams;
+
+    /** Teams Search Info */
+    private ArrayList<TeamInfo> teamsFiltered;
 
     /** Activity this is being used in */
     private Context context;
@@ -43,6 +50,7 @@ public class TeamsArrayAdapter extends BaseAdapter{
     public TeamsArrayAdapter(Activity activity, ArrayList<String> teamRank, ArrayList<TeamInfo> teams) {
         this.teamRank = teamRank;
         this.teams = teams;
+        this.teamsFiltered = teams;
         context = activity;
         inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -54,7 +62,7 @@ public class TeamsArrayAdapter extends BaseAdapter{
      */
     @Override
     public int getCount() {
-        return teams.size();
+        return teamsFiltered.size();
     }
 
 
@@ -110,6 +118,50 @@ public class TeamsArrayAdapter extends BaseAdapter{
             }
         });
         return rowView;
+    }
+
+    @NonNull
+    @Override
+    public Filter getFilter() {
+
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+
+                // nothing to filter
+                if (constraint == null || constraint.length() == 0) {
+                    // set the Original result to return
+                    results.count = teams.size();
+                    results.values = teams;
+                }
+
+                // filter items
+                else {
+                    ArrayList<TeamInfo> filteredResult = new ArrayList<>();
+                    constraint = constraint.toString().toUpperCase();
+
+                    for (TeamInfo team : teams) {
+                        if (team.toString().toUpperCase().contains(constraint)) {
+                            filteredResult.add(team);
+                            System.out.println(team);
+                        }
+                    }
+
+                    results.count = filteredResult.size();
+                    results.values = filteredResult;
+                }
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                teamsFiltered = (ArrayList<TeamInfo>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+        return filter;
     }
 
 }
