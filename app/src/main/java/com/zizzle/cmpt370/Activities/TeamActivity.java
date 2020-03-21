@@ -138,9 +138,12 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     TextView ties = findViewById(R.id.record_ties);
 
                     // Display the W/T/L record
-                    wins.setText(String.valueOf(currentTeam.getWins()));
-                    losses.setText(String.valueOf(currentTeam.getLosses()));
-                    ties.setText(String.valueOf(currentTeam.getTies()));
+                    int numWins = currentTeam.getWins();
+                    int numLosses = currentTeam.getLosses();
+                    int numTies = currentTeam.getTies();
+                    wins.setText(String.valueOf(numWins));
+                    losses.setText(String.valueOf(numLosses));
+                    ties.setText(String.valueOf(numTies));
                     // Set the next scheduled game
                     TextView nextGameText = findViewById(R.id.next_games_text);
 
@@ -153,15 +156,16 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     barChart = (BarChart) findViewById(R.id.barGraph);
 
+                    if (numWins==0 && numTies==0 && numLosses==0) { //don't display graph if team hasn't played any games yet
+                        barChart.setVisibility(View.GONE);
+                    }
+
                     ArrayList<BarEntry> barEntries = new ArrayList<>();
                     // x and y coordinate
                     //TODO uncomment below and delete following three lines
-//                    barEntries.add(new BarEntry(1f, currentTeam.getWins())); //entries must be floats
-//                    barEntries.add(new BarEntry(2f, currentTeam.getTies()));
-//                    barEntries.add(new BarEntry(3f, currentTeam.getLosses()));
-                    barEntries.add(new BarEntry(0f, 6)); //entries must be floats
-                    barEntries.add(new BarEntry(1f, 2));
-                    barEntries.add(new BarEntry(2f, 3));
+                    barEntries.add(new BarEntry(1f, numWins)); //entries must be floats
+                    barEntries.add(new BarEntry(2f, numTies));
+                    barEntries.add(new BarEntry(3f, numLosses));
                     BarDataSet barDataSet = new BarDataSet(barEntries, "Games");
 
                     barDataSet.setDrawValues(false); //hide values of the bar heights (i.e. number of games)
@@ -176,7 +180,19 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     BarData data = new BarData(barDataSet);
                     barChart.setData(data);
 
-
+                    barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                    barChart.animateY(1500);
+                    Description d = new Description();
+                    d.setText("");
+                    barChart.setDescription(d); //remove description
+                    barChart.getLegend().setEnabled(false); //remove legend
+                    barChart.getAxisLeft().setDrawLabels(false); //remove x axis
+                    barChart.getAxisRight().setDrawLabels(false); //remove right axis
+                    String[] barLabels = {"Win", "Tie", "Loss"};
+                    barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(barLabels)); //show X Label (Win, Tie, loss)
+                    barChart.getXAxis().setTextColor(Color.WHITE); //set X Axis text color
+                    barChart.getXAxis().setGranularityEnabled(true); //removes duplicate first X Axis value
+                    barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); //Position X Axis at the bottom
 
 
 
