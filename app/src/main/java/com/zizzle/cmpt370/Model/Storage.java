@@ -14,6 +14,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Activities.TeamActivity;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -24,6 +28,8 @@ public class Storage {
      * Reference to the database
      */
     private static DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+
+
 
     /**
      * Adds the input league to the database
@@ -194,11 +200,13 @@ public class Storage {
      *
      * @param teamInfo: TeamInfo object representing the team to remove from the member
      */
-    public static void removeTeam(TeamInfo teamInfo) {
+    public static void removeTeam(final TeamInfo teamInfo) {
         // remove team from members teams
         final String teamDatabaseKey = teamInfo.getDatabaseKey();
 
-        String leagueDatabaseKey = teamInfo.getLeagueName();
+       final String leagueDatabaseKey = teamInfo.getLeagueName();
+
+       // final  CountDownLatch done = new CountDownLatch(s);
 
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addValueEventListener(new ValueEventListener() {
             @Override
@@ -206,6 +214,12 @@ public class Storage {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     database.child("users").child(ds.getKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
                 }
+
+
+                database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
+                database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+
+         //       done.countDown();
             }
 
             @Override
@@ -214,8 +228,13 @@ public class Storage {
             }
         });
         // remove the member from the team
-        database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
-        database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
+//        try {
+//            done.await();
+//        } catch(InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
     }
 
 
@@ -223,31 +242,26 @@ public class Storage {
         // remove team from members teams
 
 
+
         database.child("Leagues").child(LeagueName).child("teamsInfoMap").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                ArrayList<TeamInfo> teamsInfo = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
 
                     final String teamKey = LeagueName+"-"+ds.getKey();
 
+                     teamsInfo.add(ds.getValue(TeamInfo.class)) ;
 
-                     database.child("Teams").child(teamKey).child("ownerInfo").child("databaseKey").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                               //remove the ownership of teams from player under league deleted
-                                database.child("users").child(dataSnapshot.getKey()).child("teamInfoMap").child(teamKey).removeValue();
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
 
                     //remove Teams of a league
-                    database.child("Teams").child(teamKey).removeValue();
+                   // database.child("Teams").child(teamKey).removeValue();
+                }
+
+                for (int i=0;i<teamsInfo.size();i++){
+                    removeTeam(teamsInfo.get(i));
                 }
 
                 //remove league

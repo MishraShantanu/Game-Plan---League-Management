@@ -10,14 +10,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
 
@@ -52,6 +56,45 @@ public class ProfilePop extends Activity{
         email = findViewById(R.id.emailInput);
        // password = findViewById(R.id.passwordInput);
 
+
+        // Temporary User created ==========================================================================
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getUid());
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Member user = dataSnapshot.getValue(Member.class);
+
+                // DisplayName Text ==========================================================================
+                TextView userName = (TextView) findViewById(R.id.displayName);
+                userName.setText(user.getDisplayName());
+
+                // Email Text ==========================================================================
+                TextView email = (TextView) findViewById(R.id.emailInput);
+                email.setText(user.getEmail());
+
+                // Phone Number Text ==========================================================================
+                TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
+                phoneNumber.setText(user.getPhoneNumber());
+
+
+                // Set the title of the page to user name.
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
         submitButton = findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +107,7 @@ public class ProfilePop extends Activity{
                 Member user;
 
 
-                firebaseAuth = FirebaseAuth.getInstance();
 
-                firebaseDatabase = FirebaseDatabase.getInstance();
-
-                databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getUid());
 
 
 
