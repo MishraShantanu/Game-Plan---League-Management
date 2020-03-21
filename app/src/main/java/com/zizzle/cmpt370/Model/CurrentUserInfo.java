@@ -57,9 +57,9 @@ public final class CurrentUserInfo {
      */
     public static void initializeMemberInfo(String userID, String displayName) throws IllegalStateException{
         // enforce that we can only set the current user info if not already set
-        if(currentUserInfo != null){
-            throw new IllegalStateException("Cannot initialize current user info, current user info is already set");
-        }
+//        if(currentUserInfo != null){
+//            throw new IllegalStateException("Cannot initialize current user info, current user info is already set");
+//        }
         currentUserInfo = new MemberInfo(displayName,userID);
     }
 

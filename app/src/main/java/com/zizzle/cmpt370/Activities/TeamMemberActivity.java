@@ -115,9 +115,13 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
             @Override
             public void onClick(View view) {
                 // remove the team member from the team
-                TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+                TeamInfo currentTeamInfo = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
                 Storage.removeMemberFromTeam(clickedMemberInfo,currentTeamInfo);
                 Toast.makeText(TeamMemberActivity.this, "Team member removed successfully", Toast.LENGTH_SHORT).show();
+
+                // Move player back to the team page.
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
     }
