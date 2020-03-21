@@ -225,7 +225,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // changes the shown list items based on characters in search bar.
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                (TeamsActivity.this).teamArrayAdapter.getFilter().filter(charSequence);
+                (TeamsActivity.this).teamArrayAdapter.getFilter().filter(charSequence);
             }
 
             // these two are not needed for search but must be override.
