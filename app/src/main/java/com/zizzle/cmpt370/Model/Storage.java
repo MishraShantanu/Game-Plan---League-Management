@@ -113,6 +113,19 @@ public class Storage {
         database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").child(memberInfo.getDatabaseKey()).removeValue();
     }
 
+    /**
+     * Removes the input Game from the teams playing in the game on the database
+     * @param game: Game object to be removed from the teams playing in this game
+     */
+    public static void removeGameFromTeams(Game game){
+        TeamInfo team1Info = game.getTeam1Info();
+        TeamInfo team2Info = game.getTeam2Info();
+        // remove this game from the first team playing
+        database.child("Teams").child(team1Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+        // remove this game from the second team
+        database.child("Teams").child(team2Info.getDatabaseKey()).child("scheduledGames").child(game.getDatabaseKey()).removeValue();
+    }
+
 
     /**
      * Stores the input Game object under the input teams on the database
@@ -196,30 +209,30 @@ public class Storage {
 
 
     /**
-     * Removes the input member from the input team on the database, this is a no-op if the member isn't on the input team
-     *
-     * @param teamInfo: TeamInfo object representing the team to remove from the member
+     * Removes the Team from the database corresponding to the input TeamInfo, any Members on this team are
+     * removed, and any teams with games scheduled against this team have these games removed
+     * @param teamToDeleteInfo: TeamInfo object representing the Team to be removed
      */
-    public static void removeTeam(final TeamInfo teamInfo) {
-        // remove team from members teams
-        final String teamDatabaseKey = teamInfo.getDatabaseKey();
+    public static void removeTeam(final TeamInfo teamToDeleteInfo) {
+       final String leagueDatabaseKey = teamToDeleteInfo.getLeagueName();
 
-       final String leagueDatabaseKey = teamInfo.getLeagueName();
-
-       // final  CountDownLatch done = new CountDownLatch(s);
-
-        database.child("Teams").child(teamInfo.getDatabaseKey()).child("membersInfoMap").addValueEventListener(new ValueEventListener() {
+       // read in the specified team
+        database.child("Teams").child(teamToDeleteInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    database.child("users").child(ds.getKey()).child("teamInfoMap").child(teamDatabaseKey).removeValue();
+                Team teamToDelete = dataSnapshot.getValue(Team.class);
+                // remove the members from this team
+                for(MemberInfo currentMemberInfo : teamToDelete.getTeamMembersInfo()){
+                    removeMemberFromTeam(currentMemberInfo, teamToDeleteInfo);
                 }
-
-
-                database.child("Teams").child(teamInfo.getDatabaseKey()).removeValue();
-                database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamInfo.getName()).removeValue();
-
-         //       done.countDown();
+                // if this team has any scheduled games against other teams, remove these games for the other teams
+                for(Game scheduledGame : teamToDelete.getScheduledGames().values()){
+                    removeGameFromTeams(scheduledGame);
+                }
+                // remove this team from the league its a part of
+                database.child("Leagues").child(leagueDatabaseKey).child("teamsInfoMap").child(teamToDeleteInfo.getName()).removeValue();
+                // remove this team from the database
+                database.child("Teams").child(teamToDeleteInfo.getDatabaseKey()).removeValue();
             }
 
             @Override
@@ -227,45 +240,24 @@ public class Storage {
 
             }
         });
-        // remove the member from the team
-//        try {
-//            done.await();
-//        } catch(InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-
     }
 
-
-    public static void removeLeague(final String LeagueName) {
-        // remove team from members teams
-
-
-
-        database.child("Leagues").child(LeagueName).child("teamsInfoMap").addValueEventListener(new ValueEventListener() {
+    /**
+     * Removes the league corresponding to the input LeagueInfo and all teams that are a part of this league
+     * from the database
+     * @param leagueInfo: LeagueInfo object describing the league to be removed from the database
+     */
+    public static void removeLeague(final LeagueInfo leagueInfo) {
+        // remove the teams of this league
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                ArrayList<TeamInfo> teamsInfo = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-
-                    final String teamKey = LeagueName+"-"+ds.getKey();
-
-                     teamsInfo.add(ds.getValue(TeamInfo.class)) ;
-
-
-                    //remove Teams of a league
-                   // database.child("Teams").child(teamKey).removeValue();
+                    TeamInfo currentTeamInfo = ds.getValue(TeamInfo.class);
+                    removeTeam(currentTeamInfo);
                 }
-
-                for (int i=0;i<teamsInfo.size();i++){
-                    removeTeam(teamsInfo.get(i));
-                }
-
                 //remove league
-                database.child("Leagues").child(LeagueName).removeValue();
+                database.child("Leagues").child(leagueInfo.getDatabaseKey()).removeValue();
             }
 
             @Override

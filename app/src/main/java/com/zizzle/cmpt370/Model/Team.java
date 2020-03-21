@@ -3,8 +3,10 @@ package com.zizzle.cmpt370.Model;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -87,6 +89,17 @@ public class Team {
     public HashMap<String,Game> getScheduledGames(){
         // In order for firebase to recognize our instance variable scheduledGames, we must make a public getter or setter
         return this.scheduledGames;
+    }
+
+    /**
+     * Returns an ArrayList of Game objects that are sorted so that games scheduled at an earlier date appear
+     * first in this list, returns an empty ArrayList if there are no scheduled games
+     * @return ArrayList<Game> described above
+     */
+    public ArrayList<Game> getSortedScheduledGames(){
+        ArrayList<Game> sortedGames =  new ArrayList<>(this.scheduledGames.values());
+        Collections.sort(sortedGames);
+        return sortedGames;
     }
 
     /**
@@ -201,8 +214,8 @@ public class Team {
 
 
     /**
-     * Returns a hashset of the members of the team
-     * @return HashSet containing info of the members of the team
+     * Returns an arraylist of the members of the team
+     * @return ArrayList containing info of the members of the team
      */
     public ArrayList<MemberInfo> getTeamMembersInfo(){
         // if there are no members on this team, and we read this object from the database, membersInfoMap will be null
@@ -267,6 +280,15 @@ public class Team {
         }
         // other isn't a Team, cannot be equal to this
         return false;
+    }
+
+    /**
+     * Returns a HashMap with String user ID keys, and MemberInfo values for the members of this team
+     * @return HashMap<String,MemberInfo> as described above
+     */
+    public HashMap<String, MemberInfo> getMembersInfoMap(){
+        // this method is required by Firebase to actually store a Team's members on the database
+        return this.membersInfoMap;
     }
 
 
