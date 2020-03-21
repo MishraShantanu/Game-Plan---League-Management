@@ -69,6 +69,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_teams);
 
+
+
         // add top bar with title 'Teams'
         Toolbar toolbar = findViewById(R.id.top_bar);
         setSupportActionBar(toolbar); //sets toolbar as action bar
@@ -126,18 +128,12 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
                         Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
 
-                        Intent toHome = new Intent(TeamsActivity.this, HomeActivity.class);
+                        Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
                         toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         Storage.removeLeague(selectedLeague);
+                        finish();
                         startActivity(toHome);
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-
-
-
-
-
-
                 }
             });
 
@@ -146,31 +142,33 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // set the league description.
-                    League currentLeague = dataSnapshot.getValue(League.class);
-                    MemberInfo ownerInfo = currentLeague.getOwnerInfo();
-                    MemberInfo currentUserInfo = getCurrentUserInfo();
+                    if(dataSnapshot.exists()){
+                        League currentLeague = dataSnapshot.getValue(League.class);
+                        MemberInfo ownerInfo = currentLeague.getOwnerInfo();
+                        MemberInfo currentUserInfo = getCurrentUserInfo();
 
-                    // set the league description
-                    TextView leagueDescription = findViewById(R.id.league_description);
-                    leagueDescription.setText(currentLeague.getDescription());
+                        // set the league description
+                        TextView leagueDescription = findViewById(R.id.league_description);
+                        leagueDescription.setText(currentLeague.getDescription());
 
-                    // get the teams of this league
-                    teams.clear();
-                    teams.addAll(currentLeague.getSortedTeamInfos());
-                    // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
+                        // get the teams of this league
+                        teams.clear();
+                        teams.addAll(currentLeague.getSortedTeamInfos());
+                        // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
 
 
-                    // display the no team text if not apart of any teams.
-                    if (!teams.isEmpty()) {
-                        TextView noTeamText = findViewById(R.id.no_teams_text);
-                        noTeamText.setVisibility(View.GONE);
+                        // display the no team text if not apart of any teams.
+                        if (!teams.isEmpty()) {
+                            TextView noTeamText = findViewById(R.id.no_teams_text);
+                            noTeamText.setVisibility(View.GONE);
+                        }
+                        teamArrayAdapter.notifyDataSetChanged();
+
+                        // only display the remove league button to the owner of the league
+                        if (currentUserInfo.equals(ownerInfo)) {
+                            removeLeagueButton.setVisibility(View.VISIBLE);
+                        }else  removeLeagueButton.setVisibility(View.INVISIBLE);
                     }
-                    teamArrayAdapter.notifyDataSetChanged();
-
-                    // only display the remove league button to the owner of the league
-                    if (currentUserInfo.equals(ownerInfo)) {
-                        removeLeagueButton.setVisibility(View.VISIBLE);
-                    }else  removeLeagueButton.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
