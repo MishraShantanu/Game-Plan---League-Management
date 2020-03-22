@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.CustomArrayAdapter;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
@@ -79,23 +80,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         teamsInfo = new ArrayList<>();
         leaguesName = new ArrayList<>();
 
-        // read in the current user's teams from the database
+        // read in the current user's information from the database
         final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
-        DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
-
-        // Obtain values from the database
-        userTeamsReference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
+        currentUserReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Remove the progress bar once leagues have been fetched
-                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
-                leagueLoading.setVisibility(View.GONE);
+                // Remove the progress bar once the current user has been fetched
+                ProgressBar memberLoading = findViewById(R.id.progressbar_loading);
+                memberLoading.setVisibility(View.GONE);
+                Member currentMember = dataSnapshot.getValue(Member.class);
 
-                // called to read data, get the list of teams the member is a part of
-                // first clear this list as this list may be updated as new teams are added and removed
+                // TODO display this user's wins, losses and ties
+                currentMember.getCareerWins();
+                currentMember.getCareerTies();
+                currentMember.getCareerLosses();
+
+                // display the teams the user is a part of, along with the league each team belongs to
+                // first clear out list of teams for this user to prevent teams from showing up twice if new teams are added or removed
                 teamsInfo.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    TeamInfo ti = ds.getValue(TeamInfo.class);
+                leaguesName.clear();
+                for(TeamInfo ti : currentMember.getTeamsInfo()){
                     teamsInfo.add(ti);
                     leaguesName.add(ti.getLeagueName());
                 }
@@ -116,13 +121,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 teamArrayAdapter.notifyDataSetChanged();
             }
 
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // called when database operations fail,
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-
 
         // Display ListView contents.
         teamArrayAdapter = new CustomArrayAdapter(HomeActivity.this, leaguesName, teamsInfo);
