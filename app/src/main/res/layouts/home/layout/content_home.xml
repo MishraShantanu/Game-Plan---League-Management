@@ -16,15 +16,96 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
+        <!--    Record    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Personal Record"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText" />
+
+        <!--    Record Value    -->
+        <LinearLayout
+            android:id="@+id/personalRecord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!--      Wins      -->
+            <TextView
+                android:id="@+id/personalRecord_wins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <!--     Ties       -->
+            <TextView
+                android:id="@+id/personalRecord_ties"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#ebc800"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <!--  Losses  -->
+            <TextView
+                android:id="@+id/personalRecord_losses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="40sp" />
+
+        </LinearLayout>
+
+
+        <!--    Bar Graph    -->
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/personalBarGraph"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
+
         <!--    My Teams    -->
         <TextView
             android:id="@+id/my_teams_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
             android:layout_marginEnd="15dp"
             android:paddingHorizontal="22dp"
-            android:layout_marginTop="10dp"
             android:paddingTop="16dp"
             android:text="My Teams"
             android:textAlignment="textStart"
