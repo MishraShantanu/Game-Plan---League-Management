@@ -103,6 +103,17 @@ public class Team {
     }
 
     /**
+     * Returns an ArrayList of Game objects that are sorted so that games played at an earlier date appear
+     * first in this list, returns an empty ArrayList if there are no games played
+     * @return ArrayList<Game> described above
+     */
+    public ArrayList<Game> getSortedPlayedGames(){
+        ArrayList<Game> sortedGames = new ArrayList<>(this.gamesPlayed.values());
+        Collections.sort(sortedGames);
+        return sortedGames;
+    }
+
+    /**
      * Retrieves the name of the team.
      * @return String name of the team.
      */
