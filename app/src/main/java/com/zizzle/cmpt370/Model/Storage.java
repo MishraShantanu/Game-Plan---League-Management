@@ -162,16 +162,16 @@ public class Storage {
         database.child("Teams").child(team2Info.getDatabaseKey()).child("gamesPlayed").child(game.getDatabaseKey()).setValue(game);
 
         // use a transaction to increment the wins/losses/ties of the teams in this game to avoid race conditions
-        Transaction.Handler incrementHandler = new Transaction.Handler() {
+        final Transaction.Handler incrementHandler = new Transaction.Handler() {
             @NonNull
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 if(mutableData.getValue() == null){
-                    // if the team has no wins/losses/ties recorded, set the teams's wins/losses/ties to 1
+                    // if an object has none of a stat recorded set its value to 1
                     mutableData.setValue(1);
                 }
                 else{
-                    // otherwise increment the wins/losses/ties of this team
+                    // otherwise increment the attribute for this object
                     mutableData.setValue((Long)mutableData.getValue() + 1);
                 }
                 return Transaction.success(mutableData);
@@ -185,25 +185,89 @@ public class Storage {
             }
         };
 
+        // ValueEventListener that reads all the members in for a particular team, and increments the wins of these members
+        ValueEventListener teamMemberWinIncrementListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Team winningTeam = dataSnapshot.getValue(Team.class);
+                // increment the wins for each member on this team
+                for(MemberInfo teamMember : winningTeam.getTeamMembersInfo()){
+                    database.child("users").child(teamMember.getDatabaseKey()).child("careerWins").runTransaction(incrementHandler);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        // ValueEventListener that reads all the members in for a particular team, and increments the losses of these members
+        ValueEventListener teamMemberLossIncrementListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Team winningTeam = dataSnapshot.getValue(Team.class);
+                // increment the losses for each member on this team
+                for(MemberInfo teamMember : winningTeam.getTeamMembersInfo()){
+                    database.child("users").child(teamMember.getDatabaseKey()).child("careerLosses").runTransaction(incrementHandler);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        // ValueEventListener that reads all the members in for a particular team, and increments the ties of these members
+        ValueEventListener teamMemberTieIncrementListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Team winningTeam = dataSnapshot.getValue(Team.class);
+                // increment the ties for each member on this team
+                for(MemberInfo teamMember : winningTeam.getTeamMembersInfo()){
+                    database.child("users").child(teamMember.getDatabaseKey()).child("careerTies").runTransaction(incrementHandler);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+
+
         LeagueInfo currentLeagueInfo = new LeagueInfo(game.getTeam1Info().getLeagueName());
         if(game.getTeam1Score()>game.getTeam2Score()){
             // team1 has won increment team1's wins and team2's losses
             database.child("Teams").child(team1Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
             database.child("Teams").child(team2Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
-            // also update the TeamInfo objects stored for this league to reflect the new win by team1
+            // update the TeamInfo objects stored for this league to reflect the new win by team1
             database.child("Leagues").child(currentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(team1Info.getName()).child("wins").runTransaction(incrementHandler);
+            // increment the wins for each member of team1
+            database.child("Teams").child(team1Info.getDatabaseKey()).addListenerForSingleValueEvent(teamMemberWinIncrementListener);
+            // increment the losses for each member of team2
+            database.child("Teams").child(team2Info.getDatabaseKey()).addListenerForSingleValueEvent(teamMemberLossIncrementListener);
         }
         else if(game.getTeam1Score()<game.getTeam2Score()){
             // team2 has won, increment team2's wins and team1's losses
             database.child("Teams").child(team1Info.getDatabaseKey()).child("losses").runTransaction(incrementHandler);
             database.child("Teams").child(team2Info.getDatabaseKey()).child("wins").runTransaction(incrementHandler);
-            // also update the TeamInfo objects stored for this league to reflect the new win by team2
+            // update the TeamInfo objects stored for this league to reflect the new win by team2
             database.child("Leagues").child(currentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(team2Info.getName()).child("wins").runTransaction(incrementHandler);
+            // increment the wins for each member of team2
+            database.child("Teams").child(team2Info.getDatabaseKey()).addListenerForSingleValueEvent(teamMemberWinIncrementListener);
+            // increment the losses for each member of team1
+            database.child("Teams").child(team1Info.getDatabaseKey()).addListenerForSingleValueEvent(teamMemberLossIncrementListener);
         }
         else{
             // the teams tied, increment the ties for each team
             database.child("Teams").child(team1Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
             database.child("Teams").child(team2Info.getDatabaseKey()).child("ties").runTransaction(incrementHandler);
+            // increment the wins for each member of team1 and team2
+            database.child("Teams").child(team1Info.getDatabaseKey()).addListenerForSingleValueEvent(teamMemberTieIncrementListener);
+            database.child("Teams").child(team2Info.getDatabaseKey()).addListenerForSingleValueEvent(teamMemberTieIncrementListener);
         }
     }
 
