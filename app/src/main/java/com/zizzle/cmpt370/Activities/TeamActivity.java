@@ -144,9 +144,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     wins.setText(String.valueOf(numWins));
                     losses.setText(String.valueOf(numLosses));
                     ties.setText(String.valueOf(numTies));
-                    // Set the next scheduled game
-                    TextView nextGameText = findViewById(R.id.next_games_text);
-
 
                     // Graph to Show the Wins/Ties/Losses ==========================================================================
 
@@ -176,7 +173,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     barChart.setData(data);
 
                     barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
-                    barChart.animateY(1500);
+                    barChart.animateY(2000);
                     Description d = new Description();
                     d.setText("");
                     barChart.setDescription(d); //remove description
@@ -191,6 +188,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     // ==========================================================================
 
+
+                    // Set the next scheduled game
+                    TextView nextGameText = findViewById(R.id.next_games_text);
 
                     if (currentTeam.hasGamesScheduled()) {
                         final Game closestGame = currentTeam.getClosestScheduledGame();
