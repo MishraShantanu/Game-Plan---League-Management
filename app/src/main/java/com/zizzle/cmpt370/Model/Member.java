@@ -39,6 +39,15 @@ public class Member {
      */
     private ArrayList<LeagueInfo> leaguesInfo = new ArrayList<>();
 
+    /** Integer wins this Member has throughout all games they've played */
+    private int careerWins;
+
+    /** Integer losses this Member has throughout all games they've played */
+    private int careerLosses;
+
+    /** Integer ties this Member has throughout all games they've played */
+    private int careerTies;
+
 
     /**
      * Constructor for the Member object.
@@ -53,6 +62,10 @@ public class Member {
         this.email = email;
         setPhoneNumber(phoneNumber);
         this.userID = userID;
+        // initialize stats for this new member
+        this.careerWins = 0;
+        this.careerLosses = 0;
+        this.careerTies = 0;
     }
 
     /**
@@ -99,6 +112,39 @@ public class Member {
         return phoneNumber;
     }
 
+    /**
+     * returns the number of wins this Member has had throughout their career
+     * @return Integer number of career wins for this user
+     */
+    public int getCareerWins(){
+        return this.careerWins;
+    }
+
+    /**
+     * Returns the number of losses this Member has had throughout their career
+     * @return Integer number of career losses for this user
+     */
+    public int getCareerLosses(){
+        return this.careerLosses;
+    }
+
+    /**
+     * Returns the number of ties this Member has had throughout their career
+     * @return Integer number of career ties for this user
+     */
+    public int getCareerTies(){
+        return this.careerTies;
+    }
+
+    /**
+     * Returns a HashMap with string Team database keys as keys and TeamInfo values representing the teams
+     * this user is a part of
+     * @return HashMap<String,TeamInfo> described above
+     */
+    public HashMap<String,TeamInfo> getTeamInfoMap(){
+        // This method is required so Firebase is aware of and stores the teamInfoMap for a Member
+        return this.teamInfoMap;
+    }
 
     /**
      * Retrieves info about the teams the user belongs to.

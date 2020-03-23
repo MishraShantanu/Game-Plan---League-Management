@@ -39,16 +39,11 @@ public class Game implements Comparable, Serializable {
      * @param team2Info: TeamInfo object, second of the teams playing in the game
      * @param gameDate: GameTime object specifying when this game is scheduled to occur
      * @param location: String name of the location the game is being held
-     * @throws IllegalArgumentException if the gameDate refers to a time in the past, games must be
-     * scheduled for a time in the future
      */
     public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
         this.team1Info = team1Info;
         this.team2Info = team2Info;
-        if(!gameDate.isInFuture()){
-            throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
-        }
         this.gameTime = gameDate;
         this.location = location;
         this.played = false;
@@ -170,6 +165,36 @@ public class Game implements Comparable, Serializable {
         else{
             // new time is valid
             this.gameTime = newTime;
+        }
+    }
+
+    /**
+     * Determines if this game is a tie, the game must be played before ties can be determined
+     * @return true if the game is a tie, false otherwise, returns false if the game hasn't been played
+     */
+    public boolean isTie(){
+        if(!this.isPlayed()){
+            return false;
+        }
+        return this.team1Score == this.team2Score;
+    }
+
+    /**
+     * Retrieves the winner of the game
+     * @return TeamInfo representing the winner of the game, returns null if the game hasn't been played
+     * or has been tied
+     */
+    public TeamInfo getWinner() throws IllegalStateException{
+        if(!this.isPlayed() || this.isTie()){
+            return null;
+        }
+        if(team1Score>team2Score){
+            // team1 has won
+            return this.team1Info;
+        }
+        else{
+            // team2 must have won
+            return this.team2Info;
         }
     }
 

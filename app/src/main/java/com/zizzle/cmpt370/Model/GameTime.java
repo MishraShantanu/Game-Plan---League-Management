@@ -25,9 +25,7 @@ public class GameTime implements Comparable, Serializable {
      * @param day: int, the day of the month the game will take place, e.g. 15, cannot be greater than 31
      * @param hour: int, the hour of the day the game will take place 0-23, where 0 represents 12:00 AM
      * @param minutes: int, the minutes of the hour the game will take place, 0-59
-     * @throws IllegalArgumentException: if any of the above arguments are outside of their specified bounds,
-     * additionally a GameTime object can only represent a date in the future, if the input arguments
-     * specify a date in the past, this exception is thrown
+     * @throws IllegalArgumentException: if any of the above arguments are outside of their specified bounds
      */
     public GameTime(int year, int month, int day, int hour, int minutes) throws IllegalArgumentException{
         // months normally range from 0-11, change the input bounds
@@ -53,11 +51,6 @@ public class GameTime implements Comparable, Serializable {
         this.calendar.set(year,month,day,hour,minutes,0);
         // set milliseconds to 0
         this.calendar.set(Calendar.MILLISECOND,0);
-
-        // make sure game isn't scheduled to occur in the past
-        if(! this.isInFuture()){
-            throw new IllegalArgumentException("GameTime: date specified isn't in the future");
-        }
         this.timeInMilliseconds = this.calendar.getTimeInMillis();
     }
 
