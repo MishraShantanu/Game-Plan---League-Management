@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +34,7 @@ import com.zizzle.cmpt370.CustomArrayAdapter;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
@@ -47,6 +56,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
+
+    /**
+     * Bar Chart to display scores
+     */
+    BarChart barChart;
 
 
     @Override
@@ -75,7 +89,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
-            // list of teams =========================================================================
+        // list of teams =========================================================================
         // Initialize arrays
         teamsInfo = new ArrayList<>();
         leaguesName = new ArrayList<>();
@@ -119,6 +133,74 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 // Show the teams found.
                 teamArrayAdapter.notifyDataSetChanged();
+
+
+                // Show Personal Wins : Ties: Losses ==========================================================================
+
+                // make personal record numbers and graph visible
+                findViewById(R.id.personalRecord_TitleText).setVisibility(View.VISIBLE);
+                findViewById(R.id.personalRecord_Divider).setVisibility(View.VISIBLE);
+                findViewById(R.id.personalRecord).setVisibility(View.VISIBLE);
+                findViewById(R.id.personalBarGraph).setVisibility(View.VISIBLE);
+
+
+                // Set the record
+                TextView wins = findViewById(R.id.personalRecord_wins);
+                TextView losses = findViewById(R.id.personalRecord_losses);
+                TextView ties = findViewById(R.id.personalRecord_ties);
+
+                // Display the W/T/L record
+                //TODO Replace below hard-coded numbers with the method to get actual data
+                int numWins = 5;
+                int numLosses = 10;
+                int numTies = 3;
+                wins.setText(String.valueOf(numWins));
+                losses.setText(String.valueOf(numLosses));
+                ties.setText(String.valueOf(numTies));
+
+                // Graph to Show the Wins/Ties/Losses ==========================================================================
+
+                barChart = (BarChart) findViewById(R.id.personalBarGraph);
+
+                if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if user hasn't played any games yet
+                    barChart.setVisibility(View.GONE);
+                }
+
+                ArrayList<BarEntry> barEntries = new ArrayList<>();
+                // x and y coordinate
+                barEntries.add(new BarEntry(0f, numWins)); //entries must be floats
+                barEntries.add(new BarEntry(1f, numTies));
+                barEntries.add(new BarEntry(2f, numLosses));
+                BarDataSet barDataSet = new BarDataSet(barEntries, "Games");
+
+                barDataSet.setDrawValues(false); //hide values of the bar heights (i.e. number of games)
+
+                //bar colors (same shades as numbers above the graph)
+                int green = Color.argb(255, 153, 204, 0);
+                int yellow = Color.argb(255, 235, 200, 0);
+                int red = Color.argb(255, 255, 68, 68);
+                int[] barColors = {green, yellow, red};
+                barDataSet.setColors(barColors);
+
+                BarData data = new BarData(barDataSet);
+                barChart.setData(data);
+
+                barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                barChart.animateY(2000);
+                Description d = new Description();
+                d.setText("");
+                barChart.setDescription(d); //remove description
+                barChart.getLegend().setEnabled(false); //remove legend
+                barChart.getAxisLeft().setDrawLabels(false); //remove left axis
+                barChart.getAxisRight().setDrawLabels(false); //remove right axis
+                String[] barLabels = {"Win", "Tie", "Loss"};
+                barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(barLabels)); //show X Label (Win, Tie, loss)
+                barChart.getXAxis().setTextColor(Color.WHITE); //set X Axis text color
+                barChart.getXAxis().setGranularityEnabled(true); //removes duplicate first X Axis value
+                barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); //Position X Axis at the bottom
+
+                // ==========================================================================
+
             }
 
             @Override
