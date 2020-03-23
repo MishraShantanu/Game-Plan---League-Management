@@ -39,16 +39,11 @@ public class Game implements Comparable, Serializable {
      * @param team2Info: TeamInfo object, second of the teams playing in the game
      * @param gameDate: GameTime object specifying when this game is scheduled to occur
      * @param location: String name of the location the game is being held
-     * @throws IllegalArgumentException if the gameDate refers to a time in the past, games must be
-     * scheduled for a time in the future
      */
     public Game(TeamInfo team1Info, TeamInfo team2Info, GameTime gameDate, String location) throws IllegalArgumentException{
         //TODO: Could have home and away teams, team1 could be home etc
         this.team1Info = team1Info;
         this.team2Info = team2Info;
-        if(!gameDate.isInFuture()){
-            throw new IllegalArgumentException("Game: input GameTime refers to a time in the past, games must be scheduled for the future");
-        }
         this.gameTime = gameDate;
         this.location = location;
         this.played = false;
