@@ -146,7 +146,45 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
             // display the button to submit score changes
             submitButton.setVisibility(View.GONE);
         }
+
+
+        // remove game button =======================================================================
+        final Button removeGame = findViewById(R.id.remove_game_button);
+
+        // Remove game when this button is clicked.
+        removeGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // TODO Remove the game when clicked
+
+                // Go back to the last activity when deleted.
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+                // Remove this after adding functionality.
+                Toast.makeText(GameActivity.this, "Not Implemented", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Hide the button if the user is not on the team.
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference currentMemberReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey()).child("membersInfoMap").child(currentUserInfo.getDatabaseKey());
+        currentMemberReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    // user isn't on the team, don't display the remove game button
+                    removeGame.setVisibility(View.GONE);
+                }
+            }
+
+            // Auto Generated.
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
+
 
 
     //When item is selected in the menu, open the respective element (fragment or activity)

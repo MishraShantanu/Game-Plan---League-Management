@@ -188,10 +188,9 @@
             android:background="@drawable/round_card_important_button"
             android:drawableStart="@drawable/ic_warning"
             android:padding="22dp"
-            android:text="  LEAVE TEAM"
+            android:text="  Remove Game"
             android:textColor="@color/colorText"
-            android:textSize="24sp"
-            android:visibility="gone" />
+            android:textSize="24sp" />
 
     </LinearLayout>
 
