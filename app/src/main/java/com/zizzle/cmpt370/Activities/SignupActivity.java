@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,7 +42,6 @@ public class SignupActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
 
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.Signup_Email);
         password = findViewById(R.id.Signup_Password);
@@ -50,6 +50,22 @@ public class SignupActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.Signup_Phone);
 
         displayName = findViewById(R.id.Signup_Name);
+
+        // Privacy Policy Link ==========================================================================
+
+        TextView privacyPolicyButton = findViewById(R.id.Signup_PrivacyPolicy);
+        privacyPolicyButton.setVisibility(View.VISIBLE);
+        privacyPolicyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/privacy-policy"));
+                startActivity(intent);
+            }
+        });
+
+        //==========================================================================
+
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override

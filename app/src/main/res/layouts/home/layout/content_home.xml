@@ -161,6 +161,15 @@
             android:listSelector="@android:color/transparent"
             android:padding="15dp" />
 
+        <TextView
+            android:id="@+id/Home_PrivacyPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privacy Policy"
+            android:textColor="@color/colorText"
+            android:visibility="gone"
+            />
+
     </LinearLayout>
 
 </ScrollView>

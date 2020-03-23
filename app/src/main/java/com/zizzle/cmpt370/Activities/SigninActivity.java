@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,21 @@ public class SigninActivity extends AppCompatActivity {
         password = findViewById(R.id.Signin_Password);
         buttonSignIn = findViewById(R.id.Signin_Button);
         tvSignUp = findViewById(R.id.Signin_HaveAccount);
+
+        // Privacy Policy Link ==========================================================================
+
+        TextView privacyPolicyButton = findViewById(R.id.Signin_PrivacyPolicy);
+        privacyPolicyButton.setVisibility(View.VISIBLE);
+        privacyPolicyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/privacy-policy"));
+                startActivity(intent);
+            }
+        });
+
+        //==========================================================================
 
 
         mAuthstatelistner = new FirebaseAuth.AuthStateListener() {
