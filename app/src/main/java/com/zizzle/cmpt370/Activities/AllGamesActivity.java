@@ -116,6 +116,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGameArrayAdapter.notifyDataSetChanged();
 
                 // determine the win loss ratios for this team over all of their games played
+                // TODO this should probably be a Team method
                 ArrayList<Float> winLossRatios = new ArrayList<>();
                 int winCount = 0;
                 int lossCount = 0;

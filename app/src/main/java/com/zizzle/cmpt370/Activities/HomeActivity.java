@@ -105,11 +105,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 memberLoading.setVisibility(View.GONE);
                 Member currentMember = dataSnapshot.getValue(Member.class);
 
-                // TODO display this user's wins, losses and ties
-                currentMember.getCareerWins();
-                currentMember.getCareerTies();
-                currentMember.getCareerLosses();
-
                 // display the teams the user is a part of, along with the league each team belongs to
                 // first clear out list of teams for this user to prevent teams from showing up twice if new teams are added or removed
                 teamsInfo.clear();
@@ -150,10 +145,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 TextView ties = findViewById(R.id.personalRecord_ties);
 
                 // Display the W/T/L record
-                //TODO Replace below hard-coded numbers with the method to get actual data
-                int numWins = 5;
-                int numLosses = 10;
-                int numTies = 3;
+                int numWins = currentMember.getCareerWins();;
+                int numLosses = currentMember.getCareerLosses();;
+                int numTies = currentMember.getCareerTies();;
                 wins.setText(String.valueOf(numWins));
                 losses.setText(String.valueOf(numLosses));
                 ties.setText(String.valueOf(numTies));
