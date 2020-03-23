@@ -191,7 +191,7 @@
             android:drawableStart="@drawable/ic_warning"
             android:padding="22dp"
             android:text="  LEAVE TEAM"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/colorText"
             android:textSize="24sp"
             android:visibility="gone" />
 

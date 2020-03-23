@@ -100,8 +100,7 @@
             android:id="@+id/personalBarGraph"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:visibility="gone">
-        </com.github.mikephil.charting.charts.BarChart>
+            android:visibility="gone"></com.github.mikephil.charting.charts.BarChart>
 
 
         <!--    My Teams    -->
@@ -158,17 +157,16 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
             android:divider="@null"
-            android:listSelector="@android:color/transparent"
-            android:padding="15dp" />
+            android:listSelector="@android:color/transparent" />
 
         <TextView
             android:id="@+id/Home_PrivacyPolicy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Privacy Policy"
+            android:layout_marginTop="15dp"
             android:textColor="@color/colorText"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </LinearLayout>
 
