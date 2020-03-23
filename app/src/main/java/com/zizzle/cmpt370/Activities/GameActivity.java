@@ -173,10 +173,13 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         currentMemberReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    // user isn't on the team, don't display the remove game button
+                // If game is played don't display
+                if (currentGame.isPlayed())
                     removeGame.setVisibility(View.GONE);
-                }
+
+                // user isn't on the team, don't display the remove game button
+                if(!dataSnapshot.exists())
+                    removeGame.setVisibility(View.GONE);
             }
 
             // Auto Generated.
