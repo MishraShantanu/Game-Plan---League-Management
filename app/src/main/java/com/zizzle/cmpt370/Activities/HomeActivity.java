@@ -146,9 +146,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 // Display the W/T/L record
                 //TODO Replace below hard-coded numbers with the method to get actual data
-                int numWins = 5;
-                int numLosses = 10;
-                int numTies = 3;
+                int numWins = 23;
+                int numLosses = 12;
+                int numTies = 5;
                 wins.setText(String.valueOf(numWins));
                 losses.setText(String.valueOf(numLosses));
                 ties.setText(String.valueOf(numTies));
