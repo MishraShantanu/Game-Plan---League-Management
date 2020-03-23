@@ -93,35 +93,64 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         currentTeamReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Team currentTeam = dataSnapshot.getValue(Team.class);
+                // add the games scheduled and played for this team to lists to be displayed
+                // first clear these lists so games aren't displayed twice if new games are added
                 nextGames.clear();
                 pastGames.clear();
-                DataSnapshot nextGamesData = dataSnapshot.child("scheduledGames");
-                if(!nextGamesData.exists()){
+                nextGames.addAll(currentTeam.getSortedScheduledGames());
+                pastGames.addAll(currentTeam.getSortedPlayedGames());
+                if(nextGames.isEmpty()){
+                    // team has no games scheduled, display this to the user
                     TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                     noComingText.setVisibility(View.VISIBLE);
                 }
-                else{
-                    // add each scheduled game to our list
-                    for(DataSnapshot gameData : nextGamesData.getChildren()){
-                        Game currentGame = gameData.getValue(Game.class);
-                        nextGames.add(currentGame);
-                    }
-                }
-                nextGameArrayAdapter.notifyDataSetChanged();
-
-                // do the same for the games previously played by this team
-                DataSnapshot pastGamesData = dataSnapshot.child("gamesPlayed");
-                if(!pastGamesData.exists()){
+                if(pastGames.isEmpty()){
+                    // team hasn't played any games, display this
                     TextView noPastText = findViewById(R.id.no_past_games_text);
                     noPastText.setVisibility(View.VISIBLE);
                 }
-                else{
-                    for(DataSnapshot gameData : pastGamesData.getChildren()){
-                        Game currentGame = gameData.getValue(Game.class);
-                        pastGames.add(currentGame);
+
+                // display the games in these lists
+                nextGameArrayAdapter.notifyDataSetChanged();
+                pastGameArrayAdapter.notifyDataSetChanged();
+
+                // determine the win loss ratios for this team over all of their games played
+                ArrayList<Float> winLossRatios = new ArrayList<>();
+                int winCount = 0;
+                int lossCount = 0;
+                for(Game playedGame : pastGames){
+                    if(playedGame.isTie()){
+                        // if this is the first game the team has played, set the win/loss to 0.5
+                        if(winCount==0 && lossCount==0){
+                            winLossRatios.add(0.5f);
+                        }
+                        else{
+                            // consider a tie to leave an existing win loss ratio unchanged
+                            Float previousWinLossRatio = winLossRatios.get(winLossRatios.size()-1);
+                            winLossRatios.add(previousWinLossRatio);
+                        }
+                    }
+                    if(currentTeamInfo.equals(playedGame.getWinner())){
+                        // the current team has won this game
+                        winCount++;
+                        if(lossCount == 0){
+                            // the team hasn't lost so far and so have a win/loss of 100%
+                            winLossRatios.add(1f);
+                        }
+                        else{
+                            winLossRatios.add((float)winCount/(float)lossCount);
+                        }
+                    }
+                    else{
+                        // current team has lost this game
+                        lossCount++;
+                        // add the new win/loss ratio
+                        winLossRatios.add((float)winCount/(float)lossCount);
                     }
                 }
-                pastGameArrayAdapter.notifyDataSetChanged();
+
+                // TODO use this list of win/loss ratios to display win/loss ratios over time
             }
 
             @Override
