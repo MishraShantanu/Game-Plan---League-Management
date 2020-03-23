@@ -14,18 +14,102 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <!--    Record    -->
+        <TextView
+            android:id="@+id/personalRecord_TitleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Personal Record"
+            android:textColor="@color/colorText"
+            android:textSize="24sp"
+            android:visibility="gone" />
+
+        <!--    divider    -->
+        <View
+            android:id="@+id/personalRecord_Divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText"
+            android:visibility="gone" />
+
+        <!--    Record Value    -->
+        <LinearLayout
+            android:id="@+id/personalRecord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+
+            <!--      Wins      -->
+            <TextView
+                android:id="@+id/personalRecord_wins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@android:color/holo_green_light"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <!--     Ties       -->
+            <TextView
+                android:id="@+id/personalRecord_ties"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#ebc800"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <!--  Losses  -->
+            <TextView
+                android:id="@+id/personalRecord_losses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="40sp" />
+
+        </LinearLayout>
+
+        <!--    Bar Graph    -->
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/personalBarGraph"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone">
+        </com.github.mikephil.charting.charts.BarChart>
+
 
         <!--    My Teams    -->
         <TextView
             android:id="@+id/my_teams_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:paddingHorizontal="22dp"
             android:layout_marginTop="10dp"
-            android:paddingTop="16dp"
             android:text="My Teams"
             android:textAlignment="textStart"
             android:textColor="@color/colorText"
@@ -37,9 +121,8 @@
             android:id="@+id/my_teams_div"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
             android:background="@color/colorText"
             android:visibility="gone" />
 
@@ -60,8 +143,8 @@
             android:id="@+id/progressbar_loading"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
             android:indeterminate="true"
             android:minWidth="100dp"
             android:minHeight="100dp"
