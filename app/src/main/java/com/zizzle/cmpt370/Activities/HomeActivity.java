@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -193,7 +194,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 barChart.getXAxis().setGranularityEnabled(true); //removes duplicate first X Axis value
                 barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); //Position X Axis at the bottom
 
-                // ==========================================================================
+                // Privacy Policy Link ==========================================================================
+
+                TextView privacyPolicyButton = findViewById(R.id.Home_PrivacyPolicy);
+                privacyPolicyButton.setVisibility(View.VISIBLE);
+                privacyPolicyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/privacy-policy"));
+                        startActivity(intent);
+                    }
+                });
 
             }
 
