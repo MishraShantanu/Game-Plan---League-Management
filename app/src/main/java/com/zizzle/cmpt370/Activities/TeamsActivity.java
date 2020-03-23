@@ -156,6 +156,10 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                         MemberInfo ownerInfo = currentLeague.getOwnerInfo();
                         MemberInfo currentUserInfo = getCurrentUserInfo();
 
+                        // set the sport description
+                        TextView leagueSport = findViewById(R.id.league_sport);
+                        leagueSport.setText(currentLeague.getSport());
+
                         // set the league description
                         TextView leagueDescription = findViewById(R.id.league_description);
                         leagueDescription.setText(currentLeague.getDescription());
@@ -179,7 +183,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                         // only display the remove league button to the owner of the league
                         if (currentUserInfo.equals(ownerInfo)) {
                             removeLeagueButton.setVisibility(View.VISIBLE);
-                        }else  removeLeagueButton.setVisibility(View.INVISIBLE);
+                        } else  removeLeagueButton.setVisibility(View.GONE);
                     }
                 }
 

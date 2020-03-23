@@ -29,6 +29,42 @@
             android:paddingEnd="12dp"
             android:singleLine="true" />
 
+        <!--    Sport Title    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:paddingHorizontal="22dp"
+            android:paddingTop="16dp"
+            android:text="Sport"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorText"
+            android:textSize="26sp" />
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorText" />
+
+        <!--    League Sport    -->
+        <TextView
+            android:id="@+id/league_sport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginEnd="22dp"
+            android:background="@drawable/round_card"
+            android:padding="22dp"
+            android:text="sport"
+            android:textColor="@color/colorText"
+            android:textSize="20sp" />
+
         <!--    Description Title    -->
         <TextView
             android:layout_width="match_parent"
@@ -73,7 +109,7 @@
             android:layout_marginEnd="15dp"
             android:paddingHorizontal="22dp"
             android:paddingTop="18dp"
-            android:text="Teams"
+            android:text="League Rankings"
             android:textAlignment="textStart"
             android:textColor="@color/colorText"
             android:textSize="26sp" />
@@ -95,7 +131,7 @@
             android:layout_marginStart="22dp"
             android:layout_marginEnd="22dp"
             android:padding="14dp"
-            android:text="There are no teams\n\nCreate the first with the plus icon in the bottom"
+            android:text="There are no teams\n\nCreate the first with the plus button in the bottom"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
