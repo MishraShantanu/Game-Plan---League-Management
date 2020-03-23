@@ -92,12 +92,49 @@ public class Team {
     }
 
     /**
+     * Returns an ArrayList of scheduled games for this team
+     * @return ArrayList<Game> of the games scheduled for this team, an empty list is returned if
+     * there are no scheduled games
+     */
+    public ArrayList<Game> getScheduledGameList(){
+        // if there are no scheduled games for this team, after reading this team from the database
+        // the scheduled games map will be null, if this is the case, return an empty list as no games are scheduled
+        if(this.scheduledGames == null){
+            return new ArrayList<>();
+        }
+        else{
+            return new ArrayList<>(this.scheduledGames.values());
+        }
+    }
+
+    /**
      * Returns an ArrayList of Game objects that are sorted so that games scheduled at an earlier date appear
      * first in this list, returns an empty ArrayList if there are no scheduled games
      * @return ArrayList<Game> described above
      */
     public ArrayList<Game> getSortedScheduledGames(){
+        // this.scheduledGames may be null after reading in a Team without any scheduled games from the database
+        // if so return an empty list as no games have been scheduled
+        if(this.scheduledGames == null){
+            return new ArrayList<>();
+        }
         ArrayList<Game> sortedGames =  new ArrayList<>(this.scheduledGames.values());
+        Collections.sort(sortedGames);
+        return sortedGames;
+    }
+
+    /**
+     * Returns an ArrayList of Game objects that are sorted so that games played at an earlier date appear
+     * first in this list, returns an empty ArrayList if there are no games played
+     * @return ArrayList<Game> described above
+     */
+    public ArrayList<Game> getSortedPlayedGames(){
+        // this.gamesPlayed may be null after reading in a Team without any scheduled games from the database
+        // if so return an empty list as no games have been scheduled
+        if(this.gamesPlayed == null){
+            return new ArrayList<>();
+        }
+        ArrayList<Game> sortedGames = new ArrayList<>(this.gamesPlayed.values());
         Collections.sort(sortedGames);
         return sortedGames;
     }
