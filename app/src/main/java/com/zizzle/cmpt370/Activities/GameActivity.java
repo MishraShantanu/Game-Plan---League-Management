@@ -88,7 +88,7 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         final Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
         final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
         // set the fields for this page
-        currentTeamText.append(currentTeamInfo.getName());
+        currentTeamText.setText(currentTeamInfo.getName());
         gameDateText.append(currentGame.getGameTime().getDateString());
         gameTimeText.append(currentGame.getGameTime().getClockTime());
         gameLocationText.append(currentGame.getLocation());
@@ -97,13 +97,13 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         if(currentGame.getTeam1Info().equals(currentTeamInfo)){
             // current team is team1 in this game
             currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
-            opponentTeamText.append(currentGame.getTeam2Info().getName());
+            opponentTeamText.setText(currentGame.getTeam2Info().getName());
             opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
         }
         else{
             // current team is team2 in this game
             currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-            opponentTeamText.append(currentGame.getTeam1Info().getName());
+            opponentTeamText.setText(currentGame.getTeam1Info().getName());
             opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
         }
 
