@@ -194,7 +194,13 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     if (currentTeam.hasGamesScheduled()) {
                         final Game closestGame = currentTeam.getClosestScheduledGame();
-                        nextGameText.setText(closestGame.toString());
+
+                        // Remove the score since will always be n/a
+                        String nextString = closestGame.toString();
+                        nextString = nextString.replace("\nFinal Score: n/a", "");
+
+                        // Set the next game text.
+                        nextGameText.setText(nextString);
                         // take the user to the page for this game if they clicked this next game text
                         nextGameText.setOnClickListener(new View.OnClickListener() {
                             @Override
