@@ -113,6 +113,11 @@ public class Team {
      * @return ArrayList<Game> described above
      */
     public ArrayList<Game> getSortedScheduledGames(){
+        // this.scheduledGames may be null after reading in a Team without any scheduled games from the database
+        // if so return an empty list as no games have been scheduled
+        if(this.scheduledGames == null){
+            return new ArrayList<>();
+        }
         ArrayList<Game> sortedGames =  new ArrayList<>(this.scheduledGames.values());
         Collections.sort(sortedGames);
         return sortedGames;
@@ -124,6 +129,11 @@ public class Team {
      * @return ArrayList<Game> described above
      */
     public ArrayList<Game> getSortedPlayedGames(){
+        // this.gamesPlayed may be null after reading in a Team without any scheduled games from the database
+        // if so return an empty list as no games have been scheduled
+        if(this.gamesPlayed == null){
+            return new ArrayList<>();
+        }
         ArrayList<Game> sortedGames = new ArrayList<>(this.gamesPlayed.values());
         Collections.sort(sortedGames);
         return sortedGames;

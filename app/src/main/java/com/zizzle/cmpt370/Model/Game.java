@@ -175,27 +175,23 @@ public class Game implements Comparable, Serializable {
 
     /**
      * Determines if this game is a tie, the game must be played before ties can be determined
-     * @return true if the game is a tie, false otherwise
-     * @throws IllegalStateException if the game hasn't been played yet
+     * @return true if the game is a tie, false otherwise, returns false if the game hasn't been played
      */
-    public boolean isTie() throws IllegalStateException{
+    public boolean isTie(){
         if(!this.isPlayed()){
-            throw new IllegalStateException("Cannot determine if this game is a tie until the game has been played");
+            return false;
         }
         return this.team1Score == this.team2Score;
     }
 
     /**
      * Retrieves the winner of the game
-     * @return TeamInfo representing the winner of the game
-     * @throws IllegalStateException if the game hasn't been played, or if the game has tied
+     * @return TeamInfo representing the winner of the game, returns null if the game hasn't been played
+     * or has been tied
      */
     public TeamInfo getWinner() throws IllegalStateException{
-        if(!this.isPlayed()){
-            throw new IllegalStateException("Cannot determine the winner of a game that hasn't been played");
-        }
-        else if(this.isTie()){
-            throw new IllegalStateException("Cannot determine the winner of a tied game");
+        if(!this.isPlayed() || this.isTie()){
+            return null;
         }
         if(team1Score>team2Score){
             // team1 has won
