@@ -290,7 +290,7 @@ public class Storage {
                     removeMemberFromTeam(currentMemberInfo, teamToDeleteInfo);
                 }
                 // if this team has any scheduled games against other teams, remove these games for the other teams
-                for(Game scheduledGame : teamToDelete.getScheduledGames().values()){
+                for(Game scheduledGame : teamToDelete.getScheduledGameList()){
                     removeGameFromTeams(scheduledGame);
                 }
                 // remove this team from the league its a part of
