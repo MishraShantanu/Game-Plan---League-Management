@@ -3,6 +3,7 @@ package com.zizzle.cmpt370.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -10,6 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.zizzle.cmpt370.R;
 
 public class ReauthenticationPop extends Activity {
@@ -43,19 +50,29 @@ public class ReauthenticationPop extends Activity {
 
                 // Password has input.
                 else {
-
-                    // TODO Do some reauthorizing.
-
-                    // Reauthorizing was successful.
-                    if (/* Successful Condition */ true) {
-                        finish();
-                        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-                    }
+                    // get the new and old emails from ProfilePop
+                    String oldEmail = getIntent().getStringExtra("OLD_EMAIL");
+                    final String newEmail = getIntent().getStringExtra("NEW_EMAIL");
+                    // before we can change the user's email, we must reauthenticate them
+                    // reauthenticate the user with their old email and password
+                    final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    AuthCredential credential = EmailAuthProvider.getCredential(oldEmail,password);
+                    currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // update the user's email
+                            currentUser.updateEmail(newEmail);
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
+                        }
+                    });
 
                     // Reauthorizing was unsuccessful.
-                    else
+                    /*
                         Toast.makeText(ReauthenticationPop.this,
                                 "Password is incorrect, Please try again", Toast.LENGTH_SHORT).show();
+
+                     */
                 }
             }
         });

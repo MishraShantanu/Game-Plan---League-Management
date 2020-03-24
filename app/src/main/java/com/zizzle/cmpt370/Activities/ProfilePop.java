@@ -127,14 +127,16 @@ public class ProfilePop extends Activity{
                                 Storage.updatePhoneNumber(currentUserInfo,phoneNumberString);
                             }
                             if(emailChanged){
-                                Storage.updateEmail(currentUserInfo,emailString);
-                                // make sure firebase authentication keeps track of the updated email
-                                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                                fbUser.updateEmail(emailString);
+                                // pass the old and new emails for this user to the reauthentication popup
+                                Intent reauthenticationIntent = new Intent(ProfilePop.this, ReauthenticationPop.class);
+                                reauthenticationIntent.putExtra("OLD_EMAIL",user.getEmail());
+                                reauthenticationIntent.putExtra("NEW_EMAIL",emailString);
 
-                                startActivity(new Intent(ProfilePop.this, ReauthenticationPop.class));
+                                startActivity(reauthenticationIntent);
                                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 
+                                // update this user's email on the database
+                                Storage.updateEmail(currentUserInfo,emailString);
                             }
                             finish();
                             overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
