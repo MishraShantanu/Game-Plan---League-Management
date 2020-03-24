@@ -88,7 +88,7 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         final Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
         final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
         // set the fields for this page
-        currentTeamText.append(currentTeamInfo.getName());
+        currentTeamText.setText(currentTeamInfo.getName());
         gameDateText.append(currentGame.getGameTime().getDateString());
         gameTimeText.append(currentGame.getGameTime().getClockTime());
         gameLocationText.append(currentGame.getLocation());
@@ -97,13 +97,13 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         if(currentGame.getTeam1Info().equals(currentTeamInfo)){
             // current team is team1 in this game
             currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
-            opponentTeamText.append(currentGame.getTeam2Info().getName());
+            opponentTeamText.setText(currentGame.getTeam2Info().getName());
             opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
         }
         else{
             // current team is team2 in this game
             currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-            opponentTeamText.append(currentGame.getTeam1Info().getName());
+            opponentTeamText.setText(currentGame.getTeam1Info().getName());
             opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
         }
 
@@ -146,7 +146,48 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
             // display the button to submit score changes
             submitButton.setVisibility(View.GONE);
         }
+
+
+        // remove game button =======================================================================
+        final Button removeGame = findViewById(R.id.remove_game_button);
+
+        // Remove game when this button is clicked.
+        removeGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // TODO Remove the game when clicked
+
+                // Go back to the last activity when deleted.
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+                // Remove this after adding functionality.
+                Toast.makeText(GameActivity.this, "Not Implemented", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Hide the button if the user is not on the team.
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference currentMemberReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey()).child("membersInfoMap").child(currentUserInfo.getDatabaseKey());
+        currentMemberReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // If game is played don't display
+                if (currentGame.isPlayed())
+                    removeGame.setVisibility(View.GONE);
+
+                // user isn't on the team, don't display the remove game button
+                if(!dataSnapshot.exists())
+                    removeGame.setVisibility(View.GONE);
+            }
+
+            // Auto Generated.
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
     }
+
 
 
     //When item is selected in the menu, open the respective element (fragment or activity)
