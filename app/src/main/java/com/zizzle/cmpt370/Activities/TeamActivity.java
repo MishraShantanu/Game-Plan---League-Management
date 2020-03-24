@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -273,13 +274,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     // Leave the team button.
                     MemberInfo currentUser = getCurrentUserInfo();
-
-                    // Show Join Button: if member is on the team.
-                    if (membersInfo.contains(currentUser)) {
-                        if (joinButton != null) {
-                            joinButton.setVisible(false); //don't show the "Join" button since the user is part of the team/owner
-                        }
-                    }
                     membersInfo.remove(ownerInfo); //remove owner from the team member list
 
                     if (membersInfo.contains(currentUser)) {
@@ -294,9 +288,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                                 MemberInfo currentUser = getCurrentUserInfo();
                                 Storage.removeMemberFromTeam(currentUser, currentTeamInfo);
                                 leaveTeamButton.setVisibility(View.INVISIBLE);
-                                if (joinButton != null) {
-                                    joinButton.setVisible(true);
-                                }
                                 Toast.makeText(TeamActivity.this, "Left the team successfully", Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -443,9 +434,29 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.team_button_menu, menu);
         this.joinButton = menu.findItem(R.id.join_team_button);
-        if (joinButton != null) {
-            joinButton.setVisible(true);
-        }
+
+        // only display the join button if the current user is on this team
+        TeamInfo currentTeamInfo = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO_CLICKED");
+        MemberInfo currentMemberInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference userOnTeamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey()).child("membersInfoMap").child(currentMemberInfo.getDatabaseKey());
+        userOnTeamReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    // the current user is on this team, don't display the join button
+                    joinButton.setVisible(false);
+                }
+                else{
+                    // current user isn't on the team, display the join button
+                    joinButton.setVisible(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         return true;
     }
 }
