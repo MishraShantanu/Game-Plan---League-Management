@@ -56,6 +56,9 @@
         <activity
             android:name=".Activities.GamePop"
             android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.ReauthenticationPop"
+            android:theme="@style/AppTheme.PopUp" />
     </application>
 
 </manifest>
