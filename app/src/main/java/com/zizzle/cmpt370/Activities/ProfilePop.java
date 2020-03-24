@@ -131,9 +131,13 @@ public class ProfilePop extends Activity{
                                 // make sure firebase authentication keeps track of the updated email
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
                                 fbUser.updateEmail(emailString);
-                                // TODO may need to reprompt user for password to be able to update email here
+
+                                startActivity(new Intent(ProfilePop.this, ReauthenticationPop.class));
+                                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+
                             }
                             finish();
+                            overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
                         }
                     }
                 });
