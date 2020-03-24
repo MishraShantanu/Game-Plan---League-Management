@@ -17,12 +17,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
 import static android.support.constraint.Constraints.TAG;
@@ -110,9 +113,19 @@ public class ProfilePop extends Activity{
                             boolean displayNameChanged = user.getDisplayName().equals(memberNameString);
                             boolean phoneNumberChanged = user.getPhoneNumber().equals(phoneNumberString);
                             boolean emailChanged = user.getEmail().equals(emailString);
+                            MemberInfo currentUserInfo = new MemberInfo(user);
                             if(displayNameChanged){
-                                
+                                // write the user's new name to the database
+                                Storage.updateDisplayName(user,memberNameString);
+                                // update the user's profile so firebase authentication keeps track of the updated name
+                                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(memberNameString).build();
+                                fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {}
+                                });
                             }
+                            if()
                         }
                         if (!memberNameString.isEmpty()) {
                             Toast.makeText(ProfilePop.this, "Updating display name", Toast.LENGTH_SHORT).show();
