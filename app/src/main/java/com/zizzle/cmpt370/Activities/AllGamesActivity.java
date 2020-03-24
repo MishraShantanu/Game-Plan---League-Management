@@ -2,7 +2,6 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,15 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,13 +25,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Game;
-import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -82,7 +73,6 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
         teamClicked = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
 
-        // ADD STUFF HERE!!! ==========================================================================
         // NEXT GAMES =========================================================================
         final ArrayList<Game> nextGames = new ArrayList<>();
         final ArrayList<Game> pastGames = new ArrayList<>();
@@ -100,13 +90,15 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGames.clear();
                 nextGames.addAll(currentTeam.getSortedScheduledGames());
                 pastGames.addAll(currentTeam.getSortedPlayedGames());
-                if(nextGames.isEmpty()){
-                    // team has no games scheduled, display this to the user
+
+                // team has no games scheduled, display this to the user
+                if (nextGames.isEmpty()) {
                     TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                     noComingText.setVisibility(View.VISIBLE);
                 }
-                if(pastGames.isEmpty()){
-                    // team hasn't played any games, display this
+
+                // team hasn't played any games, display this
+                if (pastGames.isEmpty()) {
                     TextView noPastText = findViewById(R.id.no_past_games_text);
                     noPastText.setVisibility(View.VISIBLE);
                 }
@@ -161,13 +153,10 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         });
 
 
-
         // Display ListView contents.
-
         nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
         ListView nextGameList = findViewById(R.id.next_scores_list);
         nextGameList.setAdapter(nextGameArrayAdapter);
-
 
         // Display ListView contents.
         pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
@@ -179,7 +168,6 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
             /**
              * performs an action when a ListView item is clicked.
-             *
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
@@ -214,10 +202,9 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 }
             }
 
+            // Auto Generated.
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
 
 
@@ -248,7 +235,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:

@@ -1,5 +1,6 @@
 package com.zizzle.cmpt370.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -150,7 +151,16 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }
+
+        // Go back to team page if this activity was called from there.
+        if (getCallingActivity().getClassName().equals(TeamActivity.class.getName())) {
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+
+        // Return to home for other activities.
+        else {
             Intent toHome = new Intent(this, HomeActivity.class);
             toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(toHome);
