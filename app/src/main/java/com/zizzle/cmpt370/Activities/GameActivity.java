@@ -156,14 +156,11 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
 
-                // TODO Remove the game when clicked
+                Storage.removeGameFromTeams(currentGame);
 
                 // Go back to the last activity when deleted.
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-                // Remove this after adding functionality.
-                Toast.makeText(GameActivity.this, "Not Implemented", Toast.LENGTH_SHORT).show();
             }
         });
 
