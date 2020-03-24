@@ -136,37 +136,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGameArrayAdapter.notifyDataSetChanged();
 
                 // determine the win loss ratios for this team over all of their games played
-                // TODO this should probably be a Team method
-                ArrayList<Float> winLossRatios = new ArrayList<>();
-                int winCount = 0;
-                int lossCount = 0;
-                for (Game playedGame : pastGames) {
-                    if (playedGame.isTie()) {
-                        // if this is the first game the team has played, set the win/loss to 0.5
-                        if (winCount == 0 && lossCount == 0) {
-                            winLossRatios.add(0.5f);
-                        } else {
-                            // consider a tie to leave an existing win loss ratio unchanged
-                            Float previousWinLossRatio = winLossRatios.get(winLossRatios.size() - 1);
-                            winLossRatios.add(previousWinLossRatio);
-                        }
-                    }
-                    if (currentTeamInfo.equals(playedGame.getWinner())) {
-                        // the current team has won this game
-                        winCount++;
-                        if (lossCount == 0) {
-                            // the team hasn't lost so far and so have a win/loss of 100%
-                            winLossRatios.add(1f);
-                        } else {
-                            winLossRatios.add((float) winCount / (float) lossCount);
-                        }
-                    } else {
-                        // current team has lost this game
-                        lossCount++;
-                        // add the new win/loss ratio
-                        winLossRatios.add((float) winCount / (float) lossCount);
-                    }
-                }
+                ArrayList<Float> winLossRatios = currentTeam.getWinLossRatioOverTime();
 
                 // Graph to Show the Win:Loss Ratio ==========================================================================
 
