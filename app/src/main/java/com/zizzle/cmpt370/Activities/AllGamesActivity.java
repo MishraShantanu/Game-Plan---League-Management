@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +23,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +67,12 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
     private ArrayAdapter nextGameArrayAdapter;
     private ArrayAdapter pastGameArrayAdapter;
+
+
+    /**
+     * Line Chart to display scores
+     */
+    LineChart lineChart;
 
 
     @Override
@@ -88,7 +108,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         final ArrayList<Game> pastGames = new ArrayList<>();
 
         // read in the list of games for this team
-        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        final TeamInfo currentTeamInfo = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
         DatabaseReference currentTeamReference = FirebaseDatabase.getInstance().getReference().child("Teams").child(currentTeamInfo.getDatabaseKey());
         currentTeamReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -100,12 +120,12 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGames.clear();
                 nextGames.addAll(currentTeam.getSortedScheduledGames());
                 pastGames.addAll(currentTeam.getSortedPlayedGames());
-                if(nextGames.isEmpty()){
+                if (nextGames.isEmpty()) {
                     // team has no games scheduled, display this to the user
                     TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                     noComingText.setVisibility(View.VISIBLE);
                 }
-                if(pastGames.isEmpty()){
+                if (pastGames.isEmpty()) {
                     // team hasn't played any games, display this
                     TextView noPastText = findViewById(R.id.no_past_games_text);
                     noPastText.setVisibility(View.VISIBLE);
@@ -120,38 +140,88 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 ArrayList<Float> winLossRatios = new ArrayList<>();
                 int winCount = 0;
                 int lossCount = 0;
-                for(Game playedGame : pastGames){
-                    if(playedGame.isTie()){
+                for (Game playedGame : pastGames) {
+                    if (playedGame.isTie()) {
                         // if this is the first game the team has played, set the win/loss to 0.5
-                        if(winCount==0 && lossCount==0){
+                        if (winCount == 0 && lossCount == 0) {
                             winLossRatios.add(0.5f);
-                        }
-                        else{
+                        } else {
                             // consider a tie to leave an existing win loss ratio unchanged
-                            Float previousWinLossRatio = winLossRatios.get(winLossRatios.size()-1);
+                            Float previousWinLossRatio = winLossRatios.get(winLossRatios.size() - 1);
                             winLossRatios.add(previousWinLossRatio);
                         }
                     }
-                    if(currentTeamInfo.equals(playedGame.getWinner())){
+                    if (currentTeamInfo.equals(playedGame.getWinner())) {
                         // the current team has won this game
                         winCount++;
-                        if(lossCount == 0){
+                        if (lossCount == 0) {
                             // the team hasn't lost so far and so have a win/loss of 100%
                             winLossRatios.add(1f);
+                        } else {
+                            winLossRatios.add((float) winCount / (float) lossCount);
                         }
-                        else{
-                            winLossRatios.add((float)winCount/(float)lossCount);
-                        }
-                    }
-                    else{
+                    } else {
                         // current team has lost this game
                         lossCount++;
                         // add the new win/loss ratio
-                        winLossRatios.add((float)winCount/(float)lossCount);
+                        winLossRatios.add((float) winCount / (float) lossCount);
                     }
                 }
 
-                // TODO use this list of win/loss ratios to display win/loss ratios over time
+                // Graph to Show the Win:Loss Ratio ==========================================================================
+
+                lineChart = (LineChart) findViewById(R.id.WInLossRatioBarGraph);
+
+                int count = 0;
+                ArrayList<Entry> lineEntries = new ArrayList<>();
+                for (int i=0; i<winLossRatios.size(); i++) {
+                    //x and y coordinate
+                    lineEntries.add(new Entry(i, winLossRatios.get(i)));
+                    count++; //used later to animate graph to show the latest 5 ratios
+                }
+                LineDataSet lineDataSet = new LineDataSet(lineEntries, "Win:Loss Ratio");
+
+                int lightGreen = Color.argb(255, 204, 229, 255);
+                lineDataSet.setColor(lightGreen); //set Line Color
+                lineDataSet.setLineWidth(2f); //adjust line thickness
+                // Adjust data point circle shape and color
+                lineDataSet.setCircleColor(Color.WHITE);
+                lineDataSet.setCircleHoleColor(Color.DKGRAY);
+                lineDataSet.setCircleHoleRadius(2f);
+                lineDataSet.setCircleRadius(4f);
+                lineDataSet.setValueTextSize(10f);
+                lineDataSet.setValueTextColor(Color.WHITE);
+
+                ArrayList<ILineDataSet> dataSet = new ArrayList<>();
+                dataSet.add(lineDataSet);
+
+                LineData data = new LineData(dataSet);
+                lineChart.setData(data); //add data to the chart
+                lineChart.invalidate(); //refresh the chart
+
+                lineChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                lineChart.animateX(2000);
+                lineChart.animateY(1000);
+                Description d = new Description();
+                d.setText("");
+                lineChart.setDescription(d); //remove description
+                lineChart.getLegend().setEnabled(false); //remove legend
+                lineChart.getAxisLeft().setDrawLabels(false); //remove left axis
+                lineChart.getAxisRight().setTextColor(Color.WHITE); //set left axis color
+                lineChart.getXAxis().setDrawLabels(false); //remove X axis label
+                //Show Y axis from 0 to 1 at all times
+                lineChart.getAxisLeft().setAxisMinimum(0f);
+                lineChart.getAxisLeft().setAxisMaximum(1f);
+                lineChart.getAxisRight().setAxisMinimum(0f);
+                lineChart.getAxisRight().setAxisMaximum(1f);
+                //forces 6 Y axis values to display (0.0, 0.2, 0.4, 0.6, 0.8, 1.0); this was needed to display 1.0
+                lineChart.getAxisRight().setLabelCount(6, true);
+                lineChart.setVisibleXRangeMaximum(5f); //only show 5 values at a time
+                lineChart.moveViewTo((float) count, 0.5f, YAxis.AxisDependency.RIGHT); //moves visible points to show latest 5 ratios
+
+
+                // ==========================================================================
+
             }
 
             @Override
@@ -159,7 +229,6 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
             }
         });
-
 
 
         // Display ListView contents.
@@ -189,8 +258,8 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
                 Intent gameIntent = new Intent(AllGamesActivity.this, GameActivity.class);
                 // pass the current team info and the game clicked to our GameActivity
-                gameIntent.putExtra("GAME_CLICKED",clickedGame);
-                gameIntent.putExtra("TEAM_INFO",currentTeamInfo);
+                gameIntent.putExtra("GAME_CLICKED", clickedGame);
+                gameIntent.putExtra("TEAM_INFO", currentTeamInfo);
                 startActivity(gameIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -208,7 +277,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         currentMemberReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
+                if (!dataSnapshot.exists()) {
                     // user isn't on the team, don't display the add game button
                     addGame.hide();
                 }
