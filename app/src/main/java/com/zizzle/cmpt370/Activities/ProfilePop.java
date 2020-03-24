@@ -79,7 +79,7 @@ public class ProfilePop extends Activity{
 
                 // Phone Number Text ==========================================================================
                 TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
-                phoneNumber.setText(user.getPhoneNumber());
+                phoneNumber.setText(user.getPhoneNumber().replace("-",""));
 
 
                 // Set the title of the page to user name.
@@ -123,10 +123,18 @@ public class ProfilePop extends Activity{
 
                                 FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
 
-                                userpass.updateEmail(emailString);
+                               try{
+                                   userpass.updateEmail(emailString).getException().getMessage();
+                               }catch (Exception e){
+                                   System.out.println(e);
+                               }
+
                                 Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
 
-                                databaseReference.setValue(user);
+                                databaseReference.child("displayName").setValue(user.getDisplayName());
+                                databaseReference.child("email").setValue(user.getEmail());
+                                databaseReference.child("phoneNumber").setValue(user.getPhoneNumber());
+
 
 
 
