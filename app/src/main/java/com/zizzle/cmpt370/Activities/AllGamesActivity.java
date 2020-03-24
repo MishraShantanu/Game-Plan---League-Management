@@ -112,15 +112,24 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGames.addAll(currentTeam.getSortedPlayedGames());
 
                 // team has no games scheduled, display this to the user
+                TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                 if (nextGames.isEmpty()) {
-                    TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                     noComingText.setVisibility(View.VISIBLE);
                 }
+                else{
+                    // the user has upcoming games, don't show this text
+                    noComingText.setVisibility(View.GONE);
+                }
 
-                // team hasn't played any games, display this
+                TextView noPastText = findViewById(R.id.no_past_games_text);
+
                 if (pastGames.isEmpty()) {
-                    TextView noPastText = findViewById(R.id.no_past_games_text);
+                    // team hasn't played any games, display this
                     noPastText.setVisibility(View.VISIBLE);
+                }
+                else{
+                    // user has previous games don't display this message
+                    noPastText.setVisibility(View.GONE);
                 }
 
                 // display the games in these lists

@@ -215,6 +215,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                             }
                         });
                     }
+                    else{
+                        // this team has no upcoming games
+                        nextGameText.setText("No Upcoming Games");
+                    }
                     // otherwise this TextView has the string "No Upcoming Games as a default value"
 
 
