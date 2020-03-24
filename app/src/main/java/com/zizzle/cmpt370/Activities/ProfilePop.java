@@ -58,16 +58,11 @@ public class ProfilePop extends Activity{
         memberName  = findViewById(R.id.displayName);
         phoneNumber = findViewById(R.id.phoneNumberInput);
         email = findViewById(R.id.emailInput);
-       // password = findViewById(R.id.passwordInput);
 
-
-        // Temporary User created ==========================================================================
         firebaseAuth = FirebaseAuth.getInstance();
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-
-        databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getUid());
-
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -83,7 +78,7 @@ public class ProfilePop extends Activity{
 
                 // Phone Number Text ==========================================================================
                 final TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
-                phoneNumber.setText(user.getPhoneNumber());
+                phoneNumber.setText(user.getPhoneNumber().replace("-",""));
 
                 submitButton = findViewById(R.id.submitButton);
                 submitButton.setOnClickListener(new View.OnClickListener() {
@@ -111,9 +106,9 @@ public class ProfilePop extends Activity{
                         }
                         else{
                             // determine which fields the user has changed, only update what is necessary
-                            boolean displayNameChanged = user.getDisplayName().equals(memberNameString);
-                            boolean phoneNumberChanged = user.getPhoneNumber().equals(phoneNumberString);
-                            boolean emailChanged = user.getEmail().equals(emailString);
+                            boolean displayNameChanged = !user.getDisplayName().equals(memberNameString);
+                            boolean phoneNumberChanged = !user.getPhoneNumber().equals(phoneNumberString);
+                            boolean emailChanged = !user.getEmail().equals(emailString);
                             MemberInfo currentUserInfo = new MemberInfo(user);
                             if(displayNameChanged){
                                 // write the user's new name to the database
@@ -138,8 +133,8 @@ public class ProfilePop extends Activity{
                                 fbUser.updateEmail(emailString);
                                 // TODO may need to reprompt user for password to be able to update email here
                             }
+                            finish();
                         }
-                        finish();
                     }
                 });
             }
