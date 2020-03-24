@@ -29,7 +29,7 @@ import static android.support.constraint.Constraints.TAG;
 
 public class ProfilePop extends Activity{
 
-    EditText memberName, phoneNumber, email, password;
+    EditText memberName, phoneNumber, email;
     Button submitButton;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
@@ -67,23 +67,86 @@ public class ProfilePop extends Activity{
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Member user = dataSnapshot.getValue(Member.class);
+                final Member user = dataSnapshot.getValue(Member.class);
 
                 // DisplayName Text ==========================================================================
-                TextView userName = (TextView) findViewById(R.id.displayName);
+                final TextView userName = (TextView) findViewById(R.id.displayName);
                 userName.setText(user.getDisplayName());
 
                 // Email Text ==========================================================================
-                TextView email = (TextView) findViewById(R.id.emailInput);
+                final TextView email = (TextView) findViewById(R.id.emailInput);
                 email.setText(user.getEmail());
 
                 // Phone Number Text ==========================================================================
-                TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
-                phoneNumber.setText(user.getPhoneNumber().replace("-",""));
+                final TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
+                phoneNumber.setText(user.getPhoneNumber());
 
+                submitButton = findViewById(R.id.submitButton);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final String memberNameString = memberName.getText().toString();
+                        final String phoneNumberString = phoneNumber.getText().toString();
+                        final String emailString = email.getText().toString();
 
-                // Set the title of the page to user name.
+                        if(memberNameString.isEmpty()){
+                            memberName.setError("Display Name Required");
+                            memberName.requestFocus();
+                        }
+                        else if(phoneNumberString.isEmpty()){
+                            phoneNumber.setError("Phone Number Required");
+                            phoneNumber.requestFocus();
+                        }
+                        else if(phoneNumberString.length()!=11){
+                            phoneNumber.setError("Phone Number Must be 11 Digits");
+                            phoneNumber.requestFocus();
+                        }
+                        else if(emailString.isEmpty()){
+                            email.setError("Email Required");
+                            email.requestFocus();
+                        }
+                        else{
+                            // determine which fields the user has changed, only update what is necessary
+                            boolean displayNameChanged = user.getDisplayName().equals(memberNameString);
+                            boolean phoneNumberChanged = user.getPhoneNumber().equals(phoneNumberString);
+                            boolean emailChanged = user.getEmail().equals(emailString);
+                            if(displayNameChanged){
+                                
+                            }
+                        }
+                        if (!memberNameString.isEmpty()) {
+                            Toast.makeText(ProfilePop.this, "Updating display name", Toast.LENGTH_SHORT).show();
 
+                            if (!phoneNumberString.isEmpty()) {
+                                Toast.makeText(ProfilePop.this, "Updating phone number", Toast.LENGTH_SHORT).show();
+
+                                if (!emailString.isEmpty()) {
+
+                                    Member currentUser = new Member (memberNameString,emailString,phoneNumberString,firebaseAuth.getCurrentUser().getUid());
+                                    FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
+                                    try{
+                                        userpass.updateEmail(emailString).getException().getMessage();
+                                    }catch (Exception e){
+                                        System.out.println(e);
+                                    }
+                                    Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
+
+                                    databaseReference.child("displayName").setValue(currentUser.getDisplayName());
+                                    databaseReference.child("email").setValue(currentUser.getEmail());
+                                    databaseReference.child("phoneNumber").setValue(currentUser.getPhoneNumber());
+
+                                    databaseReference.push();
+                                    FirebaseAuth.getInstance().signOut();
+                                    Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
+                                    toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(toLogOut);
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                }
+                            }
+                        }
+                        finish();
+                    }
+                });
             }
 
             @Override
@@ -91,78 +154,5 @@ public class ProfilePop extends Activity{
 
             }
         });
-
-
-
-
-        submitButton = findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String memberNameString = memberName.getText().toString();
-                final String phoneNumberString = phoneNumber.getText().toString();
-                final String emailString = email.getText().toString();
-              //  final String passwordString = password.getText().toString();
-
-                Member user;
-
-
-
-
-
-
-                if (!memberNameString.isEmpty()) {
-                    Toast.makeText(ProfilePop.this, "Updating display name", Toast.LENGTH_SHORT).show();
-
-                    if (!phoneNumberString.isEmpty()) {
-                        Toast.makeText(ProfilePop.this, "Updating phone number", Toast.LENGTH_SHORT).show();
-
-                        if (!emailString.isEmpty()) {
-
-                               user = new Member (memberNameString,emailString,phoneNumberString,firebaseAuth.getCurrentUser().getUid());
-
-                                FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
-
-                               try{
-                                   userpass.updateEmail(emailString).getException().getMessage();
-                               }catch (Exception e){
-                                   System.out.println(e);
-                               }
-
-                                Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
-
-                                databaseReference.child("displayName").setValue(user.getDisplayName());
-                                databaseReference.child("email").setValue(user.getEmail());
-                                databaseReference.child("phoneNumber").setValue(user.getPhoneNumber());
-
-
-
-
-                                databaseReference.push();
-                                FirebaseAuth.getInstance().signOut();
-                                Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
-                                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(toLogOut);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-                        }
-                    }
-
-                }
-
-
-
-
-
-
-
-
-
-                finish();
-            }
-        });
-
-
-
     }
 }
