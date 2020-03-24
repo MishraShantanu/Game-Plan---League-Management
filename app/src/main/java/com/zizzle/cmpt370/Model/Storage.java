@@ -71,6 +71,38 @@ public class Storage {
         database.child("users").child(member.getUserID()).setValue(member);
     }
 
+    /**
+     * Updates the input Member object to now have the input display name, all parts of the database involving the
+     * input member are updated, including MemberInfos stored by teams and for team owners
+     * @param member: Member object member to be updated
+     * @param newName: String new name for this member
+     */
+    public static void updateDisplayName(Member member, final String newName){
+        final MemberInfo currentMemberInfo = new MemberInfo(member);
+        // add this new name for the user
+        database.child("users").child(currentMemberInfo.getDatabaseKey()).child("displayName").setValue(newName);
+        // update the display name stored in each team the user is a part of
+        for(final TeamInfo memberTeamInfo : member.getTeamsInfo()){
+            database.child("Teams").child(memberTeamInfo.getDatabaseKey()).child("membersInfoMap").child(currentMemberInfo.getDatabaseKey()).child("name").setValue(newName);
+            // if the user is the owner of this team, we must also update the owner info stored for this team to reflect the new name
+            database.child("Teams").child(memberTeamInfo.getDatabaseKey()).child("ownerInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    MemberInfo ownerInfo = dataSnapshot.getValue(MemberInfo.class);
+                    if(currentMemberInfo.equals(ownerInfo)){
+                        // update the display name of this owner entry
+                        database.child("Teams").child(memberTeamInfo.getDatabaseKey()).child("ownerInfo").child("name").setValue(newName);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
 
     /**
      * Adds the input team to the input league on the database, this assumes that the input team
