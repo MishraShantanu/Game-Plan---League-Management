@@ -273,7 +273,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     // Leave the team button.
                     MemberInfo currentUser = getCurrentUserInfo();
-                    // if member is on the team.
+
+                    // Show Join Button: if member is on the team.
                     if (membersInfo.contains(currentUser)) {
                         if (joinButton != null) {
                             joinButton.setVisible(false); //don't show the "Join" button since the user is part of the team/owner
