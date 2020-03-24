@@ -62,6 +62,8 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
+
+
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getCurrentUser().getUid());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
