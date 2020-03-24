@@ -103,9 +103,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 else if (!(pass.isEmpty() && email.isEmpty())) {
-                    System.out.println(email);
-
-
 
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -116,7 +113,9 @@ public class SignupActivity extends AppCompatActivity {
 
                             } else {
                                 // add the newly created Member to the database
-                                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                                final FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
                                 String newMemberID = fbUser.getUid();
                                 Member newMember = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), newMemberID);
                                 Storage.writeMember(newMember);
@@ -133,11 +132,20 @@ public class SignupActivity extends AppCompatActivity {
                                                     Toast.makeText(SignupActivity.this, "couldn't add display name to user profile", Toast.LENGTH_SHORT).show();
                                             }
                                         });
-                                // head to main activity
+
+                                fbUser.sendEmailVerification();
+
+
+
+
                                 Intent intoMain = new Intent(SignupActivity.this, HomeActivity.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+
+
+
                             }
                         }
                     });
