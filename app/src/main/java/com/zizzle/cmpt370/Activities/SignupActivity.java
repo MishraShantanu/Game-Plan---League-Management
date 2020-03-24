@@ -111,7 +111,8 @@ public class SignupActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(SignupActivity.this, "Sign up was unsuccessful,as"+task.getException()+" please try again", Toast.LENGTH_SHORT).show();
+
+                                Toast.makeText(SignupActivity.this, "Sign up was unsuccessful. "+task.getException().getMessage()+" please try again", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 // add the newly created Member to the database
