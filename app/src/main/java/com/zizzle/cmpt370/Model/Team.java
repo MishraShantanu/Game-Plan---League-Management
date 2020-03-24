@@ -140,6 +140,36 @@ public class Team {
     }
 
     /**
+     * Returns an arraylist containing floating point values representing this team's win/loss ratio
+     * over time, the values in this list correspond to games played, so the first entry in this list
+     * is 1.0 if the first game the team played is a win, and 0.0 if the first game was a loss for this team
+     * ties count as 0.5 of a win, so if a team ties their first game, they will have a win/loss of 0.5
+     * @return ArrayList<Float> as described above, an empty arraylist is returned if this team hasn't played any games
+     */
+    public ArrayList<Float> getWinLossRatioOverTime(){
+        ArrayList<Float> winLossRatios = new ArrayList<>();
+        float winCount = 0; // this value is a float as ties count as 0.5 of a win
+        int gamesPlayedCount = 0;
+        TeamInfo thisTeamInfo = new TeamInfo(this);
+        // go through each played game in order so older games are processed first
+        for (Game playedGame : this.getSortedPlayedGames()) {
+            gamesPlayedCount++;
+
+            if (playedGame.isTie()) {
+                // tie is worth half a win
+                winCount += 0.5f;
+            }
+            else if(thisTeamInfo.equals(playedGame.getWinner())) {
+                // this team has won this game
+                winCount += 1.0f;
+            }
+            // if the current team loses leave the win count as is
+            winLossRatios.add(winCount/gamesPlayedCount);
+        }
+        return winLossRatios;
+    }
+
+    /**
      * Retrieves the name of the team.
      * @return String name of the team.
      */

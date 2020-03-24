@@ -17,19 +17,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
 import static android.support.constraint.Constraints.TAG;
 
 public class ProfilePop extends Activity{
 
-    EditText memberName, phoneNumber, email, password;
+    EditText memberName, phoneNumber, email;
     Button submitButton;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
@@ -54,36 +58,85 @@ public class ProfilePop extends Activity{
         memberName  = findViewById(R.id.displayName);
         phoneNumber = findViewById(R.id.phoneNumberInput);
         email = findViewById(R.id.emailInput);
-       // password = findViewById(R.id.passwordInput);
 
-
-        // Temporary User created ==========================================================================
         firebaseAuth = FirebaseAuth.getInstance();
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-
-        databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getUid());
-
+        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Member user = dataSnapshot.getValue(Member.class);
+                final Member user = dataSnapshot.getValue(Member.class);
 
                 // DisplayName Text ==========================================================================
-                TextView userName = (TextView) findViewById(R.id.displayName);
+                final TextView userName = (TextView) findViewById(R.id.displayName);
                 userName.setText(user.getDisplayName());
 
                 // Email Text ==========================================================================
-                TextView email = (TextView) findViewById(R.id.emailInput);
+                final TextView email = (TextView) findViewById(R.id.emailInput);
                 email.setText(user.getEmail());
 
                 // Phone Number Text ==========================================================================
-                TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
+                final TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
                 phoneNumber.setText(user.getPhoneNumber().replace("-",""));
 
+                submitButton = findViewById(R.id.submitButton);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final String memberNameString = memberName.getText().toString();
+                        final String phoneNumberString = phoneNumber.getText().toString();
+                        final String emailString = email.getText().toString();
 
-                // Set the title of the page to user name.
-
+                        if(memberNameString.isEmpty()){
+                            memberName.setError("Display Name Required");
+                            memberName.requestFocus();
+                        }
+                        else if(phoneNumberString.isEmpty()){
+                            phoneNumber.setError("Phone Number Required");
+                            phoneNumber.requestFocus();
+                        }
+                        else if(phoneNumberString.length()!=11){
+                            phoneNumber.setError("Phone Number Must be 11 Digits");
+                            phoneNumber.requestFocus();
+                        }
+                        else if(emailString.isEmpty()){
+                            email.setError("Email Required");
+                            email.requestFocus();
+                        }
+                        else{
+                            // determine which fields the user has changed, only update what is necessary
+                            boolean displayNameChanged = !user.getDisplayName().equals(memberNameString);
+                            boolean phoneNumberChanged = !user.getPhoneNumber().equals(phoneNumberString);
+                            boolean emailChanged = !user.getEmail().equals(emailString);
+                            MemberInfo currentUserInfo = new MemberInfo(user);
+                            if(displayNameChanged){
+                                // write the user's new name to the database
+                                Storage.updateDisplayName(user,memberNameString);
+                                // update the current stored MemberInfo for this user to use the new name
+                                CurrentUserInfo.initializeMemberInfo(user.getUserID(),memberNameString);
+                                // update the user's profile so firebase authentication keeps track of the updated name
+                                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(memberNameString).build();
+                                fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {}
+                                });
+                            }
+                            if(phoneNumberChanged){
+                                Storage.updatePhoneNumber(currentUserInfo,phoneNumberString);
+                            }
+                            if(emailChanged){
+                                Storage.updateEmail(currentUserInfo,emailString);
+                                // make sure firebase authentication keeps track of the updated email
+                                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                                fbUser.updateEmail(emailString);
+                                // TODO may need to reprompt user for password to be able to update email here
+                            }
+                            finish();
+                        }
+                    }
+                });
             }
 
             @Override
@@ -91,78 +144,5 @@ public class ProfilePop extends Activity{
 
             }
         });
-
-
-
-
-        submitButton = findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final String memberNameString = memberName.getText().toString();
-                final String phoneNumberString = phoneNumber.getText().toString();
-                final String emailString = email.getText().toString();
-              //  final String passwordString = password.getText().toString();
-
-                Member user;
-
-
-
-
-
-
-                if (!memberNameString.isEmpty()) {
-                    Toast.makeText(ProfilePop.this, "Updating display name", Toast.LENGTH_SHORT).show();
-
-                    if (!phoneNumberString.isEmpty()) {
-                        Toast.makeText(ProfilePop.this, "Updating phone number", Toast.LENGTH_SHORT).show();
-
-                        if (!emailString.isEmpty()) {
-
-                               user = new Member (memberNameString,emailString,phoneNumberString,firebaseAuth.getCurrentUser().getUid());
-
-                                FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
-
-                               try{
-                                   userpass.updateEmail(emailString).getException().getMessage();
-                               }catch (Exception e){
-                                   System.out.println(e);
-                               }
-
-                                Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
-
-                                databaseReference.child("displayName").setValue(user.getDisplayName());
-                                databaseReference.child("email").setValue(user.getEmail());
-                                databaseReference.child("phoneNumber").setValue(user.getPhoneNumber());
-
-
-
-
-                                databaseReference.push();
-                                FirebaseAuth.getInstance().signOut();
-                                Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
-                                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(toLogOut);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-                        }
-                    }
-
-                }
-
-
-
-
-
-
-
-
-
-                finish();
-            }
-        });
-
-
-
     }
 }

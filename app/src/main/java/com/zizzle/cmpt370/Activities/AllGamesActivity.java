@@ -112,15 +112,24 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGames.addAll(currentTeam.getSortedPlayedGames());
 
                 // team has no games scheduled, display this to the user
+                TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                 if (nextGames.isEmpty()) {
-                    TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                     noComingText.setVisibility(View.VISIBLE);
                 }
+                else{
+                    // the user has upcoming games, don't show this text
+                    noComingText.setVisibility(View.GONE);
+                }
 
-                // team hasn't played any games, display this
+                TextView noPastText = findViewById(R.id.no_past_games_text);
+
                 if (pastGames.isEmpty()) {
-                    TextView noPastText = findViewById(R.id.no_past_games_text);
+                    // team hasn't played any games, display this
                     noPastText.setVisibility(View.VISIBLE);
+                }
+                else{
+                    // user has previous games don't display this message
+                    noPastText.setVisibility(View.GONE);
                 }
 
                 // display the games in these lists
@@ -128,37 +137,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGameArrayAdapter.notifyDataSetChanged();
 
                 // determine the win loss ratios for this team over all of their games played
-                // TODO this should probably be a Team method
-                ArrayList<Float> winLossRatios = new ArrayList<>();
-                int winCount = 0;
-                int lossCount = 0;
-                for (Game playedGame : pastGames) {
-                    if (playedGame.isTie()) {
-                        // if this is the first game the team has played, set the win/loss to 0.5
-                        if (winCount == 0 && lossCount == 0) {
-                            winLossRatios.add(0.5f);
-                        } else {
-                            // consider a tie to leave an existing win loss ratio unchanged
-                            Float previousWinLossRatio = winLossRatios.get(winLossRatios.size() - 1);
-                            winLossRatios.add(previousWinLossRatio);
-                        }
-                    }
-                    if (currentTeamInfo.equals(playedGame.getWinner())) {
-                        // the current team has won this game
-                        winCount++;
-                        if (lossCount == 0) {
-                            // the team hasn't lost so far and so have a win/loss of 100%
-                            winLossRatios.add(1f);
-                        } else {
-                            winLossRatios.add((float) winCount / (float) lossCount);
-                        }
-                    } else {
-                        // current team has lost this game
-                        lossCount++;
-                        // add the new win/loss ratio
-                        winLossRatios.add((float) winCount / (float) lossCount);
-                    }
-                }
+                ArrayList<Float> winLossRatios = currentTeam.getWinLossRatioOverTime();
 
                 // Graph to Show the Win:Loss Ratio ==========================================================================
 
