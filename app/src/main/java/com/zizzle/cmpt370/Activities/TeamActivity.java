@@ -195,7 +195,13 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     if (currentTeam.hasGamesScheduled()) {
                         final Game closestGame = currentTeam.getClosestScheduledGame();
-                        nextGameText.setText(closestGame.toString());
+
+                        // Remove the score since will always be n/a
+                        String nextString = closestGame.toString();
+                        nextString = nextString.replace("\nFinal Score: n/a", "");
+
+                        // Set the next game text.
+                        nextGameText.setText(nextString);
                         // take the user to the page for this game if they clicked this next game text
                         nextGameText.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -309,7 +315,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                             // Take user to their profile if they clicked on themselves.
                             if (getCurrentUserInfo().equals(clickedMemberInfo)) {
-                                startActivity(new Intent(TeamActivity.this, ProfileActivity.class));
+                                Intent profileFromTeam = new Intent(TeamActivity.this, ProfileActivity.class);
+                                startActivityForResult(profileFromTeam, 2);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
 
@@ -375,7 +382,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
