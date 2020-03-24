@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -108,6 +109,8 @@ public class GameTime implements Comparable, Serializable {
             throw new IllegalArgumentException("Cannot compare a GameTime object to an object of type: " + other.getClass().getName());
         }
         GameTime otherGameTime = (GameTime) other;
+        Log.d("other",otherGameTime.toString());
+        Log.d("this",this.toString());
         // compare underlying calendars
         return this.calendar.compareTo(otherGameTime.calendar);
     }
