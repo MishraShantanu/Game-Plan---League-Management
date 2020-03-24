@@ -103,6 +103,26 @@ public class Storage {
         }
     }
 
+    /**
+     * Stores the new phone number for the input member on the database
+     * @param memberInfo: MemberInfo object represented the Member to be updated
+     * @param newPhoneNumber: String new phone number for this member, this phone number is assumed to have correct format
+     */
+    public static void updatePhoneNumber(MemberInfo memberInfo, String newPhoneNumber){
+        // store this new phone number for the user on the database
+        database.child("users").child(memberInfo.getDatabaseKey()).child("phoneNumber").setValue(newPhoneNumber);
+    }
+
+    /**
+     * Stores the new email for the input member on the database
+     * @param memberInfo: MemberInfo object represented the Member to be updated
+     * @param newEmail: String new email for this member
+     */
+    public static void updateEmail(MemberInfo memberInfo, String newEmail){
+        // store this email for the user on the database
+        database.child("users").child(memberInfo.getDatabaseKey()).child("email").setValue(newEmail);
+    }
+
 
     /**
      * Adds the input team to the input league on the database, this assumes that the input team

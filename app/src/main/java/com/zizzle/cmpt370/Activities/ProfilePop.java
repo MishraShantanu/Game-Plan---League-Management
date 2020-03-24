@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
@@ -117,6 +118,8 @@ public class ProfilePop extends Activity{
                             if(displayNameChanged){
                                 // write the user's new name to the database
                                 Storage.updateDisplayName(user,memberNameString);
+                                // update the current stored MemberInfo for this user to use the new name
+                                CurrentUserInfo.initializeMemberInfo(user.getUserID(),memberNameString);
                                 // update the user's profile so firebase authentication keeps track of the updated name
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(memberNameString).build();
@@ -125,36 +128,15 @@ public class ProfilePop extends Activity{
                                     public void onComplete(@NonNull Task<Void> task) {}
                                 });
                             }
-                            if()
-                        }
-                        if (!memberNameString.isEmpty()) {
-                            Toast.makeText(ProfilePop.this, "Updating display name", Toast.LENGTH_SHORT).show();
-
-                            if (!phoneNumberString.isEmpty()) {
-                                Toast.makeText(ProfilePop.this, "Updating phone number", Toast.LENGTH_SHORT).show();
-
-                                if (!emailString.isEmpty()) {
-
-                                    Member currentUser = new Member (memberNameString,emailString,phoneNumberString,firebaseAuth.getCurrentUser().getUid());
-                                    FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
-                                    try{
-                                        userpass.updateEmail(emailString).getException().getMessage();
-                                    }catch (Exception e){
-                                        System.out.println(e);
-                                    }
-                                    Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
-
-                                    databaseReference.child("displayName").setValue(currentUser.getDisplayName());
-                                    databaseReference.child("email").setValue(currentUser.getEmail());
-                                    databaseReference.child("phoneNumber").setValue(currentUser.getPhoneNumber());
-
-                                    databaseReference.push();
-                                    FirebaseAuth.getInstance().signOut();
-                                    Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
-                                    toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(toLogOut);
-                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                }
+                            if(phoneNumberChanged){
+                                Storage.updatePhoneNumber(currentUserInfo,phoneNumberString);
+                            }
+                            if(emailChanged){
+                                Storage.updateEmail(currentUserInfo,emailString);
+                                // make sure firebase authentication keeps track of the updated email
+                                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                                fbUser.updateEmail(emailString);
+                                // TODO may need to reprompt user for password to be able to update email here
                             }
                         }
                         finish();
