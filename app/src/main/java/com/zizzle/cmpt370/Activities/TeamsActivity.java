@@ -169,7 +169,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                         teams.addAll(currentLeague.getSortedTeamInfos());
                         // since these TeamInfos are sorted by wins, those teams with more wins appear higher, giving us standings
 
-
                         // dont display the no team text if apart of any teams.
                         if (!teams.isEmpty()) {
                             TextView noTeamText = findViewById(R.id.no_teams_text);
@@ -256,7 +255,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:
