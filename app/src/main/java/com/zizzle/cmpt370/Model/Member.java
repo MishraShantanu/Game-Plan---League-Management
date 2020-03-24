@@ -39,6 +39,15 @@ public class Member {
      */
     private ArrayList<LeagueInfo> leaguesInfo = new ArrayList<>();
 
+    /** Integer wins this Member has throughout all games they've played */
+    private int careerWins;
+
+    /** Integer losses this Member has throughout all games they've played */
+    private int careerLosses;
+
+    /** Integer ties this Member has throughout all games they've played */
+    private int careerTies;
+
 
     /**
      * Constructor for the Member object.
@@ -53,6 +62,10 @@ public class Member {
         this.email = email;
         setPhoneNumber(phoneNumber);
         this.userID = userID;
+        // initialize stats for this new member
+        this.careerWins = 0;
+        this.careerLosses = 0;
+        this.careerTies = 0;
     }
 
     /**
@@ -99,6 +112,39 @@ public class Member {
         return phoneNumber;
     }
 
+    /**
+     * returns the number of wins this Member has had throughout their career
+     * @return Integer number of career wins for this user
+     */
+    public int getCareerWins(){
+        return this.careerWins;
+    }
+
+    /**
+     * Returns the number of losses this Member has had throughout their career
+     * @return Integer number of career losses for this user
+     */
+    public int getCareerLosses(){
+        return this.careerLosses;
+    }
+
+    /**
+     * Returns the number of ties this Member has had throughout their career
+     * @return Integer number of career ties for this user
+     */
+    public int getCareerTies(){
+        return this.careerTies;
+    }
+
+    /**
+     * Returns a HashMap with string Team database keys as keys and TeamInfo values representing the teams
+     * this user is a part of
+     * @return HashMap<String,TeamInfo> described above
+     */
+    public HashMap<String,TeamInfo> getTeamInfoMap(){
+        // This method is required so Firebase is aware of and stores the teamInfoMap for a Member
+        return this.teamInfoMap;
+    }
 
     /**
      * Retrieves info about the teams the user belongs to.
@@ -157,13 +203,18 @@ public class Member {
         // Strip non-numeric characters from phone number.
         phoneNumber = phoneNumber.replaceAll("\\D", "");
 
-        // Check the number is a full length phone number.
-        if (phoneNumber.length() != 11) throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
+        // Check the number is a full length phone number, we allow phone numbers of length 10 or 11
+        if (phoneNumber.length() != 11 && phoneNumber.length() != 10){
+            throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
+        }
 
         // convert into a formatted number.
+        if(phoneNumber.length() == 10){
+            // we must add a leading 1 to this phone number
+            phoneNumber = "1" + phoneNumber;
+        }
         this.phoneNumber = phoneNumber.substring(0, 1) + "-" + phoneNumber.substring(1, 4) + "-" +
                 phoneNumber.substring(4, 7) + "-" + phoneNumber.substring(7, 11);
-        // TODO update phone number on the database
     }
 
 

@@ -15,6 +15,21 @@
         android:orientation="vertical"
         android:padding="15dp">
 
+        <!--    Win:Loss Ratio Graph    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Win:Loss Ratio over time"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+        <!--    Bar Graph    -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/WInLossRatioBarGraph"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </com.github.mikephil.charting.charts.LineChart>
+
         <!--    Upcoming Games    -->
         <TextView
             android:layout_width="match_parent"
@@ -22,6 +37,26 @@
             android:text="Upcoming Games"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText" />
+
+        <!--    no game text    -->
+        <TextView
+            android:id="@+id/no_upcoming_games_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="22dp"
+            android:text="No upcoming games scheduled"
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="22sp"
+            android:visibility="gone" />
 
         <!-- list of upcoming games-->
         <com.zizzle.cmpt370.NonScrollableListView
@@ -32,6 +67,15 @@
             android:divider="@null"
             android:listSelector="@android:color/transparent" />
 
+        <!--    Previous Games    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Previous Games"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
         <!--    divider    -->
         <View
             android:layout_width="match_parent"
@@ -40,15 +84,19 @@
             android:layout_marginBottom="15dp"
             android:background="@color/colorText" />
 
-        <!--    Previous Games    -->
+        <!--    no game text    -->
         <TextView
+            android:id="@+id/no_past_games_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Previous Games"
+            android:padding="22dp"
+            android:text="No past games"
+            android:textAlignment="center"
             android:textColor="@color/colorText"
-            android:textSize="24sp" />
+            android:textSize="22sp"
+            android:visibility="gone" />
 
-        <!-- list of upcoming games-->
+        <!-- list of previous games-->
         <com.zizzle.cmpt370.NonScrollableListView
             android:id="@+id/past_scores_list"
             android:layout_width="match_parent"
@@ -59,4 +107,5 @@
 
 
     </LinearLayout>
+
 </ScrollView>

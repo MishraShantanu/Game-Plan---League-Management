@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
@@ -40,7 +42,6 @@ public class SignupActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
 
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         emailId = findViewById(R.id.Signup_Email);
         password = findViewById(R.id.Signup_Password);
@@ -49,6 +50,22 @@ public class SignupActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.Signup_Phone);
 
         displayName = findViewById(R.id.Signup_Name);
+
+        // Privacy Policy Link ==========================================================================
+
+        TextView privacyPolicyButton = findViewById(R.id.Signup_PrivacyPolicy);
+        privacyPolicyButton.setVisibility(View.VISIBLE);
+        privacyPolicyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/privacy-policy"));
+                startActivity(intent);
+            }
+        });
+
+        //==========================================================================
+
 
         buttonSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +96,12 @@ public class SignupActivity extends AppCompatActivity {
                     phoneNumber.requestFocus();
                 }
 
+                else if(phone.length()!=10 && phone.length()!=11){
+                    // phone number has invalid length/format
+                    phoneNumber.setError("Phone number must be either 10 or 11 digits long");
+                    phoneNumber.requestFocus();
+                }
+
                 else if (!(pass.isEmpty() && email.isEmpty())) {
                     System.out.println(email);
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
@@ -90,17 +113,20 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 // add the newly created Member to the database
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                                Member member = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), fbUser.getUid());
-                                Storage.writeMember(member);
+                                String newMemberID = fbUser.getUid();
+                                Member newMember = new Member(displayName.getText().toString(), emailId.getText().toString(), phoneNumber.getText().toString(), newMemberID);
+                                Storage.writeMember(newMember);
+
+                                // initialize our information about the current user
+                                CurrentUserInfo.initializeMemberInfo(newMemberID,displayName.getText().toString());
                                 // add the user's display name to firebase authentication
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayName.getText().toString()).build();
                                 fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful()) {
+                                                if (!task.isSuccessful())
                                                     // this toast is for testing only
                                                     Toast.makeText(SignupActivity.this, "couldn't add display name to user profile", Toast.LENGTH_SHORT).show();
-                                                }
                                             }
                                         });
                                 // head to main activity
@@ -122,6 +148,7 @@ public class SignupActivity extends AppCompatActivity {
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Switch to the sign in page.
                 Intent i = new Intent(SignupActivity.this, SigninActivity.class);
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);

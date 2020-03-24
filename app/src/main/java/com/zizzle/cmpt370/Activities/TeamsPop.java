@@ -31,7 +31,7 @@ import com.zizzle.cmpt370.R;
 
 public class TeamsPop extends Activity {
 
-    EditText teamName, typeOfSport;
+    EditText teamName;
     Button submitButton;
 
     @Override
@@ -46,30 +46,21 @@ public class TeamsPop extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.7));
+        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.4));
 
 
         // Gathering Input =========================================================================
         teamName  = findViewById(R.id.teamName);
-        typeOfSport = findViewById(R.id.sportInput);
         submitButton = findViewById(R.id.submitButton);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String nameOfTeam = teamName.getText().toString();
-                final String sportForTeam = typeOfSport.getText().toString();
+                final String sportForTeam = "TEMP SPORT"; /////TODO ADD SPORT FOR TEAM
 
-                if (nameOfTeam.isEmpty() && sportForTeam.isEmpty()) {
-                    Toast.makeText(TeamsPop.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (nameOfTeam.isEmpty()) {
+                if (nameOfTeam.isEmpty()) {
                     Toast.makeText(TeamsPop.this, "Team name is required", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (sportForTeam.isEmpty()) {
-                    Toast.makeText(TeamsPop.this, "Type of sport is required", Toast.LENGTH_SHORT).show();
                 }
 
                 else {
@@ -79,9 +70,10 @@ public class TeamsPop extends Activity {
                         // get the current league name
                         final String currentLeagueName = extras.getString("CURRENT_LEAGUE_NAME");
                         final LeagueInfo parentLeagueInfo = new LeagueInfo(currentLeagueName);
-                        final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam,currentLeagueName);
+                        int initialWins = 0; // new team initially has no wins
+                        final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam,currentLeagueName,initialWins);
                         // check if the input team name is unique for this league
-                        DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child(newTeamInfo.getName());
+                        DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName());
                         newTeamReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

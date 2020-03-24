@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.R;
 
 public class SigninActivity extends AppCompatActivity {
@@ -45,6 +45,21 @@ public class SigninActivity extends AppCompatActivity {
         password = findViewById(R.id.Signin_Password);
         buttonSignIn = findViewById(R.id.Signin_Button);
         tvSignUp = findViewById(R.id.Signin_HaveAccount);
+
+        // Privacy Policy Link ==========================================================================
+
+        TextView privacyPolicyButton = findViewById(R.id.Signin_PrivacyPolicy);
+        privacyPolicyButton.setVisibility(View.VISIBLE);
+        privacyPolicyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/privacy-policy"));
+                startActivity(intent);
+            }
+        });
+
+        //==========================================================================
 
 
         mAuthstatelistner = new FirebaseAuth.AuthStateListener() {
@@ -113,6 +128,7 @@ public class SigninActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Switch to sign up page
                 Intent inSignUp = new Intent(SigninActivity.this, SignupActivity.class);
                 startActivity(inSignUp);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -126,8 +142,6 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // refresh the current user's member info to get rid of any stale values before the new user signs on
-        CurrentUserInfo.RefreashMemberInfo();
         mFirebaseAuth.addAuthStateListener(mAuthstatelistner);
     }
 }

@@ -17,15 +17,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
@@ -41,6 +45,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
+
 
 
     @Override
@@ -91,6 +96,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
         // NOTE: this will give all leagues created by anybody, NOT leagues the current user is a part of
         DatabaseReference leagueDBReference = FirebaseDatabase.getInstance().getReference().child("Leagues");
 
+        
+
         // attaching this listener will read from the database once initially and whenever leagues on the database are changed.
         leagueDBReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,15 +111,23 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 }
                 // method called when data is read from the database, get all league names
                 for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    // Remove the progress bar once leagues have been fetched
-                    ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
-                    leagueLoading.setVisibility(View.GONE);
-
-                    // the key of each league is the league's name
+                                        // the key of each league is the league's name
                     String leagueName = ds.getKey();
+
                     leagueNames.add(leagueName);
+
+                    // If there are no leagues, display special text
+                    if (leagueNames.isEmpty()) {
+                        TextView noTeamText = findViewById(R.id.no_leagues_text);
+                        noTeamText.setVisibility(View.VISIBLE);
+                    }
+
                     leagueArrayAdapter.notifyDataSetChanged();
                 }
+
+                // Remove the progress bar once leagues have been fetched
+                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
+                leagueLoading.setVisibility(View.GONE);
             }
 
             @Override
@@ -194,6 +209,8 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
+                // clear the info stored for this user
+                CurrentUserInfo.refreshMemberInfo();
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);

@@ -10,14 +10,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.R;
 
@@ -50,7 +54,46 @@ public class ProfilePop extends Activity{
         memberName  = findViewById(R.id.displayName);
         phoneNumber = findViewById(R.id.phoneNumberInput);
         email = findViewById(R.id.emailInput);
-        password = findViewById(R.id.passwordInput);
+       // password = findViewById(R.id.passwordInput);
+
+
+        // Temporary User created ==========================================================================
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getUid());
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Member user = dataSnapshot.getValue(Member.class);
+
+                // DisplayName Text ==========================================================================
+                TextView userName = (TextView) findViewById(R.id.displayName);
+                userName.setText(user.getDisplayName());
+
+                // Email Text ==========================================================================
+                TextView email = (TextView) findViewById(R.id.emailInput);
+                email.setText(user.getEmail());
+
+                // Phone Number Text ==========================================================================
+                TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
+                phoneNumber.setText(user.getPhoneNumber());
+
+
+                // Set the title of the page to user name.
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
         submitButton = findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -59,16 +102,12 @@ public class ProfilePop extends Activity{
                 final String memberNameString = memberName.getText().toString();
                 final String phoneNumberString = phoneNumber.getText().toString();
                 final String emailString = email.getText().toString();
-                final String passwordString = password.getText().toString();
+              //  final String passwordString = password.getText().toString();
 
                 Member user;
 
 
-                firebaseAuth = FirebaseAuth.getInstance();
 
-                firebaseDatabase = FirebaseDatabase.getInstance();
-
-                databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getUid());
 
 
 
@@ -80,14 +119,10 @@ public class ProfilePop extends Activity{
 
                         if (!emailString.isEmpty()) {
 
-
-
-
-                            if (!passwordString.isEmpty()) {
                                user = new Member (memberNameString,emailString,phoneNumberString,firebaseAuth.getCurrentUser().getUid());
 
                                 FirebaseUser userpass  = FirebaseAuth.getInstance().getCurrentUser();
-                                String newPassword = passwordString;
+
                                 userpass.updateEmail(emailString);
                                 Toast.makeText(ProfilePop.this, "Updating email", Toast.LENGTH_SHORT).show();
 
@@ -96,34 +131,12 @@ public class ProfilePop extends Activity{
 
 
                                 databaseReference.push();
+                                FirebaseAuth.getInstance().signOut();
+                                Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
+                                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(toLogOut);
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
-                                userpass.updatePassword(newPassword)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-
-                                                    Log.d(TAG, "User password updated.");
-                                                    Toast.makeText(ProfilePop.this, "Updating password", Toast.LENGTH_SHORT).show();
-                                                }else  Toast.makeText(ProfilePop.this, "Password not updated", Toast.LENGTH_SHORT).show();
-
-
-                                                FirebaseAuth.getInstance().signOut();
-                                                Intent toLogOut = new Intent(ProfilePop.this, SigninActivity.class);
-                                                toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                startActivity(toLogOut);
-                                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                            }
-                                        });
-
-
-
-
-
-
-
-
-                            }
                         }
                     }
 

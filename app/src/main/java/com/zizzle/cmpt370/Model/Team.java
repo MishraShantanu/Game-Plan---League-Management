@@ -1,9 +1,14 @@
 package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 /**
@@ -20,9 +25,10 @@ public class Team {
     /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
     private HashMap<String,MemberInfo> membersInfoMap;
 
-    /** Games previously played by the team, this list is ordered so games towards the front of the
-     * list are more recent than those at the back */
-    private ArrayList<Game> gamesPlayed;
+    /** TreeMap with the database keys of games played as keys and the Game objects played as values */
+    private HashMap<String,Game> gamesPlayed;
+    //TODO these treemaps won't work, we require string keys, use old idea of unique keys, to get the most recent game, must get a values list then sort
+    //TODO could however add an instance variable keeping track of the next most recently scheduled game, how can we check this when writing to the database
 
     /** Info about the league the team is a part of */
     private LeagueInfo leagueInfo;
@@ -30,9 +36,8 @@ public class Team {
     /** Info about the owner of the team */
     private MemberInfo ownerInfo;
 
-    /** List of games the team is scheduled to play, this list is ordered such that closer games are
-     * towards the front of the list and further away games are towards the end of the list */
-    private ArrayList<Game> scheduledGames;
+    /** TreeMap with the database keys of games schedules as keys and the Game objects schedules as values */
+    private HashMap<String,Game> scheduledGames;
 
     /** Number of wins the team has */
     private int wins;
@@ -60,12 +65,78 @@ public class Team {
         this.wins = 0;
         this.losses = 0;
         this.ties = 0;
-        this.gamesPlayed = new ArrayList<>();
-        this.scheduledGames = new ArrayList<>();
+        this.gamesPlayed = new HashMap<>();
+        this.scheduledGames = new HashMap<>();
     }
 
     public Team(){
 
+    }
+
+    /**
+     * Returns a TreeMap with string game keys and Game values of the games this team has played
+     * @return TreeMap as described above
+     */
+    public HashMap<String,Game> getGamesPlayed(){
+        // In order for firebase to recognize our instance variable gamesPlayed, we must make a public getter or setter
+        return this.gamesPlayed;
+    }
+
+    /**
+     * Returns a TreeMap with string game keys and Game values of the games scheduled to be played by this team
+     * @return TreeMap as described above
+     */
+    public HashMap<String,Game> getScheduledGames(){
+        // In order for firebase to recognize our instance variable scheduledGames, we must make a public getter or setter
+        return this.scheduledGames;
+    }
+
+    /**
+     * Returns an ArrayList of scheduled games for this team
+     * @return ArrayList<Game> of the games scheduled for this team, an empty list is returned if
+     * there are no scheduled games
+     */
+    public ArrayList<Game> getScheduledGameList(){
+        // if there are no scheduled games for this team, after reading this team from the database
+        // the scheduled games map will be null, if this is the case, return an empty list as no games are scheduled
+        if(this.scheduledGames == null){
+            return new ArrayList<>();
+        }
+        else{
+            return new ArrayList<>(this.scheduledGames.values());
+        }
+    }
+
+    /**
+     * Returns an ArrayList of Game objects that are sorted so that games scheduled at an earlier date appear
+     * first in this list, returns an empty ArrayList if there are no scheduled games
+     * @return ArrayList<Game> described above
+     */
+    public ArrayList<Game> getSortedScheduledGames(){
+        // this.scheduledGames may be null after reading in a Team without any scheduled games from the database
+        // if so return an empty list as no games have been scheduled
+        if(this.scheduledGames == null){
+            return new ArrayList<>();
+        }
+        ArrayList<Game> sortedGames =  new ArrayList<>(this.scheduledGames.values());
+        Collections.sort(sortedGames);
+        return sortedGames;
+    }
+
+    /**
+     * Returns an ArrayList of Game objects that are sorted so that games played at an earlier date appear
+     * first in this list, returns an empty ArrayList if there are no games played
+     * @return ArrayList<Game> described above
+     */
+    public ArrayList<Game> getSortedPlayedGames(){
+        // this.gamesPlayed may be null after reading in a Team without any scheduled games from the database
+        // if so return an empty list as no games have been scheduled
+        if(this.gamesPlayed == null){
+            return new ArrayList<>();
+        }
+        ArrayList<Game> sortedGames = new ArrayList<>(this.gamesPlayed.values());
+        Collections.sort(sortedGames);
+        return sortedGames;
     }
 
     /**
@@ -77,15 +148,6 @@ public class Team {
     }
 
     /**
-     * Returns the owner of the team
-     * @return Member object owner of the team
-     */
-    public Member getOwner(){
-        // read the owner from the database
-        return Storage.readMember(this.ownerInfo);
-    }
-
-    /**
      * Retrievs a MemberInfo object with info about the owner of the team
      * @return MemberInfo object describing the owner of the team
      */
@@ -93,14 +155,6 @@ public class Team {
         return this.ownerInfo;
     }
 
-    /**
-     * Retrieves the league the team is a part of
-     * @return League the team is a part of
-     */
-    public League getLeague(){
-        // read league from the database
-        return Storage.readLeague(this.leagueInfo);
-    }
 
     public LeagueInfo getLeagueInfo(){
         return this.leagueInfo;
@@ -197,8 +251,8 @@ public class Team {
 
 
     /**
-     * Returns a hashset of the members of the team
-     * @return HashSet containing info of the members of the team
+     * Returns an arraylist of the members of the team
+     * @return ArrayList containing info of the members of the team
      */
     public ArrayList<MemberInfo> getTeamMembersInfo(){
         // if there are no members on this team, and we read this object from the database, membersInfoMap will be null
@@ -265,6 +319,15 @@ public class Team {
         return false;
     }
 
+    /**
+     * Returns a HashMap with String user ID keys, and MemberInfo values for the members of this team
+     * @return HashMap<String,MemberInfo> as described above
+     */
+    public HashMap<String, MemberInfo> getMembersInfoMap(){
+        // this method is required by Firebase to actually store a Team's members on the database
+        return this.membersInfoMap;
+    }
+
 
 
     ////////////////////////////////////////////////////////
@@ -276,25 +339,36 @@ public class Team {
      * @return true if the team has at least 1 game scheduled in the future, false otherwise
      */
     public boolean hasGamesScheduled(){
+        // scheduledGamesMap may be null if this object has been read from the database without having any games
+        if(this.scheduledGames == null){
+            return false;
+        }
         return this.scheduledGames.size() > 0;
     }
 
     /**
-     * Gets the closest upcoming game the team has scheduled
+     * Gets the closest upcoming game the team has scheduled, returns null if there are no games scheduled
      * @return Game object that is scheduled to be played closest to now
-     * @throws IllegalStateException if the team has no games scheduled
      */
-    /*
-    public Game getClosestScheduledGame() throws IllegalStateException{
+    public Game getClosestScheduledGame(){
         // make sure there is a game scheduled
         if(! this.hasGamesScheduled()){
-            throw new IllegalStateException("Team: team '" + this.name + "' has no games scheduled");
+            return null;
         }
-
-        // the closest game is always at the front of the list of scheduled games
-        return this.scheduledGames.get(0);
+        // find the closest scheduled or minimum game
+        Collection<Game> games = this.scheduledGames.values();
+        Iterator gameIterator = games.iterator();
+        Game minGame = (Game)gameIterator.next();
+        Log.d("minGame",minGame.toString()); // TODO code works with these logs, removing these crashes the app, why???
+        while(gameIterator.hasNext()){
+            Game currentGame = (Game)gameIterator.next();
+            Log.d("currentGame",currentGame.toString());
+            if(currentGame.compareTo(minGame)<0){
+                minGame = currentGame;
+            }
+        }
+        return minGame;
     }
-     */
 
     /**
      * Checks if the team has played at least 1 game before

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    tools:context=".Activities.GameActivity"
+    tools:showIn="@layout/activity_game">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <!--    Score    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Score"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorText"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorText" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/round_card"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <TextView
+                    android:id="@+id/yourTeamNameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="yourTeam"
+                    android:textColor="@color/colorText"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/yourScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/colorTextHint"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorText"
+                    android:textColorHint="@color/colorTextHint" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/round_card"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <TextView
+                    android:id="@+id/opponentTeamNameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="opponent"
+                    android:textColor="@color/colorText"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/opponentScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@color/colorTextHint"
+                    android:ems="5"
+                    android:enabled="false"
+                    android:hint="0"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorText"
+                    android:textColorHint="@color/colorTextHint" />
+
+            </LinearLayout>
+        </GridLayout>
+
+        <!--    Submit Button    -->
+        <Button
+            android:id="@+id/submitScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@color/submitColor"
+            android:text="Submit"
+            android:textColor="@color/colorText"
+            android:visibility="gone" />
+
+        <!--    Game Details    -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Game Details"
+            android:textAlignment="textStart"
+            android:textColor="@color/colorText"
+            android:textSize="26sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_card"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <TextView
+                android:id="@+id/gameDateText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date: "
+                android:textAlignment="textStart"
+                android:textColor="@color/colorText"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/gameTimeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Time: "
+                android:textAlignment="textStart"
+                android:textColor="@color/colorText"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Location: "
+                android:textAlignment="textStart"
+                android:textColor="@color/colorText"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <!--    remove game button    -->
+        <Button
+            android:id="@+id/remove_game_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/round_card_important_button"
+            android:drawableStart="@drawable/ic_warning"
+            android:padding="22dp"
+            android:text="  Remove Game"
+            android:textColor="@color/colorText"
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+</ScrollView>

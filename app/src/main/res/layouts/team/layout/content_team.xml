@@ -36,36 +36,65 @@
             android:id="@+id/record"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <!--      Wins      -->
             <TextView
                 android:id="@+id/record_wins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:text="0"
+                android:textAlignment="center"
                 android:textColor="@android:color/holo_green_light"
                 android:textSize="40sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:text=" : "
+                android:textAlignment="center"
                 android:textColor="@color/colorText"
                 android:textSize="40sp" />
 
+            <!--     Ties       -->
+            <TextView
+                android:id="@+id/record_ties"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#ebc800"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" : "
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40sp" />
+
+            <!--  Losses  -->
             <TextView
                 android:id="@+id/record_losses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:text="0"
+                android:textAlignment="center"
                 android:textColor="@android:color/holo_red_light"
                 android:textSize="40sp" />
 
         </LinearLayout>
+
+
+        <!--    Bar Graph    -->
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barGraph"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </com.github.mikephil.charting.charts.BarChart>
+
 
         <!--    Next Game    -->
         <TextView
@@ -86,12 +115,13 @@
 
         <!--    Next Game    -->
         <TextView
+            android:id="@+id/next_games_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/round_card"
             android:padding="22dp"
+            android:text="No Upcoming Games"
             android:textAlignment="center"
-            android:text="vs. Death Tigers\n@ Griffen Stadium"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
 
@@ -143,12 +173,12 @@
 
         <!-- list of teams-->
         <com.zizzle.cmpt370.NonScrollableListView
-            android:listSelector="@android:color/transparent"
             android:id="@+id/members_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:divider="@null" />
+            android:divider="@null"
+            android:listSelector="@android:color/transparent" />
 
         <!--    leave team button    -->
         <Button
@@ -160,9 +190,22 @@
             android:background="@drawable/round_card_important_button"
             android:drawableStart="@drawable/ic_warning"
             android:padding="22dp"
-            android:visibility="gone"
             android:text="  LEAVE TEAM"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/colorText"
+            android:textSize="24sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/delete_team_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/round_card_important_button"
+            android:drawableStart="@drawable/ic_warning"
+            android:padding="22dp"
+            android:text="  Remove Team"
+            android:textColor="@color/colorText"
             android:textSize="24sp" />
 
     </LinearLayout>

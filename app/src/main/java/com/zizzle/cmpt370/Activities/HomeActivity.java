@@ -1,6 +1,8 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,39 +14,54 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zizzle.cmpt370.CustomArrayAdapter;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    /** Values inside ListView. */
+    /**
+     * Values inside ListView.
+     */
     ArrayList<TeamInfo> teamsInfo;
+    ArrayList<String> leaguesName;
 
-    /** Adapter for displaying teams */
-    ArrayAdapter teamArrayAdapter;
+    /**
+     * Adapter for displaying teams
+     */
+    CustomArrayAdapter teamArrayAdapter;
 
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
 
+    /**
+     * Bar Chart to display scores
+     */
+    BarChart barChart;
 
 
     @Override
@@ -73,80 +90,135 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
-
         // list of teams =========================================================================
+        // Initialize arrays
         teamsInfo = new ArrayList<>();
-        final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
-        // read in the current user's teams from the database
-        DatabaseReference userTeamsReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey()).child("teamInfoMap");
+        leaguesName = new ArrayList<>();
 
-        userTeamsReference.addValueEventListener(new ValueEventListener() {
+        // read in the current user's information from the database
+        final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+        DatabaseReference currentUserReference = FirebaseDatabase.getInstance().getReference().child("users").child(currentUserInfo.getDatabaseKey());
+        currentUserReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Remove the progress bar once leagues have been fetched
-                ProgressBar leagueLoading = findViewById(R.id.progressbar_loading);
-                leagueLoading.setVisibility(View.GONE);
+                // Remove the progress bar once the current user has been fetched
+                ProgressBar memberLoading = findViewById(R.id.progressbar_loading);
+                memberLoading.setVisibility(View.GONE);
+                Member currentMember = dataSnapshot.getValue(Member.class);
 
-                // called to read data, get the list of teams the member is a part of
-                // first clear this list as this list may be updated as new teams are added and removed
+                // display the teams the user is a part of, along with the league each team belongs to
+                // first clear out list of teams for this user to prevent teams from showing up twice if new teams are added or removed
                 teamsInfo.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    teamsInfo.add(ds.getValue(TeamInfo.class));
+                leaguesName.clear();
+                for(TeamInfo ti : currentMember.getTeamsInfo()){
+                    teamsInfo.add(ti);
+                    leaguesName.add(ti.getLeagueName());
                 }
 
                 // If user is on teams, show their teams.
-                if (!teamsInfo.isEmpty()) {
-                    TextView myTeamsText = findViewById(R.id.my_teams_text);
-                    myTeamsText.setVisibility(View.VISIBLE);
-                    View myTeamsDivider = findViewById(R.id.my_teams_div);
-                    myTeamsDivider.setVisibility(View.VISIBLE);
-                }
+                TextView myTeamsText = findViewById(R.id.my_teams_text);
+                myTeamsText.setVisibility(View.VISIBLE);
+                View myTeamsDivider = findViewById(R.id.my_teams_div);
+                myTeamsDivider.setVisibility(View.VISIBLE);
+
                 // If user not on any teams, show sad text.
-                else {
+                if (teamsInfo.isEmpty()) {
                     TextView noTeamText = findViewById(R.id.no_team_text);
                     noTeamText.setVisibility(View.VISIBLE);
                 }
 
                 // Show the teams found.
                 teamArrayAdapter.notifyDataSetChanged();
+
+
+                // Show Personal Wins : Ties: Losses ==========================================================================
+
+                // make personal record numbers and graph visible
+                findViewById(R.id.personalRecord_TitleText).setVisibility(View.VISIBLE);
+                findViewById(R.id.personalRecord_Divider).setVisibility(View.VISIBLE);
+                findViewById(R.id.personalRecord).setVisibility(View.VISIBLE);
+                findViewById(R.id.personalBarGraph).setVisibility(View.VISIBLE);
+
+
+                // Set the record
+                TextView wins = findViewById(R.id.personalRecord_wins);
+                TextView losses = findViewById(R.id.personalRecord_losses);
+                TextView ties = findViewById(R.id.personalRecord_ties);
+
+                // Display the W/T/L record
+                int numWins = currentMember.getCareerWins();;
+                int numLosses = currentMember.getCareerLosses();;
+                int numTies = currentMember.getCareerTies();;
+                wins.setText(String.valueOf(numWins));
+                losses.setText(String.valueOf(numLosses));
+                ties.setText(String.valueOf(numTies));
+
+                // Graph to Show the Wins/Ties/Losses ==========================================================================
+
+                barChart = (BarChart) findViewById(R.id.personalBarGraph);
+
+                if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if user hasn't played any games yet
+                    barChart.setVisibility(View.GONE);
+                }
+
+                ArrayList<BarEntry> barEntries = new ArrayList<>();
+                // x and y coordinate
+                barEntries.add(new BarEntry(0f, numWins)); //entries must be floats
+                barEntries.add(new BarEntry(1f, numTies));
+                barEntries.add(new BarEntry(2f, numLosses));
+                BarDataSet barDataSet = new BarDataSet(barEntries, "Games");
+
+                barDataSet.setDrawValues(false); //hide values of the bar heights (i.e. number of games)
+
+                //bar colors (same shades as numbers above the graph)
+                int green = Color.argb(255, 153, 204, 0);
+                int yellow = Color.argb(255, 235, 200, 0);
+                int red = Color.argb(255, 255, 68, 68);
+                int[] barColors = {green, yellow, red};
+                barDataSet.setColors(barColors);
+
+                BarData data = new BarData(barDataSet);
+                barChart.setData(data);
+
+                barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                barChart.animateY(2000);
+                Description d = new Description();
+                d.setText("");
+                barChart.setDescription(d); //remove description
+                barChart.getLegend().setEnabled(false); //remove legend
+                barChart.getAxisLeft().setDrawLabels(false); //remove left axis
+                barChart.getAxisRight().setDrawLabels(false); //remove right axis
+                String[] barLabels = {"Win", "Tie", "Loss"};
+                barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(barLabels)); //show X Label (Win, Tie, loss)
+                barChart.getXAxis().setTextColor(Color.WHITE); //set X Axis text color
+                barChart.getXAxis().setGranularityEnabled(true); //removes duplicate first X Axis value
+                barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM); //Position X Axis at the bottom
+
+                // Privacy Policy Link ==========================================================================
+
+                TextView privacyPolicyButton = findViewById(R.id.Home_PrivacyPolicy);
+                privacyPolicyButton.setVisibility(View.VISIBLE);
+                privacyPolicyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/privacy-policy"));
+                        startActivity(intent);
+                    }
+                });
+
             }
 
-
             @Override
-            public void onCancelled(DatabaseError databaseError){
-                // called when database operations fail,
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
         // Display ListView contents.
-        teamArrayAdapter = new ArrayAdapter<>(this, R.layout.home_listview, teamsInfo);
+        teamArrayAdapter = new CustomArrayAdapter(HomeActivity.this, leaguesName, teamsInfo);
         ListView teamList = findViewById(R.id.user_individual_teams_list);
         teamList.setAdapter(teamArrayAdapter);
-
-
-        // clicking on a team in the ListView is handled in here.
-        teamList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /**
-             * performs an action when a ListView item is clicked.
-             *
-             * @param listItemPosition the index of position for the item in the ListView
-             */
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int listItemPosition, long id) {
-
-                // TeamInfo object that was clicked.
-                TeamInfo clickedTeamInfo = (TeamInfo) parent.getAdapter().getItem(listItemPosition);
-
-                // Intent for the team clicked.
-                Intent teamIntent = new Intent(HomeActivity.this, TeamActivity.class);
-                // pass the clicked TeamInfo to the Team page through this intent
-                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
-                startActivity(teamIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-
-
     }
 
     //When item is selected in the menu, open the respective element (fragment or activity)
@@ -170,6 +242,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_logOut:
                 FirebaseAuth.getInstance().signOut();
+                // clear the info stored for this user
+                CurrentUserInfo.refreshMemberInfo();
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
@@ -186,9 +260,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        else super.onBackPressed();
+        } else super.onBackPressed();
     }
 
     //Button to open menu
