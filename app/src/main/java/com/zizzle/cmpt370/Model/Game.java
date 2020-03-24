@@ -215,14 +215,12 @@ public class Game implements Comparable, Serializable {
     @NonNull
     public String toString(){
         String gameString = this.team1Info + " vs " + this.team2Info + "\n";
-        gameString += this.gameTime.toString() + "\n";
-        gameString += "Final Score: ";
-        if(this.isPlayed()){
-            gameString += this.team1Score + "-" + this.team2Score;
-        }
-        else{
-            gameString += "n/a";
-        }
+        gameString += this.gameTime.toString();
+
+        // Only show the score line if game has been played
+        if(this.isPlayed())
+            gameString += "\nFinal Score: " + this.team1Score + "-" + this.team2Score;
+
         return gameString;
     }
 
