@@ -45,6 +45,7 @@ import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
@@ -109,7 +110,11 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 nextGames.clear();
                 pastGames.clear();
                 nextGames.addAll(currentTeam.getSortedScheduledGames());
-                pastGames.addAll(currentTeam.getSortedPlayedGames());
+                ArrayList<Game> sortedPlayedGames = currentTeam.getSortedPlayedGames();
+                // sortedPlayedGames is sorted so that the oldest played game appears first, but we want to
+                // display the most recent played game first, so reverse this list
+                Collections.reverse(sortedPlayedGames);
+                pastGames.addAll(sortedPlayedGames);
 
                 // team has no games scheduled, display this to the user
                 TextView noComingText = findViewById(R.id.no_upcoming_games_text);
