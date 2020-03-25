@@ -116,26 +116,42 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                 public void onClick(View v) {
                     // TODO possibly display some popup asking the user to confirm the final scores for this game
                     // get the input scores for this game
-                    int currentTeamScore = Integer.valueOf(currentTeamScoreText.getText().toString());
-                    int opponentTeamScore = Integer.valueOf(opponentTeamScoreText.getText().toString());
-                    // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
-                    if(currentTeamInfo.equals(currentGame.getTeam1Info())){
-                        // current team is team1
-                        currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+                    String currentTeamScoreString = currentTeamScoreText.getText().toString();
+                    String opponentTeamScoreString = opponentTeamScoreText.getText().toString();
+                    // ensure that the user has entered scores for both teams
+                    if(currentTeamScoreString.isEmpty()){
+                        // prompt the user to enter a score for this team
+                        currentTeamScoreText.setError("Score Required");
+                        currentTeamScoreText.requestFocus();
+                    }
+                    else if(opponentTeamScoreString.isEmpty()){
+                        // prompt the user to enter the opponent's score
+                        opponentTeamScoreText.setError("Score Required");
+                        opponentTeamScoreText.requestFocus();
                     }
                     else{
-                        // current team is team2
-                        currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
-                    }
-                    // add this played game to the database
-                    Storage.writePlayedGame(currentGame);
+                        // user has given valid scores
+                        int currentTeamScore = Integer.valueOf(currentTeamScoreString);
+                        int opponentTeamScore = Integer.valueOf(opponentTeamScoreString);
+                        // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
+                        if(currentTeamInfo.equals(currentGame.getTeam1Info())){
+                            // current team is team1
+                            currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+                        }
+                        else{
+                            // current team is team2
+                            currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
+                        }
+                        // add this played game to the database
+                        Storage.writePlayedGame(currentGame);
 
-                    finish();
+                        finish();
+                    }
                 }
             });
         }
         else{
-            // prevent the user from changing the score fields and seeing the submit button
+            // the game hasn't started or has already been played, prevent the user from changing the score fields and seeing the submit button
             currentTeamScoreText.setEnabled(false);
             opponentTeamScoreText.setEnabled(false);
 
