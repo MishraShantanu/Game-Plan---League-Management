@@ -94,18 +94,13 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         gameLocationText.append(currentGame.getLocation());
 
         // determine if our current team is team1 or 2 of this game
-        if(currentGame.getTeam1Info().equals(currentTeamInfo)){
-            // current team is team1 in this game
-            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+        // current team is team1 in this game
+        if (currentGame.getTeam1Info().equals(currentTeamInfo))
             opponentTeamText.setText(currentGame.getTeam2Info().getName());
-            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-        }
-        else{
-            // current team is team2 in this game
-            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-            opponentTeamText.setText(currentGame.getTeam1Info().getName());
-            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
-        }
+
+        // current team is team2 in this game
+        else opponentTeamText.setText(currentGame.getTeam1Info().getName());
+
 
         Button submitButton = findViewById(R.id.submitScore);
 
@@ -143,6 +138,19 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
             // prevent the user from changing the score fields and seeing the submit button
             currentTeamScoreText.setEnabled(false);
             opponentTeamScoreText.setEnabled(false);
+
+            // Display the score for each team, depending which position the teams are.
+            // User team is team 1
+            if (currentGame.getTeam1Info().equals(currentTeamInfo)) {
+                currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+                opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+            }
+            // User team is team 2
+            else {
+                currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+                opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+            }
+
             // display the button to submit score changes
             submitButton.setVisibility(View.GONE);
         }
