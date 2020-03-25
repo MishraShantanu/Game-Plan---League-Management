@@ -183,9 +183,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
                 barChart.setScaleEnabled(false); //disable all zooming
                 barChart.animateY(2000);
-                Description d = new Description();
-                d.setText("");
-                barChart.setDescription(d); //remove description
+                barChart.getDescription().setEnabled(false); //remove description
                 barChart.getLegend().setEnabled(false); //remove legend
                 //set y axis to start at '0'
                 barChart.getAxisLeft().setAxisMinimum(0f);
