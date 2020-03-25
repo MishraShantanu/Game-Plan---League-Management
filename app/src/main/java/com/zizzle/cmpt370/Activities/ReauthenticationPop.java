@@ -17,6 +17,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.zizzle.cmpt370.Model.CurrentUserInfo;
+import com.zizzle.cmpt370.Model.MemberInfo;
+import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
 public class ReauthenticationPop extends Activity {
@@ -60,32 +63,34 @@ public class ReauthenticationPop extends Activity {
                     currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            // update the user's email
-                            currentUser.updateEmail(newEmail);
-                            finish();
-                            overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
+                            if(task.isSuccessful()){
+                                // user gave the right password, update the user's email
+                                currentUser.updateEmail(newEmail);
+                                // update the user's email on the database
+                                MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
+                                Storage.updateEmail(currentUserInfo,newEmail);
+
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
+                            }
+                            else{
+                                // Reauthorizing was unsuccessful.
+                                Toast.makeText(ReauthenticationPop.this,
+                                        "Password is incorrect, Please try again", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     });
 
-                    // Reauthorizing was unsuccessful.
-                    /*
-                        Toast.makeText(ReauthenticationPop.this,
-                                "Password is incorrect, Please try again", Toast.LENGTH_SHORT).show();
 
-                     */
                 }
             }
         });
     }
 
-
-    // Since we are reauthorizing, take to sign in page if tries to leave.
     @Override
     public void onBackPressed() {
-
-        // TODO remove current user so they don't immediately sign in again.
-
-        startActivity(new Intent(ReauthenticationPop.this, SigninActivity.class));
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        finish();
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 }

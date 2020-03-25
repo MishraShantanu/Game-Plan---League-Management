@@ -132,11 +132,9 @@ public class ProfilePop extends Activity{
                                 reauthenticationIntent.putExtra("OLD_EMAIL",user.getEmail());
                                 reauthenticationIntent.putExtra("NEW_EMAIL",emailString);
 
+                                // send the user to the reauthentication popup as the user must reauthenticate when changing their login information (in this case email)
                                 startActivity(reauthenticationIntent);
                                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-
-                                // update this user's email on the database
-                                Storage.updateEmail(currentUserInfo,emailString);
                             }
                             finish();
                             overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
