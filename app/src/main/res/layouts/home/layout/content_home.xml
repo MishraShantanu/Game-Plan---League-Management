@@ -100,7 +100,8 @@
             android:id="@+id/personalBarGraph"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:visibility="gone"></com.github.mikephil.charting.charts.BarChart>
+            android:visibility="gone">
+        </com.github.mikephil.charting.charts.BarChart>
 
 
         <!--    My Teams    -->
@@ -163,8 +164,8 @@
             android:id="@+id/Home_PrivacyPolicy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Privacy Policy"
             android:layout_marginTop="15dp"
+            android:text="Privacy Policy"
             android:textColor="@color/colorText"
             android:visibility="gone" />
 
