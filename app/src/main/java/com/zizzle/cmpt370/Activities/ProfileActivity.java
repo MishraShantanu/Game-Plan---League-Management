@@ -111,13 +111,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 }
 
                 ArrayList<PieEntry> pieEntries = new ArrayList<>();
-                // x and y coordinate
-//                pieEntries.add(new PieEntry(0f, numWins)); //entries must be floats
-//                pieEntries.add(new PieEntry(1f, numTies));
-//                pieEntries.add(new PieEntry(2f, numLosses));
-                pieEntries.add(new PieEntry(45f, "Wins")); //entries must be floats
-                pieEntries.add(new PieEntry(2f, "Ties"));
-                pieEntries.add(new PieEntry(32f, "Losses"));
+                // data values
+                pieEntries.add(new PieEntry((float) numWins, "Wins")); //entries must be floats
+                pieEntries.add(new PieEntry((float) numTies, "Ties"));
+                pieEntries.add(new PieEntry((float) numLosses, "Losses"));
                 PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
 
                 //bar colors (same shades as numbers above the graph)
@@ -130,11 +127,14 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 pieDataSet.setValueTextColor(Color.WHITE);
                 pieDataSet.setValueTextSize(20f);
 
+                pieDataSet.setValueFormatter(new PieChartFormatter());
+
                 PieData pieData = new PieData(pieDataSet);
                 pieChart.setData(pieData);
 
 
                 pieChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                pieChart.setUsePercentValues(true); //use percentages
                 pieChart.animateXY(1000, 1000);
                 pieChart.getDescription().setEnabled(false); //remove description
                 pieChart.getLegend().setTextColor(Color.WHITE); //set legend text color to white
@@ -144,7 +144,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
                 pieChart.setHoleRadius(10f); //set white hole radius
                 pieChart.setTransparentCircleRadius(15f); //set transparent hold radius
                 pieChart.setDrawEntryLabels(false); //removes inside pie labels of "Win, Tie, Loss"
-
 
             }
 
