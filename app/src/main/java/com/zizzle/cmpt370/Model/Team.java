@@ -135,7 +135,7 @@ public class Team {
             return new ArrayList<>();
         }
         ArrayList<Game> sortedGames = new ArrayList<>(this.gamesPlayed.values());
-        Collections.sort(sortedGames, Collections.reverseOrder());
+        Collections.sort(sortedGames);
         return sortedGames;
     }
 
