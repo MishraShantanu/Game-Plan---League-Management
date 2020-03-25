@@ -29,19 +29,15 @@
             android:textColor="@color/colorText"
             android:textSize="18sp" />
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:columnCount="2"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-                android:layout_marginEnd="4dp"
                 android:background="@drawable/round_card"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -68,11 +64,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-                android:layout_marginStart="4dp"
+                android:layout_marginTop="6dp"
                 android:background="@drawable/round_card"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -97,23 +91,23 @@
                     android:textSize="22sp" />
 
             </LinearLayout>
-        </GridLayout>
+        </LinearLayout>
 
         <GridLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginTop="30dp"
             android:columnCount="3"
             android:orientation="horizontal">
 
             <!--    Deny Button    -->
             <Button
                 android:id="@+id/denyButton"
-                android:layout_width="150dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:padding="22dp"
                 android:background="#991111"
+                android:padding="16dp"
                 android:text="No"
                 android:textColor="@color/colorText"
                 android:textSize="20sp" />
@@ -121,15 +115,15 @@
             <!--     Space       -->
             <View
                 android:layout_width="20dp"
-                android:layout_height="1dp"/>
+                android:layout_height="1dp" />
 
             <!--    Confirm Button    -->
             <Button
                 android:id="@+id/confirmButton"
-                android:layout_width="150dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:background="#118811"
-                android:padding="22dp"
+                android:padding="16dp"
                 android:text="Yes"
                 android:textColor="@color/colorText"
                 android:textSize="20sp" />

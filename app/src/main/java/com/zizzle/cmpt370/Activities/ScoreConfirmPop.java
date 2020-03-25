@@ -52,10 +52,7 @@ public class ScoreConfirmPop extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        int width = dm.widthPixels;
-        int height = dm.heightPixels;
-
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.7));
+        getWindow().setLayout((int)(dm.widthPixels * 0.8), (int)(dm.heightPixels * 0.7));
 
 
         // Displaying scores =======================================================================
