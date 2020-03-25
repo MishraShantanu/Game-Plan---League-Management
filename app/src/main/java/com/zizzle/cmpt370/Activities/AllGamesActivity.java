@@ -176,11 +176,10 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 lineChart.invalidate(); //refresh the chart
 
                 lineChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                lineChart.setScaleEnabled(false); //disable all zooming
                 lineChart.animateX(2000);
                 lineChart.animateY(1000);
-                Description d = new Description();
-                d.setText("");
-                lineChart.setDescription(d); //remove description
+                lineChart.getDescription().setEnabled(false); //remove description
                 lineChart.getLegend().setEnabled(false); //remove legend
                 lineChart.getAxisLeft().setDrawLabels(false); //remove left axis
                 lineChart.getAxisRight().setTextColor(Color.WHITE); //set left axis color

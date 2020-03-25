@@ -174,10 +174,12 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     barChart.setData(data);
 
                     barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                    barChart.setScaleEnabled(false); //disable all zooming
                     barChart.animateY(2000);
-                    Description d = new Description();
-                    d.setText("");
-                    barChart.setDescription(d); //remove description
+                    barChart.getDescription().setEnabled(false); //remove description
+                    //set y axis to start at '0'
+                    barChart.getAxisLeft().setAxisMinimum(0f);
+                    barChart.getAxisRight().setAxisMinimum(0f);
                     barChart.getLegend().setEnabled(false); //remove legend
                     barChart.getAxisLeft().setDrawLabels(false); //remove left axis
                     barChart.getAxisRight().setDrawLabels(false); //remove right axis
