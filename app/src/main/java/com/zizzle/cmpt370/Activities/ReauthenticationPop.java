@@ -91,6 +91,5 @@ public class ReauthenticationPop extends Activity {
     @Override
     public void onBackPressed() {
         finish();
-        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 }
