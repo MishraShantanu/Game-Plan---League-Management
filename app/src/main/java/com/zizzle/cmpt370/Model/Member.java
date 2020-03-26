@@ -109,7 +109,8 @@ public class Member {
      * @return phone number of the user.
      */
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumber.substring(0, 3) + "-" + phoneNumber.substring(3, 6) + "-" +
+                phoneNumber.substring(6, 10);
     }
 
     /**
@@ -204,17 +205,11 @@ public class Member {
         phoneNumber = phoneNumber.replaceAll("\\D", "");
 
         // Check the number is a full length phone number, we allow phone numbers of length 10 or 11
-        if (phoneNumber.length() != 11 && phoneNumber.length() != 10){
+        if (phoneNumber.length() != 10 && phoneNumber.length() != 11){
             throw new IllegalArgumentException("Error in setPhoneNumber(): Phone number does not meet length requirements");
         }
 
-        // convert into a formatted number.
-        if(phoneNumber.length() == 10){
-            // we must add a leading 1 to this phone number
-            phoneNumber = "1" + phoneNumber;
-        }
-        this.phoneNumber = phoneNumber.substring(0, 1) + "-" + phoneNumber.substring(1, 4) + "-" +
-                phoneNumber.substring(4, 7) + "-" + phoneNumber.substring(7, 11);
+        this.phoneNumber = phoneNumber;
     }
 
 
