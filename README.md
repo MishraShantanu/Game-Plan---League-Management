@@ -26,3 +26,15 @@
 4. To run the app, click "Run" from the bar menu at the top of Android Studio. 
 5. You will have to select a "deployment target" which will be your phone.
 
+### Method 2: Using Android Studio emulator
+1. First, you need to install the Android Emulator. Select "Android Emulator" componeent in the SDK Tools tab of the SDK manager
+   *  To open SDK manager, click Tools -> SDK Manager
+   *  Select the Android Smulator option install/update it.
+2. Create an Android Virtual Device (AVD) that the emulator can use to install the app
+   *  In the toolbar, click on the box to the left of the "Run" button and open the "AVD Manager"
+   *  Click on "Create Virtual Device"
+   *  Select "Pizel 3 XL" and press Next
+   *  Select API Level "28" and press Next
+   *  Press "Finish" which will download the phone and OS
+3. After download has completed, select the "Pixel 3 XL" from the toolbar AVD manager bar to the left of the "Run" button
+4. Press "Run" which will load the emulator and start the app (might take a few minutes initially)
