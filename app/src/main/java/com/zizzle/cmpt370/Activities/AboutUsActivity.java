@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +50,19 @@ public class AboutUsActivity extends AppCompatActivity implements NavigationView
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
 
+        // "Our Team" Link ==========================================================================
+
+        LinearLayout personalNames = findViewById(R.id.AboutUs_personalNames);
+        personalNames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://sites.google.com/view/zizzlestudioscanada/our-team"));
+                startActivity(intent);
+            }
+        });
+
+
         // Website Link ==========================================================================
 
         TextView websiteButton = findViewById(R.id.AboutUs_Website);
@@ -60,7 +74,6 @@ public class AboutUsActivity extends AppCompatActivity implements NavigationView
                 startActivity(intent);
             }
         });
-
 
     }
 
