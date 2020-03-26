@@ -1,19 +1,32 @@
 # GamePlan
-#### Sports team and league manager
+#### Personal Sports Team Manager
+[Zizzle Studios Website](https://sites.google.com/view/zizzlestudioscanada/home)
+
+# Explanation of App
+GamePlan is a simple way to plan and track your leagues and teams. Discover leagues throughout the world, make and join teams in any sport, schedule games with other teams within the app, and record scores ... all presented in a clear, bold interface.
+
+KEY FEATURES
+*  Find sports leagues anywhere in the world
+*  Make a new league
+*  Join teams within a league
+*  Make your own team
+*  Schedule games with other teams in your league
+*  Record scores and track your wins and losses
 
 
 # How to Run
+For all methods:
+*  Download app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
 
 
+## 1) Running APK from online emulator (may or may not work):
 1. Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store 
-2. Download app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
-3. Click on the extension in the top right of chrome
-4. Click 'My APK Manager & APK Upload'
-5. Upload app APK
-6. Select Run_APK
-7. 
+2. Click on the extension in the top right of chrome
+3. Click 'My APK Manager & APK Upload'
+4. Upload app APK
+5. Select Run_APK
 
-## Running APK from Android Studio:
+## 2) Running APK from Android Studio:
 *  For these methods, you need Android Studio installed with our source code (pull master branch from the repository)
 ### Method 1: Using your own Android Phone
 1. You will need an Android phone and a USB cable
