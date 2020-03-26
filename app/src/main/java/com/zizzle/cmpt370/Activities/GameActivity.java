@@ -251,10 +251,7 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                Intent profileIntent = new Intent(this, ProfileActivity.class);
-                // indicate that we want to view the profile of the current user
-                profileIntent.putExtra("SELECTED_MEMBER",CurrentUserInfo.getCurrentUserInfo());
-                startActivity(profileIntent);
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:

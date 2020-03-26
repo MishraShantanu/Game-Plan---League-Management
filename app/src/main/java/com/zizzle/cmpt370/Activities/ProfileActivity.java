@@ -28,7 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
-import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.PieChartFormatter;
 import com.zizzle.cmpt370.R;
 
@@ -69,39 +68,41 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
+
+        // Temporary User created ==========================================================================
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
-        // the member whose info we're viewing is passed via intent
-        final MemberInfo selectedMemberInfo = (MemberInfo)getIntent().getSerializableExtra("SELECTED_MEMBER");
 
-        DatabaseReference selectedMemberReference = firebaseDatabase.getReference("users").child(selectedMemberInfo.getDatabaseKey());
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getCurrentUser().getUid());
 
-        selectedMemberReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Member selectedMember = dataSnapshot.getValue(Member.class);
+                Member user = dataSnapshot.getValue(Member.class);
 
                 // DisplayName Text ==========================================================================
                 TextView userName = (TextView) findViewById(R.id.newProfile_DisplayName);
-                userName.setText(selectedMember.getDisplayName());
+                userName.setText(user.getDisplayName());
 
                 // Email Text ==========================================================================
                 TextView email = (TextView) findViewById(R.id.newProfile_Email);
-                email.setText(selectedMember.getEmail());
+                email.setText(user.getEmail());
 
                 // Phone Number Text ==========================================================================
                 TextView phoneNumber = (TextView) findViewById(R.id.newProfile_PhoneNumber);
-                phoneNumber.setText(selectedMember.getPhoneNumber());
+                phoneNumber.setText(user.getPhoneNumber());
 
 
                 // Set the title of the page to user name.
-                getSupportActionBar().setTitle(selectedMember.getDisplayName() + "'s Information");
+                getSupportActionBar().setTitle(user.getDisplayName() + "'s Information");
 
 
                 // Graph to Show the Wins/Ties/Losses ==========================================================================
-                int numWins = selectedMember.getCareerWins();
-                int numLosses = selectedMember.getCareerLosses();
-                int numTies = selectedMember.getCareerTies();
+                int numWins = user.getCareerWins();
+                int numLosses = user.getCareerLosses();
+                int numTies = user.getCareerTies();
 
                 pieChart = (PieChart) findViewById(R.id.ProfilePieChart);
 
@@ -155,14 +156,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
         // Update Info button ==========================================================================
         Button updateInfoButton = findViewById(R.id.updateInfoButton);
-        // only display the update info button if the current user of this app is viewing their own profile
-        MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
-        if(currentUserInfo.equals(selectedMemberInfo)){
-            updateInfoButton.setVisibility(View.VISIBLE);
-        }
-        else{
-            updateInfoButton.setVisibility(View.GONE);
-        }
         updateInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,8 +212,19 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
 
-        finish();
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        // Go back to team page if this activity was called from there.
+        if (getCallingActivity().getClassName().equals(TeamActivity.class.getName())) {
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+
+        // Return to home for other activities.
+        else {
+            Intent toHome = new Intent(this, HomeActivity.class);
+            toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(toHome);
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
     }
 
     //Button to open menu

@@ -78,8 +78,11 @@ public class ReauthenticationPop extends Activity {
                                 Toast.makeText(ReauthenticationPop.this,
                                         "Password is incorrect, Please try again", Toast.LENGTH_SHORT).show();
                             }
+
                         }
                     });
+
+
                 }
             }
         });
