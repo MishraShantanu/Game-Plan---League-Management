@@ -181,11 +181,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 barChart.setData(data);
 
                 barChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                barChart.setScaleEnabled(false); //disable all zooming
                 barChart.animateY(2000);
-                Description d = new Description();
-                d.setText("");
-                barChart.setDescription(d); //remove description
+                barChart.getDescription().setEnabled(false); //remove description
                 barChart.getLegend().setEnabled(false); //remove legend
+                //set y axis to start at '0'
+                barChart.getAxisLeft().setAxisMinimum(0f);
+                barChart.getAxisRight().setAxisMinimum(0f);
                 barChart.getAxisLeft().setDrawLabels(false); //remove left axis
                 barChart.getAxisRight().setDrawLabels(false); //remove right axis
                 String[] barLabels = {"Win", "Tie", "Loss"};
@@ -233,7 +235,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
             case R.id.nav_aboutUs:

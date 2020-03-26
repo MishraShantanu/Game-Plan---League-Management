@@ -46,6 +46,12 @@ import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class GameActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    Game currentGame;
+    TeamInfo currentTeamInfo;
+
+    String currentTeamScoreString;
+    String opponentTeamScoreString;
+
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
@@ -74,19 +80,18 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
+        currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
+        currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
 
-
-        final EditText currentTeamScoreText = findViewById(R.id.yourScore);
-        final EditText opponentTeamScoreText = findViewById(R.id.opponentScore);
-        TextView currentTeamText = findViewById(R.id.yourTeamNameText);
+        final TextView currentTeamText = findViewById(R.id.yourTeamNameText);
         TextView opponentTeamText = findViewById(R.id.opponentTeamNameText);
         TextView gameDateText = findViewById(R.id.gameDateText);
         TextView gameTimeText = findViewById(R.id.gameTimeText);
         TextView gameLocationText = findViewById(R.id.locationText);
 
+        final EditText currentTeamScoreText = findViewById(R.id.yourScore);
+        final EditText opponentTeamScoreText = findViewById(R.id.opponentScore);
 
-        final Game currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
-        final TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
         // set the fields for this page
         currentTeamText.setText(currentTeamInfo.getName());
         gameDateText.append(currentGame.getGameTime().getDateString());
@@ -94,18 +99,13 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         gameLocationText.append(currentGame.getLocation());
 
         // determine if our current team is team1 or 2 of this game
-        if(currentGame.getTeam1Info().equals(currentTeamInfo)){
-            // current team is team1 in this game
-            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+        // current team is team1 in this game
+        if (currentGame.getTeam1Info().equals(currentTeamInfo))
             opponentTeamText.setText(currentGame.getTeam2Info().getName());
-            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-        }
-        else{
-            // current team is team2 in this game
-            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-            opponentTeamText.setText(currentGame.getTeam1Info().getName());
-            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
-        }
+
+        // current team is team2 in this game
+        else opponentTeamText.setText(currentGame.getTeam1Info().getName());
+
 
         Button submitButton = findViewById(R.id.submitScore);
 
@@ -121,28 +121,48 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                 public void onClick(View v) {
                     // TODO possibly display some popup asking the user to confirm the final scores for this game
                     // get the input scores for this game
-                    int currentTeamScore = Integer.valueOf(currentTeamScoreText.getText().toString());
-                    int opponentTeamScore = Integer.valueOf(opponentTeamScoreText.getText().toString());
-                    // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
-                    if(currentTeamInfo.equals(currentGame.getTeam1Info())){
-                        // current team is team1
-                        currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+                    currentTeamScoreString = currentTeamScoreText.getText().toString();
+                    opponentTeamScoreString = opponentTeamScoreText.getText().toString();
+                    // ensure that the user has entered scores for both teams
+                    if(currentTeamScoreString.isEmpty()){
+                        // prompt the user to enter a score for this team
+                        currentTeamScoreText.setError("Score Required");
+                        currentTeamScoreText.requestFocus();
+                    }
+                    else if(opponentTeamScoreString.isEmpty()){
+                        // prompt the user to enter the opponent's score
+                        opponentTeamScoreText.setError("Score Required");
+                        opponentTeamScoreText.requestFocus();
                     }
                     else{
-                        // current team is team2
-                        currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
-                    }
-                    // add this played game to the database
-                    Storage.writePlayedGame(currentGame);
 
-                    finish();
+                        Intent confirmIntent = new Intent(GameActivity.this, ScoreConfirmPop.class);
+                        confirmIntent.putExtra("TEAM_NAME", currentTeamInfo.getName());
+                        confirmIntent.putExtra("OPPONENT_NAME", currentGame.getTeam2Info().getName());
+                        confirmIntent.putExtra("TEAM_SCORE", currentTeamScoreString);
+                        confirmIntent.putExtra("OPPONENT_SCORE", opponentTeamScoreString);
+                        startActivityForResult(confirmIntent, 2);
+                    }
                 }
             });
         }
         else{
-            // prevent the user from changing the score fields and seeing the submit button
+            // the game hasn't started or has already been played, prevent the user from changing the score fields and seeing the submit button
             currentTeamScoreText.setEnabled(false);
             opponentTeamScoreText.setEnabled(false);
+
+            // Display the score for each team, depending which position the teams are.
+            // User team is team 1
+            if (currentGame.getTeam1Info().equals(currentTeamInfo)) {
+                currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+                opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+            }
+            // User team is team 2
+            else {
+                currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+                opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+            }
+
             // display the button to submit score changes
             submitButton.setVisibility(View.GONE);
         }
@@ -156,14 +176,11 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
 
-                // TODO Remove the game when clicked
+                Storage.removeGameFromTeams(currentGame);
 
                 // Go back to the last activity when deleted.
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-                // Remove this after adding functionality.
-                Toast.makeText(GameActivity.this, "Not Implemented", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -189,6 +206,35 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Request code 2 is for score confirmation
+        if (requestCode == 2) {
+            String result = data.getStringExtra("RESULT");
+
+            // User confirmed the score.
+            if (result.equals("true")) {
+                // Value of the scores
+                int currentTeamScore = Integer.valueOf(currentTeamScoreString);
+                int opponentTeamScore = Integer.valueOf(opponentTeamScoreString);
+
+                // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
+                // current team is team1
+                if (currentTeamInfo.equals(currentGame.getTeam1Info()))
+                    currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+
+                // current team is team2
+                else currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
+
+                // add this played game to the database
+                Storage.writePlayedGame(currentGame);
+
+                finish();
+            }
+        }
+    }
+
 
     //When item is selected in the menu, open the respective element (fragment or activity)
     @Override
@@ -205,7 +251,7 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:

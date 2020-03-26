@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +28,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
+import com.zizzle.cmpt370.PieChartFormatter;
 import com.zizzle.cmpt370.R;
+
+import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,6 +39,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     private ActionBarDrawerToggle mToggle;
     private Toolbar mToolBar; //Added for overlay effect of menu
 
+    /**
+     * Pie Chart to display W:T:L
+     */
+    PieChart pieChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +70,10 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
 
         // Temporary User created ==========================================================================
-        FirebaseAuth firebaseAuth =FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+
 
         DatabaseReference databaseReference = firebaseDatabase.getReference("users").child(firebaseAuth.getCurrentUser().getUid());
 
@@ -83,6 +97,54 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
                 // Set the title of the page to user name.
                 getSupportActionBar().setTitle(user.getDisplayName() + "'s Information");
+
+
+                // Graph to Show the Wins/Ties/Losses ==========================================================================
+                int numWins = user.getCareerWins();
+                int numLosses = user.getCareerLosses();
+                int numTies = user.getCareerTies();
+
+                pieChart = (PieChart) findViewById(R.id.ProfilePieChart);
+
+                if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if user hasn't played any games yet
+                    pieChart.setVisibility(View.GONE);
+                }
+
+                ArrayList<PieEntry> pieEntries = new ArrayList<>();
+                // data values
+                pieEntries.add(new PieEntry((float) numWins, "Wins")); //entries must be floats
+                pieEntries.add(new PieEntry((float) numTies, "Ties"));
+                pieEntries.add(new PieEntry((float) numLosses, "Losses"));
+                PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
+
+                //bar colors (same shades as numbers above the graph)
+                int green = Color.argb(255, 153, 204, 0);
+                int yellow = Color.argb(255, 235, 200, 0);
+                int red = Color.argb(255, 255, 68, 68);
+                int[] barColors = {green, yellow, red};
+                pieDataSet.setColors(barColors);
+                //data text size and color
+                pieDataSet.setValueTextColor(Color.WHITE);
+                pieDataSet.setValueTextSize(20f);
+
+                pieDataSet.setValueFormatter(new PieChartFormatter());
+
+                PieData pieData = new PieData(pieDataSet);
+                pieChart.setData(pieData);
+
+
+                pieChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                pieChart.setUsePercentValues(true); //use percentages
+                pieChart.animateXY(1000, 1000);
+                pieChart.getDescription().setEnabled(false); //remove description
+                pieChart.getLegend().setTextColor(Color.WHITE); //set legend text color to white
+                pieChart.getLegend().setTextSize(15f); //adjust legend text size
+                pieChart.getLegend().setForm(Legend.LegendForm.CIRCLE); //shape of color points beside legend entries
+                pieChart.getLegend().setXEntrySpace(20f); //space out the legend values
+                pieChart.setHoleRadius(10f); //set white hole radius
+                pieChart.setTransparentCircleRadius(15f); //set transparent hold radius
+                pieChart.setDrawEntryLabels(false); //removes inside pie labels of "Win, Tie, Loss"
+
             }
 
             @Override
@@ -90,8 +152,6 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
             }
         });
-
-
 
 
         // Update Info button ==========================================================================
@@ -102,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
 
                 // TODO 10/03/2020 - Make this button update user information.
 
-                startActivity( new Intent(ProfileActivity.this, ProfilePop.class));
+                startActivity(new Intent(ProfileActivity.this, ProfilePop.class));
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
             }
         });
@@ -150,7 +210,16 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) { //If drawer (sidebar navigation) is open, close it. START is because menu is on left side (for right side menu, use "END")
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }
+
+        // Go back to team page if this activity was called from there.
+        if (getCallingActivity().getClassName().equals(TeamActivity.class.getName())) {
+            finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
+
+        // Return to home for other activities.
+        else {
             Intent toHome = new Intent(this, HomeActivity.class);
             toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(toHome);

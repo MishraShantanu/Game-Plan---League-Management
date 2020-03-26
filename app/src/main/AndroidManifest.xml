@@ -9,12 +9,14 @@
         android:roundIcon="@drawable/game_plan"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.GameActivity"></activity>
+        <activity android:name=".Activities.GameActivity" />
         <activity android:name=".Activities.AllGamesActivity" />
         <activity android:name=".Activities.TeamMemberActivity" />
         <activity android:name=".Activities.TeamActivity" />
         <activity android:name=".Activities.AboutUsActivity" />
         <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.SignupActivity" />
+        <activity android:name=".Activities.HomeActivity" />
         <activity android:name=".Activities.SigninActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +26,6 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.SignupActivity" />
-        <activity android:name=".Activities.HomeActivity" />
         <activity
             android:name=".Activities.LeagueActivity"
             android:label="@string/title_activity_league"
@@ -37,7 +37,7 @@
         </activity>
         <activity
             android:name=".Activities.TeamsActivity"
-            android:label="@string/title_activity_league"
+            android:label="TeamsActivity"
             android:parentActivityName=".Activities.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -55,6 +55,12 @@
             android:theme="@style/AppTheme.PopUp" />
         <activity
             android:name=".Activities.GamePop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.ReauthenticationPop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.ScoreConfirmPop"
             android:theme="@style/AppTheme.PopUp" />
     </application>
 

@@ -3,7 +3,6 @@ package com.zizzle.cmpt370.Activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,12 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -37,7 +32,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,15 +39,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Game;
-import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
@@ -102,7 +94,6 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
         teamClicked = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
 
-        // ADD STUFF HERE!!! ==========================================================================
         // NEXT GAMES =========================================================================
         final ArrayList<Game> nextGames = new ArrayList<>();
         final ArrayList<Game> pastGames = new ArrayList<>();
@@ -119,16 +110,31 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 nextGames.clear();
                 pastGames.clear();
                 nextGames.addAll(currentTeam.getSortedScheduledGames());
-                pastGames.addAll(currentTeam.getSortedPlayedGames());
+                ArrayList<Game> sortedPlayedGames = currentTeam.getSortedPlayedGames();
+                // sortedPlayedGames is sorted so that the oldest played game appears first, but we want to
+                // display the most recent played game first, so reverse this list
+                Collections.reverse(sortedPlayedGames);
+                pastGames.addAll(sortedPlayedGames);
+
+                // team has no games scheduled, display this to the user
+                TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                 if (nextGames.isEmpty()) {
-                    // team has no games scheduled, display this to the user
-                    TextView noComingText = findViewById(R.id.no_upcoming_games_text);
                     noComingText.setVisibility(View.VISIBLE);
                 }
+                else{
+                    // the user has upcoming games, don't show this text
+                    noComingText.setVisibility(View.GONE);
+                }
+
+                TextView noPastText = findViewById(R.id.no_past_games_text);
+
                 if (pastGames.isEmpty()) {
                     // team hasn't played any games, display this
-                    TextView noPastText = findViewById(R.id.no_past_games_text);
                     noPastText.setVisibility(View.VISIBLE);
+                }
+                else{
+                    // user has previous games don't display this message
+                    noPastText.setVisibility(View.GONE);
                 }
 
                 // display the games in these lists
@@ -136,37 +142,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 pastGameArrayAdapter.notifyDataSetChanged();
 
                 // determine the win loss ratios for this team over all of their games played
-                // TODO this should probably be a Team method
-                ArrayList<Float> winLossRatios = new ArrayList<>();
-                int winCount = 0;
-                int lossCount = 0;
-                for (Game playedGame : pastGames) {
-                    if (playedGame.isTie()) {
-                        // if this is the first game the team has played, set the win/loss to 0.5
-                        if (winCount == 0 && lossCount == 0) {
-                            winLossRatios.add(0.5f);
-                        } else {
-                            // consider a tie to leave an existing win loss ratio unchanged
-                            Float previousWinLossRatio = winLossRatios.get(winLossRatios.size() - 1);
-                            winLossRatios.add(previousWinLossRatio);
-                        }
-                    }
-                    if (currentTeamInfo.equals(playedGame.getWinner())) {
-                        // the current team has won this game
-                        winCount++;
-                        if (lossCount == 0) {
-                            // the team hasn't lost so far and so have a win/loss of 100%
-                            winLossRatios.add(1f);
-                        } else {
-                            winLossRatios.add((float) winCount / (float) lossCount);
-                        }
-                    } else {
-                        // current team has lost this game
-                        lossCount++;
-                        // add the new win/loss ratio
-                        winLossRatios.add((float) winCount / (float) lossCount);
-                    }
-                }
+                ArrayList<Float> winLossRatios = currentTeam.getWinLossRatioOverTime();
 
                 // Graph to Show the Win:Loss Ratio ==========================================================================
 
@@ -200,11 +176,10 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 lineChart.invalidate(); //refresh the chart
 
                 lineChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                lineChart.setScaleEnabled(false); //disable all zooming
                 lineChart.animateX(2000);
                 lineChart.animateY(1000);
-                Description d = new Description();
-                d.setText("");
-                lineChart.setDescription(d); //remove description
+                lineChart.getDescription().setEnabled(false); //remove description
                 lineChart.getLegend().setEnabled(false); //remove legend
                 lineChart.getAxisLeft().setDrawLabels(false); //remove left axis
                 lineChart.getAxisRight().setTextColor(Color.WHITE); //set left axis color
@@ -232,11 +207,9 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
 
         // Display ListView contents.
-
         nextGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, nextGames);
         ListView nextGameList = findViewById(R.id.next_scores_list);
         nextGameList.setAdapter(nextGameArrayAdapter);
-
 
         // Display ListView contents.
         pastGameArrayAdapter = new ArrayAdapter<>(this, R.layout.league_listview, pastGames);
@@ -248,7 +221,6 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
 
             /**
              * performs an action when a ListView item is clicked.
-             *
              * @param listItemPosition the index of position for the item in the ListView
              */
             @Override
@@ -283,10 +255,9 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 }
             }
 
+            // Auto Generated.
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
 
 
@@ -317,7 +288,7 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_profile:
-                startActivity(new Intent(this, ProfileActivity.class));
+                startActivityForResult(new Intent(this, ProfileActivity.class), 2);
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 break;
             case R.id.nav_aboutUs:

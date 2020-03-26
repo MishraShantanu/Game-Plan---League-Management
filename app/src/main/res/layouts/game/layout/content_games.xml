@@ -19,9 +19,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Win:Loss Ratio over time"
+            android:text="Win : Loss"
             android:textColor="@color/colorText"
             android:textSize="24sp" />
+
+        <!--    divider    -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            android:background="@color/colorText" />
 
         <!--    Bar Graph    -->
         <com.github.mikephil.charting.charts.LineChart
