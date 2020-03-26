@@ -62,6 +62,9 @@
         <activity
             android:name=".Activities.ScoreConfirmPop"
             android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.ForgotPassPop"
+            android:theme="@style/AppTheme.PopUp" />
     </application>
 
 </manifest>

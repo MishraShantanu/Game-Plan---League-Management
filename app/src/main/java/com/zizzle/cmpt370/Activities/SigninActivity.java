@@ -140,9 +140,9 @@ public class SigninActivity extends AppCompatActivity {
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO add pop up
-
+                Intent forgotPass = new Intent(SigninActivity.this, ForgotPassPop.class);
+                startActivity(forgotPass);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             }
         });
     }
