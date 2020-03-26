@@ -48,13 +48,17 @@ public class LeaguePop extends Activity {
                 final String sportForLeague = typeOfSport.getText().toString();
                 final String descriptionOfLeague = description.getText().toString();
 
-                if (nameOfLeague.isEmpty() && sportForLeague.isEmpty()) {
-                    Toast.makeText(LeaguePop.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                } else if (nameOfLeague.isEmpty()) {
-                    Toast.makeText(LeaguePop.this, "League name is required", Toast.LENGTH_SHORT).show();
+                if (nameOfLeague.isEmpty()) {
+                    leagueName.setError("League name required");
+                    leagueName.requestFocus();
                 } else if (sportForLeague.isEmpty()) {
-                    Toast.makeText(LeaguePop.this, "Type of sport is required", Toast.LENGTH_SHORT).show();
-                } else {
+                    typeOfSport.setError("Sport required");
+                    typeOfSport.requestFocus();
+                }else if (descriptionOfLeague.isEmpty()){
+                    description.setError("Description required");
+                    description.requestFocus();
+                }
+                else {
                     // create new league with the current user of the app as owner
                     League newLeague = new League(nameOfLeague, CurrentUserInfo.getCurrentUserInfo(), sportForLeague, descriptionOfLeague);
 
