@@ -134,6 +134,17 @@ public class SigninActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+
+
+        TextView forgotPassword = findViewById(R.id.forgot_password);
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent forgotPass = new Intent(SigninActivity.this, ForgotPassPop.class);
+                startActivity(forgotPass);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+            }
+        });
     }
 
 
