@@ -51,3 +51,11 @@ For all methods:
    *  Press "Finish" which will download the phone and OS
 3. After download has completed, select the "Pixel 3 XL" from the toolbar AVD manager bar to the left of the "Run" button
 4. Press "Run" which will load the emulator and start the app (might take a few minutes initially)
+
+## 3) Nox(Android Emulator for PC) (May or may not work)
+1. Download [Nox](https://www.bignox.com/en/download/fullPackage) using any browser
+2. Install Nox using the downloaded exe file
+2. Download latest app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
+3. Open Nox application 
+4. Drag the Downloaded APK over Nox emulator screen(It will automatically install the APK)
+5. You will get a "GamePlan" application logo on the Nox main and applications screen, Click on that to run the app
