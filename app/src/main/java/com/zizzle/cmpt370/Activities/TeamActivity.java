@@ -153,6 +153,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if team hasn't played any games yet
                         barChart.setVisibility(View.GONE);
                     }
+                    else{
+                        barChart.setVisibility(View.VISIBLE);
+                    }
 
                     ArrayList<BarEntry> barEntries = new ArrayList<>();
                     // x and y coordinate
@@ -256,24 +259,12 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     removeTeam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // remove the team member from the team
-                            // TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
-
-                            //System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                            //Check if the current user is same as the Owner of the Team else do not delete the team
-                            if (currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0) {
-                                Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
-
-                                Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
-                                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(toHome);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                Storage.removeTeam(currentTeamInfo);
-                            } else
-                                Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
-
-
+                            // remove the team from our database
+                            Storage.removeTeam(currentTeamInfo);
+                            Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
+                            toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(toHome);
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }
                     });
 
