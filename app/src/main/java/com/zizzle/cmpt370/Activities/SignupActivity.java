@@ -96,9 +96,9 @@ public class SignupActivity extends AppCompatActivity {
                     phoneNumber.requestFocus();
                 }
 
-                else if(phone.length()!=10 && phone.length()!=11){
+                else if(phone.length()!=10){
                     // phone number has invalid length/format
-                    phoneNumber.setError("Phone number must be either 10 or 11 digits long");
+                    phoneNumber.setError("Phone number must be 10 digits long");
                     phoneNumber.requestFocus();
                 }
 
