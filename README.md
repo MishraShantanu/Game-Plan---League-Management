@@ -15,12 +15,10 @@ KEY FEATURES
 
 
 # How to Run
-For all methods:
-*  Download app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
-
 
 ## 1) Running APK from online emulator (may or may not work):
-1. Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store 
+1. Download app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
+2. Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store 
 2. Click on the extension in the top right of chrome
 3. Click 'My APK Manager & APK Upload'
 4. Upload app APK
