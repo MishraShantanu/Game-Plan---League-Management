@@ -2,12 +2,17 @@ package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.zizzle.cmpt370.R;
 
 public class ForgotPassPop extends Activity {
@@ -43,10 +48,22 @@ public class ForgotPassPop extends Activity {
 
                 // Email address is not empty.
                 else {
+                    // send the user a password reset email through firebase
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    auth.sendPasswordResetEmail(emailString).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                // email successfully sent, inform the user they must reset their password via email
+                                Toast.makeText(ForgotPassPop.this,"Password reset email sent",Toast.LENGTH_LONG).show();
 
-                    // TODO Firebase stuff
-
-                    finish();
+                                finish();
+                            }
+                            else{
+                                Toast.makeText(ForgotPassPop.this,"Something went wrong, please try again",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
             }
         });
