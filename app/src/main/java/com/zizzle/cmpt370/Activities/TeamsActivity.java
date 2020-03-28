@@ -111,6 +111,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             Toast.makeText(TeamsActivity.this, "clicked league name wasn't passed to this activity", Toast.LENGTH_SHORT).show();
             // TODO what to do about this error?
         } else {
+
             final String selectedLeague = extras.getString("LEAGUE_CLICKED");
             final LeagueInfo currentLeagueInfo = new LeagueInfo(selectedLeague);
             // add the click listener for the add team button here as we need to pass the current league name
@@ -125,6 +126,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
                 }
             });
+
+
             // set title to that of the clicked on league
             getSupportActionBar().setTitle(selectedLeague);
 
@@ -133,8 +136,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             removeLeagueButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-
                         Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
 
                         Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
@@ -173,6 +174,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                         if (!teams.isEmpty()) {
                             TextView noTeamText = findViewById(R.id.no_teams_text);
                             noTeamText.setVisibility(View.GONE);
+                            teamsRank.clear();
                             for (int i = 1; i <= teams.size(); i++) teamsRank.add(i + ".");
                         }
 
