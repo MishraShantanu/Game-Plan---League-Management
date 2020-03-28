@@ -12,7 +12,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                 android:background="@drawable/round_card_important_button"
                 android:elevation="10dp"
                 android:padding="15dp"
-                android:text=" Zizzle Studios Website "
+                android:text="  Zizzle Studios Website  "
                 android:textAllCaps="false"
                 android:textColor="@color/colorText"
                 android:textSize="20dp" />
