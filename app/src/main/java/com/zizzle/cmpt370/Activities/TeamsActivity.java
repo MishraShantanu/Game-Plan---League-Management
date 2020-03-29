@@ -136,7 +136,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             removeLeagueButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                        Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TeamsActivity.this, "League and teams have been removed successfully", Toast.LENGTH_SHORT).show();
 
                         Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
                         toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
