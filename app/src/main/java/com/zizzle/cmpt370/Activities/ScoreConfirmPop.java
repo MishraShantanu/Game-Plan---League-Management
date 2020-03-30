@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -45,6 +47,11 @@ public class ScoreConfirmPop extends Activity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Window window = this.getWindow();
+        window.setDimAmount((float) 0.4);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
         // Creating the pop-up =====================================================================
         setContentView(R.layout.score_confirmation_pop);
@@ -98,6 +105,21 @@ public class ScoreConfirmPop extends Activity {
         });
     }
 
+    // Close activity if clicked outside of page.
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect dialogBounds = new Rect();
+            getWindow().getDecorView().getHitRect(dialogBounds);
+            if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {
+                Intent returnResult = new Intent();
+                returnResult.putExtra("RESULT", "false");
+                setResult(2, returnResult);
+                finish();
+                return false;
+            }
+        }
+        return false;
+    }
 
 
     // Go back to previous activity

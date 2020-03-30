@@ -65,6 +65,9 @@
         <activity
             android:name=".Activities.ForgotPassPop"
             android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.RemoveConfirmPop"
+            android:theme="@style/AppTheme.PopUp" />
     </application>
 
 </manifest>
