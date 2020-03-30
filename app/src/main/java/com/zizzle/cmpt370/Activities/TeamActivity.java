@@ -259,12 +259,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     removeTeam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // remove the team from our database
-                            Storage.removeTeam(currentTeamInfo);
-                            Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
-                            toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(toHome);
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            Intent confirmIntent = new Intent(TeamActivity.this, RemoveConfirmPop.class);
+                            confirmIntent.putExtra("TITLE_STRING", "Remove the Team?");
+                            startActivityForResult(confirmIntent, 3);
                         }
                     });
 
@@ -399,6 +396,29 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         menuDrawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Request code 2 is for score confirmation
+        if (requestCode == 3) {
+            String result = data.getStringExtra("RESULT");
+
+            // User confirmed the action.
+            if (result.equals("true")) {
+                Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+
+                // Remove the team.
+                Storage.removeTeam(currentTeamInfo);
+
+                // Close the league page. Return to all leagues.
+                finish();
+            }
+
+            // User denied the action.
+            else Toast.makeText(TeamActivity.this, "Team was not removed", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

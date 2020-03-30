@@ -242,22 +242,19 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
         if (requestCode == 3) {
             String result = data.getStringExtra("RESULT");
 
-            // User confirmed the score.
+            // User confirmed the action.
             if (result.equals("true")) {
                 Toast.makeText(TeamsActivity.this, "League has been removed successfully", Toast.LENGTH_SHORT).show();
 
+                // Remove the league.
                 Storage.removeLeague(currentLeagueInfo);
 
+                // Close the league page. Return to all leagues.
                 finish();
-//
-//                Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
-//                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(toHome);
-//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
 
-            else
-                Toast.makeText(TeamsActivity.this, "League was not removed", Toast.LENGTH_SHORT).show();
+            // User denied the action.
+            else Toast.makeText(TeamsActivity.this, "League was not removed", Toast.LENGTH_SHORT).show();
         }
     }
 
