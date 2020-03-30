@@ -7,26 +7,32 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.zizzle.cmpt370.R;
 
 
-public class RemoveLeaguePop extends Activity {
+public class RemoveConfirmPop extends Activity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Creating the pop-up =====================================================================
-        setContentView(R.layout.remove_teams_pop);
+        setContentView(R.layout.remove_confirm_pop);
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        getWindow().setLayout((int)(dm.widthPixels * 0.8), (int)(dm.heightPixels * 0.4));
+        getWindow().setLayout((int)(dm.widthPixels * 0.8), (int)(dm.heightPixels * 0.5));
 
 
-        // Buttons =================================================================================
+        // Views =================================================================================
+        // Set the title to the packed string.
+        TextView titleText = findViewById(R.id.remove_confirm_text);
+        titleText.setText(getIntent().getStringExtra("TITLE_STRING"));
+
+
         // Yes button.
         Button yesButton = findViewById(R.id.confirmButton);
         yesButton.setOnClickListener(new View.OnClickListener() {

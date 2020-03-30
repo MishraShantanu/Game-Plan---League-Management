@@ -134,17 +134,9 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onClick(View view) {
 
-                    Intent confirmIntent = new Intent(TeamsActivity.this, ScoreConfirmPop.class);
+                    Intent confirmIntent = new Intent(TeamsActivity.this, RemoveConfirmPop.class);
+                    confirmIntent.putExtra("TITLE_STRING", "Remove the League?");
                     startActivityForResult(confirmIntent, 3);
-
-//                        Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
-//
-//                        Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
-//                        toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        Storage.removeLeague(currentLeagueInfo);
-//                        finish();
-//                        startActivity(toHome);
-//                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 }
             });
 
@@ -252,17 +244,20 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
             // User confirmed the score.
             if (result.equals("true")) {
-                Toast.makeText(TeamsActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(TeamsActivity.this, "League has been removed successfully", Toast.LENGTH_SHORT).show();
 
                 Storage.removeLeague(currentLeagueInfo);
 
                 finish();
-
-                Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
-                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(toHome);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//
+//                Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
+//                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(toHome);
+//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
+
+            else
+                Toast.makeText(TeamsActivity.this, "League was not removed", Toast.LENGTH_SHORT).show();
         }
     }
 
