@@ -252,9 +252,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 // Close the league page. Return to all leagues.
                 finish();
             }
-
-            // User denied the action.
-            else Toast.makeText(TeamsActivity.this, "League was not removed", Toast.LENGTH_SHORT).show();
         }
     }
 
