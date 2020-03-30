@@ -23,8 +23,6 @@ public class RemoveConfirmPop extends Activity {
         super.onCreate(savedInstanceState);
 
         Window window = this.getWindow();
-//        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-//                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         window.setDimAmount((float) 0.4);
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         window.addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
