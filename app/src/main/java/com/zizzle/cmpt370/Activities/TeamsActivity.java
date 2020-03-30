@@ -238,7 +238,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Request code 2 is for score confirmation
+        // Request code 3 is for score confirmation
         if (requestCode == 3) {
             String result = data.getStringExtra("RESULT");
 

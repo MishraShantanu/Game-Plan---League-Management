@@ -357,7 +357,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, membersInfo);
         teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
-
     }
 
 
@@ -401,7 +400,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Request code 2 is for score confirmation
+        // Request code 3 is for score confirmation
         if (requestCode == 3) {
             String result = data.getStringExtra("RESULT");
 
