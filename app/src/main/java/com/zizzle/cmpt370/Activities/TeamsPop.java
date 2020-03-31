@@ -84,7 +84,8 @@ public class TeamsPop extends Activity {
                                 boolean teamAlreadyExists = dataSnapshot.exists();
                                 if(teamAlreadyExists){
                                     // team doesn't have a unique name
-                                    Toast.makeText(TeamsPop.this, "Team creation failed, team with name '" + nameOfTeam + "' already exists in this league", Toast.LENGTH_SHORT).show();
+                                    teamName.setError("Team name must be unique");
+                                    teamName.requestFocus();
                                 }
                                 else{
                                     // team name is unique, create and add this team to the database
