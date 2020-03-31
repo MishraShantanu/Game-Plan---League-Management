@@ -35,9 +35,9 @@ public class Member {
     private HashMap<String,TeamInfo> teamInfoMap = new HashMap<>();
 
     /**
-     * Leagues the user belongs to.
+     * HashMap with string league names as keys and LeagueInfo objects as values, representing the leagues this Member is an owner of
      */
-    private ArrayList<LeagueInfo> leaguesInfo = new ArrayList<>();
+    private HashMap<String,LeagueInfo> ownedLeaguesInfo = new HashMap<>();
 
     /** Integer wins this Member has throughout all games they've played */
     private int careerWins;
@@ -162,13 +162,14 @@ public class Member {
         return new ArrayList<>(this.teamInfoMap.values());
     }
 
-
     /**
-     * Retrieves info about the leagues the user belongs to.
-     * @return HashSet containing LeagueInfo objects with infor about the leagues the user belongs to.
+     * Returns a HashMap with String league names as keys and LeagueInfo objects as values, representing
+     * the leagues this Member owns
+     * @return HashMap<String,LeagueInfo> described above
      */
-    public ArrayList<LeagueInfo> getLeaguesInfo() {
-        return leaguesInfo;
+    public HashMap<String,LeagueInfo> getOwnedLeaguesInfo(){
+        // this method is required so Firebase will recognize the ownedLeaguesInfo attribute and store this on the database
+        return this.ownedLeaguesInfo;
     }
 
 
@@ -190,7 +191,6 @@ public class Member {
      */
     public void setEmail(String email) {
         this.email = email;
-        // TODO update email on database, may need to delete and recreate user
     }
 
 
@@ -225,7 +225,6 @@ public class Member {
                 "Member is already part of " + teamToAdd.getName());
 
         this.teamInfoMap.put(newTeamInfo.getDatabaseKey(),newTeamInfo);
-        // TODO update team and user on the database to reflect this new team
     }
 
 
@@ -236,41 +235,6 @@ public class Member {
     public void removeTeam(Team teamToRemove) throws IllegalArgumentException {
         TeamInfo removeTeamInfo = new TeamInfo(teamToRemove);
         this.teamInfoMap.remove(removeTeamInfo.getDatabaseKey());
-        // TODO remove this member from teamToRemove on the database
-    }
-
-
-    /**
-     * Adds a league to the users list of leagues they are part of.
-     * @param leagueToAdd: League to add to list.
-     * @throws IllegalArgumentException if league already is part of users league list.
-     */
-    public void addLeague(League leagueToAdd) throws IllegalArgumentException {
-        LeagueInfo leagueToAddInfo = new LeagueInfo(leagueToAdd);
-        // Check if user is already part of this league.
-        if (this.leaguesInfo.contains(leagueToAddInfo)) throw new IllegalArgumentException("Error in addLeague(): " +
-                "Member is already part of " + leagueToAdd.getName());
-
-        this.leaguesInfo.add(leagueToAddInfo);
-        // TODO add this member to this league, add  this league to this member on the database
-    }
-
-
-    /**
-     * Removes a league from the users list of leagues they are part of.
-     * @param leagueToRemove: League to remove from list.
-     * @throws IllegalArgumentException if league is not part of the list.
-     */
-    public void removeLeague(League leagueToRemove) throws IllegalArgumentException {
-        LeagueInfo leagueToRemoveInfo = new LeagueInfo(leagueToRemove);
-        // make sure leagueToRemove is part of the member's teams.
-        if(! this.leaguesInfo.contains(leagueToRemoveInfo)){
-            throw new IllegalArgumentException("League: " + leagueToRemove.getName() + " to remove from member: "
-                    + this.displayName + " isn't a member of the league.");
-        }
-
-        this.leaguesInfo.remove(leagueToRemoveInfo);
-        // TODO remove this league from the member on the database
     }
 
 
@@ -294,7 +258,7 @@ public class Member {
             // compare Member fields, equal members should have equal names, email, phone number, user ids, teams and leagues
             Member otherMember = (Member)other;
             boolean teamsEqual = this.teamInfoMap.equals(otherMember.teamInfoMap);
-            boolean leaguesEqual = this.leaguesInfo.equals(otherMember.leaguesInfo);
+            boolean leaguesEqual = this.ownedLeaguesInfo.equals(otherMember.ownedLeaguesInfo);
             return teamsEqual && leaguesEqual && this.userID.equals(otherMember.userID) &&
                     this.displayName.equals(otherMember.displayName) && this.email.equals(otherMember.email) && this.phoneNumber.equals(otherMember.phoneNumber);
         }
