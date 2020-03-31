@@ -360,14 +360,20 @@ public class Storage {
      * @param leagueInfo: LeagueInfo object describing the league to be removed from the database
      */
     public static void removeLeague(final LeagueInfo leagueInfo) {
-        // remove the teams of this league
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
+        // read in the league to remove
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    TeamInfo currentTeamInfo = ds.getValue(TeamInfo.class);
+                League leagueToRemove = dataSnapshot.getValue(League.class);
+                // remove the teams from this league
+                for(TeamInfo currentTeamInfo : leagueToRemove.getTeamInfos()){
                     removeTeam(currentTeamInfo);
                 }
+
+                // remove this league from its owner
+                MemberInfo ownerInfo = leagueToRemove.getOwnerInfo();
+                database.child("users").child(ownerInfo.getDatabaseKey()).child("ownedLeaguesInfoMap").child(leagueInfo.getDatabaseKey()).removeValue();
+
                 //remove league
                 database.child("Leagues").child(leagueInfo.getDatabaseKey()).removeValue();
             }
