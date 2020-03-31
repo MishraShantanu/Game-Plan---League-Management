@@ -10,20 +10,21 @@
     tools:context=".Activities.AboutUsActivity"
     tools:showIn="@layout/activity_about_us">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="25dp"
                 android:gravity="center"
                 android:src="@drawable/game_plan" />
@@ -33,9 +34,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:gravity="center_horizontal"
-                android:text="Meet the Team behind\nGamePlan"
+                android:text="Meet the Team behind GamePlan"
+                android:textAlignment="center"
                 android:textColor="@color/colorText"
-                android:textSize="35sp" />
+                android:textSize="28sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -58,7 +60,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Jay Shah"
                     android:textColor="@color/colorText"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -66,7 +68,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Lee Cadotte"
                     android:textColor="@color/colorText"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -74,7 +76,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Shantanu Mishra"
                     android:textColor="@color/colorText"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -82,7 +84,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Brayden Martin"
                     android:textColor="@color/colorText"
-                    android:textSize="30sp" />
+                    android:textSize="24sp" />
 
             </LinearLayout>
 
@@ -91,6 +93,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
             android:gravity="bottom|center_horizontal"
             android:orientation="vertical">
 
@@ -100,17 +103,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
-                android:background="@drawable/round_card_important_button"
-                android:elevation="10dp"
-                android:padding="15dp"
-                android:text="  Zizzle Studios Website  "
+                android:background="@drawable/round_card_button"
+                android:padding="18dp"
+                android:text="Zizzle Studios Website"
                 android:textAllCaps="false"
                 android:textColor="@color/colorText"
-                android:textSize="20dp" />
+                android:textSize="18dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="@color/colorAccent"
                 android:gravity="bottom|center"
                 android:padding="15dp"
@@ -118,9 +121,8 @@
                 android:textColor="@color/colorText"
                 android:textSize="15sp" />
 
-
         </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>
