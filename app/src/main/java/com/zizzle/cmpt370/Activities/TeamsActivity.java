@@ -3,7 +3,6 @@ package com.zizzle.cmpt370.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,12 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +37,6 @@ import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 import com.zizzle.cmpt370.TeamsArrayAdapter;
 
-import java.security.acl.Owner;
 import java.util.ArrayList;
 
 import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
@@ -62,6 +57,8 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
      * Adapter for search bar.
      */
     TeamsArrayAdapter teamArrayAdapter;
+
+    LeagueInfo currentLeagueInfo;
 
     //main roundedCorners ID of homepageWithMenu.xml
     private DrawerLayout menuDrawer;
@@ -112,7 +109,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             // TODO what to do about this error?
         } else {
             final String selectedLeague = extras.getString("LEAGUE_CLICKED");
-            final LeagueInfo currentLeagueInfo = new LeagueInfo(selectedLeague);
+            currentLeagueInfo = new LeagueInfo(selectedLeague);
             // add the click listener for the add team button here as we need to pass the current league name
             // read from the database through to the popup
             FloatingActionButton addTeam = findViewById(R.id.add_team_button);
@@ -135,12 +132,10 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             removeLeagueButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent toHome = new Intent(TeamsActivity.this, LeagueActivity.class);
-                    toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Storage.removeLeague(currentLeagueInfo);
-                    finish();
-                    startActivity(toHome);
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+
+                    Intent confirmIntent = new Intent(TeamsActivity.this, RemoveConfirmPop.class);
+                    confirmIntent.putExtra("TITLE_STRING", "Remove the League?");
+                    startActivityForResult(confirmIntent, 3);
                 }
             });
 
@@ -236,6 +231,27 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             @Override
             public void afterTextChanged(Editable editable) {}
         });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Request code 3 is for score confirmation
+        if (requestCode == 3) {
+            String result = data.getStringExtra("RESULT");
+
+            // User confirmed the action.
+            if (result.equals("true")) {
+                Toast.makeText(TeamsActivity.this, "League has been removed successfully", Toast.LENGTH_SHORT).show();
+
+                // Remove the league.
+                Storage.removeLeague(currentLeagueInfo);
+
+                // Close the league page. Return to all leagues.
+                finish();
+            }
+        }
     }
 
 

@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:textAlignment="center"
             android:text="Is this score correct?"
             android:textColor="@color/colorText"
             android:textSize="30sp" />
@@ -32,7 +33,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -41,7 +42,7 @@
                 android:background="@drawable/round_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="22dp">
+                android:padding="18dp">
 
                 <TextView
                     android:id="@+id/yourTeamNameText"
@@ -66,11 +67,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="2dp"
                 android:background="@drawable/round_card"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="22dp">
+                android:padding="18dp">
 
                 <TextView
                     android:id="@+id/opponentTeamNameText"
@@ -97,7 +98,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="14dp"
             android:columnCount="3"
             android:orientation="horizontal">
 

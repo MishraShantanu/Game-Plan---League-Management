@@ -2,11 +2,16 @@ package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +32,11 @@ public class LeaguePop extends Activity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Window window = this.getWindow();
+        window.setDimAmount((float) 0.4);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
         // Creating the pop-up =====================================================================
         setContentView(R.layout.league_popup);
@@ -101,6 +111,19 @@ public class LeaguePop extends Activity {
                 }
             }
         });
+    }
+
+    // Close activity if clicked outside of page.
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect dialogBounds = new Rect();
+            getWindow().getDecorView().getHitRect(dialogBounds);
+            if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {
+                finish();
+                return false;
+            }
+        }
+        return false;
     }
 
     // Used to hide keyboard.
