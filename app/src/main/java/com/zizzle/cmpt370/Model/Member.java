@@ -37,7 +37,7 @@ public class Member {
     /**
      * HashMap with string league names as keys and LeagueInfo objects as values, representing the leagues this Member is an owner of
      */
-    private HashMap<String,LeagueInfo> ownedLeaguesInfo = new HashMap<>();
+    private HashMap<String,LeagueInfo> ownedLeaguesInfoMap = new HashMap<>();
 
     /** Integer wins this Member has throughout all games they've played */
     private int careerWins;
@@ -148,9 +148,8 @@ public class Member {
     }
 
     /**
-     * Retrieves info about the teams the user belongs to.
-     *
-     * @return HashSet containing TeamInfo objects of the teams the user is a part of
+     * Returns an ArrayList of TeamInfos of the teams that this Member is a part of
+     * @return ArrayList<TeamInfo> of teams this Member is a part of
      */
     public ArrayList<TeamInfo> getTeamsInfo() {
         // if this member isn't part of any teams and has been read in from the database, teamsInfoMap will be null
@@ -167,9 +166,23 @@ public class Member {
      * the leagues this Member owns
      * @return HashMap<String,LeagueInfo> described above
      */
-    public HashMap<String,LeagueInfo> getOwnedLeaguesInfo(){
+    public HashMap<String,LeagueInfo> getOwnedLeaguesInfoMap(){
         // this method is required so Firebase will recognize the ownedLeaguesInfo attribute and store this on the database
-        return this.ownedLeaguesInfo;
+        return this.ownedLeaguesInfoMap;
+    }
+
+    /**
+     * Returns an ArrayList of LeagueInfos of the leagues that this Member owns
+     * @return ArrayList<LeagueInfo> of leagues this Member owns
+     */
+    public ArrayList<LeagueInfo> getOwnedLeaguesList() {
+        // if this member isn't part of any teams and has been read in from the database, ownedLeaguesInfoMap will be null
+        if(this.ownedLeaguesInfoMap == null){
+            // if this is the case, simply return an empty arraylist as this member doesn't own any leagues
+            return new ArrayList<>();
+        }
+        // otherwise convert ownedLeaguesInfoMap into an arraylist
+        return new ArrayList<>(this.ownedLeaguesInfoMap.values());
     }
 
 
@@ -258,7 +271,7 @@ public class Member {
             // compare Member fields, equal members should have equal names, email, phone number, user ids, teams and leagues
             Member otherMember = (Member)other;
             boolean teamsEqual = this.teamInfoMap.equals(otherMember.teamInfoMap);
-            boolean leaguesEqual = this.ownedLeaguesInfo.equals(otherMember.ownedLeaguesInfo);
+            boolean leaguesEqual = this.ownedLeaguesInfoMap.equals(otherMember.ownedLeaguesInfoMap);
             return teamsEqual && leaguesEqual && this.userID.equals(otherMember.userID) &&
                     this.displayName.equals(otherMember.displayName) && this.email.equals(otherMember.email) && this.phoneNumber.equals(otherMember.phoneNumber);
         }
