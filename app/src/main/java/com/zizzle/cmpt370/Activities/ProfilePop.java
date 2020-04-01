@@ -161,6 +161,12 @@ public class ProfilePop extends Activity{
         });
     }
 
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
