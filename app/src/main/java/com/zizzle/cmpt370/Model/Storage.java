@@ -2,22 +2,13 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
-import com.zizzle.cmpt370.Activities.TeamActivity;
-
-import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 
 /**
@@ -36,13 +27,14 @@ public class Storage {
      *
      * @param newLeague: League object to be added to the database, the name of this league must be
      *                   unique
-     * @throws IllegalStateException if the name of the league isn't unique
-     * @throws DatabaseException     if accessing the database fails
      */
     public static void writeLeague(League newLeague) {
         LeagueInfo newLeagueInfo = new LeagueInfo(newLeague);
         // assume this league has a unique name, write it to the database
         database.child("Leagues").child(newLeagueInfo.getDatabaseKey()).setValue(newLeague);
+        // write this league to the owner of the league on the database
+        MemberInfo leagueOwner = newLeague.getOwnerInfo();
+        database.child("users").child(leagueOwner.getDatabaseKey()).child("ownedLeaguesInfoMap").child(newLeagueInfo.getDatabaseKey()).setValue(newLeagueInfo);
     }
 
 
@@ -100,6 +92,10 @@ public class Storage {
 
                 }
             });
+        }
+        // update the display name stored for the owner of each league this user owns
+        for(final LeagueInfo ownedLeagueInfo : member.getOwnedLeaguesList()){
+            database.child("Leagues").child(ownedLeagueInfo.getDatabaseKey()).child("ownerInfo").child("name").setValue(newName);
         }
     }
 
@@ -364,14 +360,20 @@ public class Storage {
      * @param leagueInfo: LeagueInfo object describing the league to be removed from the database
      */
     public static void removeLeague(final LeagueInfo leagueInfo) {
-        // remove the teams of this league
-        database.child("Leagues").child(leagueInfo.getDatabaseKey()).child("teamsInfoMap").addListenerForSingleValueEvent(new ValueEventListener() {
+        // read in the league to remove
+        database.child("Leagues").child(leagueInfo.getDatabaseKey()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    TeamInfo currentTeamInfo = ds.getValue(TeamInfo.class);
+                League leagueToRemove = dataSnapshot.getValue(League.class);
+                // remove the teams from this league
+                for(TeamInfo currentTeamInfo : leagueToRemove.getTeamInfos()){
                     removeTeam(currentTeamInfo);
                 }
+
+                // remove this league from its owner
+                MemberInfo ownerInfo = leagueToRemove.getOwnerInfo();
+                database.child("users").child(ownerInfo.getDatabaseKey()).child("ownedLeaguesInfoMap").child(leagueInfo.getDatabaseKey()).removeValue();
+
                 //remove league
                 database.child("Leagues").child(leagueInfo.getDatabaseKey()).removeValue();
             }

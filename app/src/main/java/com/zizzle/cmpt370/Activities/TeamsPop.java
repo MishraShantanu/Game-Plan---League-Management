@@ -69,7 +69,6 @@ public class TeamsPop extends Activity {
                 hideKeyboard(TeamsPop.this);
 
                 final String nameOfTeam = teamName.getText().toString();
-                final String sportForTeam = "TEMP SPORT"; /////TODO ADD SPORT FOR TEAM
 
                 if (nameOfTeam.isEmpty()) {
                     Toast.makeText(TeamsPop.this, "Team name is required", Toast.LENGTH_SHORT).show();
@@ -93,11 +92,12 @@ public class TeamsPop extends Activity {
                                 boolean teamAlreadyExists = dataSnapshot.exists();
                                 if(teamAlreadyExists){
                                     // team doesn't have a unique name
-                                    Toast.makeText(TeamsPop.this, "Team creation failed, team with name '" + nameOfTeam + "' already exists in this league", Toast.LENGTH_SHORT).show();
+                                    teamName.setError("Team name must be unique");
+                                    teamName.requestFocus();
                                 }
                                 else{
                                     // team name is unique, create and add this team to the database
-                                    Team newTeam = new Team(nameOfTeam, currentUserInfo, sportForTeam, parentLeagueInfo);
+                                    Team newTeam = new Team(nameOfTeam, currentUserInfo, parentLeagueInfo);
                                     Storage.writeTeam(newTeam);
                                     // add this new team to its parent league and vice versa on the database
                                     Storage.addTeamToLeague(parentLeagueInfo,newTeamInfo);

@@ -2,8 +2,6 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,8 +25,6 @@ public class Team {
 
     /** TreeMap with the database keys of games played as keys and the Game objects played as values */
     private HashMap<String,Game> gamesPlayed;
-    //TODO these treemaps won't work, we require string keys, use old idea of unique keys, to get the most recent game, must get a values list then sort
-    //TODO could however add an instance variable keeping track of the next most recently scheduled game, how can we check this when writing to the database
 
     /** Info about the league the team is a part of */
     private LeagueInfo leagueInfo;
@@ -53,14 +49,12 @@ public class Team {
      * Constructor for a Team object
      * @param name: String name of the new team, team names must be unique for the league the team is in
      * @param ownerInfo: MemberInfo object, represents the owner/creator of the team
-     * @param sport: String sport the team plays, must match the sport of the league
      * @param leagueInfo: LeagueInfo object, representing the league this team belongs to
      */
-    public Team(String name, MemberInfo ownerInfo, String sport, LeagueInfo leagueInfo) {
+    public Team(String name, MemberInfo ownerInfo, LeagueInfo leagueInfo) {
         this.leagueInfo = leagueInfo;
         this.name = name;
         this.ownerInfo = ownerInfo;
-        this.sport = sport;
         this.membersInfoMap = new HashMap<>();
         this.wins = 0;
         this.losses = 0;
@@ -228,7 +222,6 @@ public class Team {
         }
 
         this.membersInfoMap.remove(memberToRemoveInfo.getDatabaseKey());
-        // TODO remove memberToRemove from this team on the database
     }
 
     /**
@@ -276,7 +269,6 @@ public class Team {
         }
         MemberInfo newMemberInfo = new MemberInfo(newMember);
         this.membersInfoMap.put(newMemberInfo.getDatabaseKey(),newMemberInfo);
-        // TODO add this new member to the database for this team
     }
 
 

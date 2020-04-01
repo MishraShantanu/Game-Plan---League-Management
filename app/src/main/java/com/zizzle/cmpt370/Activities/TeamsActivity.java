@@ -108,7 +108,6 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
             Toast.makeText(TeamsActivity.this, "clicked league name wasn't passed to this activity", Toast.LENGTH_SHORT).show();
             // TODO what to do about this error?
         } else {
-
             final String selectedLeague = extras.getString("LEAGUE_CLICKED");
             currentLeagueInfo = new LeagueInfo(selectedLeague);
             // add the click listener for the add team button here as we need to pass the current league name
