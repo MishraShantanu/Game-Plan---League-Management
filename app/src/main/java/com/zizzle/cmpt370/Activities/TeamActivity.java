@@ -236,15 +236,23 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     ownerButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
-                            Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
-                            teamMemberIntent.putExtra("CLICKED_MEMBER", ownerInfo);
-                            // add the owner's info of this team to the intent also
-                            teamMemberIntent.putExtra("OWNER_INFO", ownerInfo);
-                            // add the current teamInfo to the intent
-                            teamMemberIntent.putExtra("TEAM_INFO", currentTeamInfo);
-                            startActivity(teamMemberIntent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            if (getCurrentUserInfo().equals(ownerInfo)) {
+                                Intent profileFromTeam = new Intent(TeamActivity.this, ProfileActivity.class);
+                                startActivityForResult(profileFromTeam, 2);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
+
+                            else {
+                                // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                                Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                                teamMemberIntent.putExtra("CLICKED_MEMBER", ownerInfo);
+                                // add the owner's info of this team to the intent also
+                                teamMemberIntent.putExtra("OWNER_INFO", ownerInfo);
+                                // add the current teamInfo to the intent
+                                teamMemberIntent.putExtra("TEAM_INFO", currentTeamInfo);
+                                startActivity(teamMemberIntent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
                         }
                     });
 

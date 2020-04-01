@@ -126,6 +126,12 @@ public class LeaguePop extends Activity {
         return false;
     }
 
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
     // Used to hide keyboard.
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
