@@ -107,67 +107,6 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         else opponentTeamText.setText(currentGame.getTeam1Info().getName());
 
 
-        Button submitButton = findViewById(R.id.submitScore);
-
-        // only allow the user to change the score fields if the game has started and hasn't already been played
-        // this restricts a user so they can only set the scores for a game once after the game has started
-        if(currentGame.hasGameStarted() && !currentGame.isPlayed()){
-            currentTeamScoreText.setEnabled(true);
-            opponentTeamScoreText.setEnabled(true);
-            // display the button to submit score changes
-            submitButton.setVisibility(View.VISIBLE);
-            submitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO possibly display some popup asking the user to confirm the final scores for this game
-                    // get the input scores for this game
-                    currentTeamScoreString = currentTeamScoreText.getText().toString();
-                    opponentTeamScoreString = opponentTeamScoreText.getText().toString();
-                    // ensure that the user has entered scores for both teams
-                    if(currentTeamScoreString.isEmpty()){
-                        // prompt the user to enter a score for this team
-                        currentTeamScoreText.setError("Score Required");
-                        currentTeamScoreText.requestFocus();
-                    }
-                    else if(opponentTeamScoreString.isEmpty()){
-                        // prompt the user to enter the opponent's score
-                        opponentTeamScoreText.setError("Score Required");
-                        opponentTeamScoreText.requestFocus();
-                    }
-                    else{
-
-                        Intent confirmIntent = new Intent(GameActivity.this, ScoreConfirmPop.class);
-                        confirmIntent.putExtra("TEAM_NAME", currentTeamInfo.getName());
-                        confirmIntent.putExtra("OPPONENT_NAME", currentGame.getTeam2Info().getName());
-                        confirmIntent.putExtra("TEAM_SCORE", currentTeamScoreString);
-                        confirmIntent.putExtra("OPPONENT_SCORE", opponentTeamScoreString);
-                        startActivityForResult(confirmIntent, 2);
-                    }
-                }
-            });
-        }
-        else{
-            // the game hasn't started or has already been played, prevent the user from changing the score fields and seeing the submit button
-            currentTeamScoreText.setEnabled(false);
-            opponentTeamScoreText.setEnabled(false);
-
-            // Display the score for each team, depending which position the teams are.
-            // User team is team 1
-            if (currentGame.getTeam1Info().equals(currentTeamInfo)) {
-                currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
-                opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-            }
-            // User team is team 2
-            else {
-                currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
-                opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
-            }
-
-            // display the button to submit score changes
-            submitButton.setVisibility(View.GONE);
-        }
-
-
         // remove game button =======================================================================
         final Button removeGame = findViewById(R.id.remove_game_button);
 
@@ -195,8 +134,67 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                     removeGame.setVisibility(View.GONE);
 
                 // user isn't on the team, don't display the remove game button
-                if(!dataSnapshot.exists())
+                if (!dataSnapshot.exists()) {
                     removeGame.setVisibility(View.GONE);
+                }
+
+                // user is on the team.
+                else {
+                    Button submitButton = findViewById(R.id.submitScore);
+                    // only allow the user to change the score fields if the game has started and hasn't already been played
+                    // this restricts a user so they can only set the scores for a game once after the game has started
+                    if (currentGame.hasGameStarted() && !currentGame.isPlayed()) {
+                        currentTeamScoreText.setEnabled(true);
+                        opponentTeamScoreText.setEnabled(true);
+                        // display the button to submit score changes
+                        submitButton.setVisibility(View.VISIBLE);
+                        submitButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // get the input scores for this game
+                                currentTeamScoreString = currentTeamScoreText.getText().toString();
+                                opponentTeamScoreString = opponentTeamScoreText.getText().toString();
+                                // ensure that the user has entered scores for both teams
+                                if (currentTeamScoreString.isEmpty()) {
+                                    // prompt the user to enter a score for this team
+                                    currentTeamScoreText.setError("Score Required");
+                                    currentTeamScoreText.requestFocus();
+                                } else if (opponentTeamScoreString.isEmpty()) {
+                                    // prompt the user to enter the opponent's score
+                                    opponentTeamScoreText.setError("Score Required");
+                                    opponentTeamScoreText.requestFocus();
+                                } else {
+                                    // Confirm the score.
+                                    Intent confirmIntent = new Intent(GameActivity.this, ScoreConfirmPop.class);
+                                    confirmIntent.putExtra("TEAM_NAME", currentTeamInfo.getName());
+                                    confirmIntent.putExtra("OPPONENT_NAME", currentGame.getTeam2Info().getName());
+                                    confirmIntent.putExtra("TEAM_SCORE", currentTeamScoreString);
+                                    confirmIntent.putExtra("OPPONENT_SCORE", opponentTeamScoreString);
+                                    startActivityForResult(confirmIntent, 2);
+                                }
+                            }
+                        });
+                    } else {
+                        // the game hasn't started or has already been played, prevent the user from changing the score fields and seeing the submit button
+                        currentTeamScoreText.setEnabled(false);
+                        opponentTeamScoreText.setEnabled(false);
+
+                        // Display the score for each team, depending which position the teams are.
+                        // User team is team 1
+                        if (currentGame.getTeam1Info().equals(currentTeamInfo)) {
+                            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+                            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+                        }
+                        // User team is team 2
+                        else {
+                            currentTeamScoreText.setText(String.valueOf(currentGame.getTeam2Score()));
+                            opponentTeamScoreText.setText(String.valueOf(currentGame.getTeam1Score()));
+                        }
+
+                        // display the button to submit score changes
+                        submitButton.setVisibility(View.GONE);
+                    }
+                }
             }
 
             // Auto Generated.

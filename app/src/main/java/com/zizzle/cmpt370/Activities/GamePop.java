@@ -10,6 +10,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -230,6 +231,13 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
         }
         return false;
     }
+
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
