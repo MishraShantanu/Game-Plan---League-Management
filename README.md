@@ -13,16 +13,15 @@ KEY FEATURES
 *  Schedule games with other teams in your league
 *  Record scores and track your wins and losses
 
+*Please note that you will need to use a valid email to make an account. A verification email will be sent and you will need to click on a link within the email to access the main features of the app.
 
 # How to Run
 
-## 1) Running APK from online emulator (may or may not work):
-1. Download app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
-2. Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store 
-2. Click on the extension in the top right of chrome
-3. Click 'My APK Manager & APK Upload'
-4. Upload app APK
-5. Select Run_APK
+## 1) Download App from Google Play (preferred method)
+1. Download the "GamePlan" app from Google Play
+   *  https://play.google.com/store/apps/details?id=com.zizzle.cmpt370
+2. Run the app
+
 
 ## 2) Running APK from Android Studio:
 *  For these methods, you need Android Studio installed with our source code (pull master branch from the repository)
@@ -37,6 +36,7 @@ KEY FEATURES
 4. To run the app, click "Run" from the bar menu at the top of Android Studio. 
 5. You will have to select a "deployment target" which will be your phone.
 
+
 ### Method 2: Using Android Studio emulator
 1. First, you need to install the Android Emulator. Select "Android Emulator" componeent in the SDK Tools tab of the SDK manager
    *  To open SDK manager, click Tools -> SDK Manager
@@ -50,7 +50,17 @@ KEY FEATURES
 3. After download has completed, select the "Pixel 3 XL" from the toolbar AVD manager bar to the left of the "Run" button
 4. Press "Run" which will load the emulator and start the app (might take a few minutes initially)
 
-## 3) Nox(Android Emulator for PC) (May or may not work)
+
+## 3) Running APK from online emulator (may or may not work):
+1. Download app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
+2. Download [Android Online Emulator](https://chrome.google.com/webstore/detail/android-online-emulator/lnhnebkkgjmlgomfkkmkoaefbknopmja) from the chrome store 
+2. Click on the extension in the top right of chrome
+3. Click 'My APK Manager & APK Upload'
+4. Upload app APK
+5. Select Run_APK
+
+
+## 4) Nox - Android Emulator for PC (May or may not work)
 1. Download [Nox](https://www.bignox.com/en/download/fullPackage) using any browser
 2. Install Nox using the downloaded exe file
 2. Download latest app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
