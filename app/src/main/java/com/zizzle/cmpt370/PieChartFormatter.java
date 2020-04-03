@@ -15,6 +15,9 @@ public class PieChartFormatter extends ValueFormatter {
      */
     @Override
     public String getFormattedValue(float value) {
+        if (value == 0) {
+            return "";
+        }
         double rounded = Math.round(value * 10) / 10.0; //this converts float to double with one decimal place
         return rounded + "%";
     }

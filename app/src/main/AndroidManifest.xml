@@ -20,9 +20,7 @@
         <activity android:name=".Activities.SigninActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
@@ -61,6 +59,12 @@
             android:theme="@style/AppTheme.PopUp" />
         <activity
             android:name=".Activities.ScoreConfirmPop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.ForgotPassPop"
+            android:theme="@style/AppTheme.PopUp" />
+        <activity
+            android:name=".Activities.RemoveConfirmPop"
             android:theme="@style/AppTheme.PopUp" />
     </application>
 

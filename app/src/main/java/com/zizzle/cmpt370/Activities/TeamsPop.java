@@ -2,12 +2,17 @@ package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,6 +43,11 @@ public class TeamsPop extends Activity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Window window = this.getWindow();
+        window.setDimAmount((float) 0.4);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+
         // Creating the pop-up =====================================================================
         setContentView(R.layout.teams_popup);
         DisplayMetrics dm = new DisplayMetrics();
@@ -56,8 +66,9 @@ public class TeamsPop extends Activity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(TeamsPop.this);
+
                 final String nameOfTeam = teamName.getText().toString();
-                final String sportForTeam = "TEMP SPORT"; /////TODO ADD SPORT FOR TEAM
 
                 if (nameOfTeam.isEmpty()) {
                     Toast.makeText(TeamsPop.this, "Team name is required", Toast.LENGTH_SHORT).show();
@@ -81,11 +92,12 @@ public class TeamsPop extends Activity {
                                 boolean teamAlreadyExists = dataSnapshot.exists();
                                 if(teamAlreadyExists){
                                     // team doesn't have a unique name
-                                    Toast.makeText(TeamsPop.this, "Team creation failed, team with name '" + nameOfTeam + "' already exists in this league", Toast.LENGTH_SHORT).show();
+                                    teamName.setError("Team name must be unique");
+                                    teamName.requestFocus();
                                 }
                                 else{
                                     // team name is unique, create and add this team to the database
-                                    Team newTeam = new Team(nameOfTeam, currentUserInfo, sportForTeam, parentLeagueInfo);
+                                    Team newTeam = new Team(nameOfTeam, currentUserInfo, parentLeagueInfo);
                                     Storage.writeTeam(newTeam);
                                     // add this new team to its parent league and vice versa on the database
                                     Storage.addTeamToLeague(parentLeagueInfo,newTeamInfo);
@@ -115,5 +127,36 @@ public class TeamsPop extends Activity {
                 }
             }
         });
+    }
+
+    // Close activity if clicked outside of page.
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect dialogBounds = new Rect();
+            getWindow().getDecorView().getHitRect(dialogBounds);
+            if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {
+                finish();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    // Used to hide keyboard.
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -56,11 +59,15 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Window window = this.getWindow();
+        window.setDimAmount((float) 0.4);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+
         // Creating the pop-up =====================================================================
         setContentView(R.layout.game_popup);
 
         //Set Status Bar Color to Primary Dark Color
-        Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
@@ -211,6 +218,26 @@ public class GamePop extends Activity implements AdapterView.OnItemSelectedListe
         });
 
     }
+
+    // Close activity if clicked outside of page.
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect dialogBounds = new Rect();
+            getWindow().getDecorView().getHitRect(dialogBounds);
+            if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {
+                finish();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

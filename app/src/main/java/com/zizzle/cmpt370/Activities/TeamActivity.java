@@ -153,6 +153,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if team hasn't played any games yet
                         barChart.setVisibility(View.GONE);
                     }
+                    else{
+                        barChart.setVisibility(View.VISIBLE);
+                    }
 
                     ArrayList<BarEntry> barEntries = new ArrayList<>();
                     // x and y coordinate
@@ -233,15 +236,23 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     ownerButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
-                            Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
-                            teamMemberIntent.putExtra("CLICKED_MEMBER", ownerInfo);
-                            // add the owner's info of this team to the intent also
-                            teamMemberIntent.putExtra("OWNER_INFO", ownerInfo);
-                            // add the current teamInfo to the intent
-                            teamMemberIntent.putExtra("TEAM_INFO", currentTeamInfo);
-                            startActivity(teamMemberIntent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            if (getCurrentUserInfo().equals(ownerInfo)) {
+                                Intent profileFromTeam = new Intent(TeamActivity.this, ProfileActivity.class);
+                                startActivityForResult(profileFromTeam, 2);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
+
+                            else {
+                                // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
+                                Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
+                                teamMemberIntent.putExtra("CLICKED_MEMBER", ownerInfo);
+                                // add the owner's info of this team to the intent also
+                                teamMemberIntent.putExtra("OWNER_INFO", ownerInfo);
+                                // add the current teamInfo to the intent
+                                teamMemberIntent.putExtra("TEAM_INFO", currentTeamInfo);
+                                startActivity(teamMemberIntent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                            }
                         }
                     });
 
@@ -256,24 +267,9 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                     removeTeam.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            // remove the team member from the team
-                            // TeamInfo currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
-
-                            //System.out.println(currentTeam.getOwnerInfo().getDatabaseKey()+" <<<???>>>"+FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                            //Check if the current user is same as the Owner of the Team else do not delete the team
-                            if (currentTeam.getOwnerInfo().getDatabaseKey().compareTo(FirebaseAuth.getInstance().getCurrentUser().getUid()) == 0) {
-                                Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
-
-                                Intent toHome = new Intent(TeamActivity.this, HomeActivity.class);
-                                toHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(toHome);
-                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                Storage.removeTeam(currentTeamInfo);
-                            } else
-                                Toast.makeText(TeamActivity.this, "You are not Authorized to remove this Team", Toast.LENGTH_SHORT).show();
-
-
+                            Intent confirmIntent = new Intent(TeamActivity.this, RemoveConfirmPop.class);
+                            confirmIntent.putExtra("TITLE_STRING", "Remove the Team?");
+                            startActivityForResult(confirmIntent, 3);
                         }
                     });
 
@@ -369,7 +365,6 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         memberArrayAdapter = new ArrayAdapter<>(this, R.layout.team_listview, membersInfo);
         teamList = findViewById(R.id.members_list);
         teamList.setAdapter(memberArrayAdapter);
-
     }
 
 
@@ -408,6 +403,26 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         menuDrawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Request code 3 is for score confirmation
+        if (requestCode == 3) {
+            String result = data.getStringExtra("RESULT");
+
+            // User confirmed the action.
+            if (result.equals("true")) {
+                Toast.makeText(TeamActivity.this, "Team has been removed successfully", Toast.LENGTH_SHORT).show();
+
+                // Remove the team.
+                Storage.removeTeam(currentTeamInfo);
+
+                // Close the league page. Return to all leagues.
+                finish();
+            }
+        }
     }
 
 

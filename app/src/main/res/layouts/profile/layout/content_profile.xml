@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!--    Bar Graph    -->
+        <!--    Pie Chart    -->
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/ProfilePieChart"
             android:layout_width="match_parent"

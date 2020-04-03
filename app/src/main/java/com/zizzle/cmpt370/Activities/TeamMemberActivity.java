@@ -1,6 +1,7 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +16,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +32,10 @@ import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.TeamInfo;
+import com.zizzle.cmpt370.PieChartFormatter;
 import com.zizzle.cmpt370.R;
+
+import java.util.ArrayList;
 
 public class TeamMemberActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -98,6 +107,53 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                         !ownerInfo.equals(clickedMemberInfo)) {
                     removePlayer.setVisibility(View.VISIBLE);
                 }
+
+                // Graph to Show the Wins/Ties/Losses of this member ==========================================================================
+                int numWins = clickedMember.getCareerWins();
+                int numLosses = clickedMember.getCareerLosses();
+                int numTies = clickedMember.getCareerTies();
+
+                // PieChart to display this team member's wins/ties/losses
+                PieChart pieChart = (PieChart) findViewById(R.id.TeamMemberPieChart);
+
+                if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if user hasn't played any games yet
+                    pieChart.setVisibility(View.GONE);
+                }
+
+                ArrayList<PieEntry> pieEntries = new ArrayList<>();
+                // data values
+                pieEntries.add(new PieEntry((float) numWins, "Wins")); //entries must be floats
+                pieEntries.add(new PieEntry((float) numTies, "Ties"));
+                pieEntries.add(new PieEntry((float) numLosses, "Losses"));
+                PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
+
+                //bar colors (same shades as numbers above the graph)
+                int green = Color.argb(255, 153, 204, 0);
+                int yellow = Color.argb(255, 235, 200, 0);
+                int red = Color.argb(255, 255, 68, 68);
+                int[] barColors = {green, yellow, red};
+                pieDataSet.setColors(barColors);
+                //data text size and color
+                pieDataSet.setValueTextColor(Color.WHITE);
+                pieDataSet.setValueTextSize(20f);
+
+                pieDataSet.setValueFormatter(new PieChartFormatter());
+
+                PieData pieData = new PieData(pieDataSet);
+                pieChart.setData(pieData);
+
+
+                pieChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                pieChart.setUsePercentValues(true); //use percentages
+                pieChart.animateXY(1000, 1000);
+                pieChart.getDescription().setEnabled(false); //remove description
+                pieChart.getLegend().setTextColor(Color.WHITE); //set legend text color to white
+                pieChart.getLegend().setTextSize(15f); //adjust legend text size
+                pieChart.getLegend().setForm(Legend.LegendForm.CIRCLE); //shape of color points beside legend entries
+                pieChart.getLegend().setXEntrySpace(20f); //space out the legend values
+                pieChart.setHoleRadius(10f); //set white hole radius
+                pieChart.setTransparentCircleRadius(15f); //set transparent hold radius
+                pieChart.setDrawEntryLabels(false); //removes inside pie labels of "Win, Tie, Loss"
             }
 
             @Override

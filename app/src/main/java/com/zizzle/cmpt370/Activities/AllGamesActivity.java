@@ -104,99 +104,98 @@ public class AllGamesActivity extends AppCompatActivity implements NavigationVie
         currentTeamReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Team currentTeam = dataSnapshot.getValue(Team.class);
-                // add the games scheduled and played for this team to lists to be displayed
-                // first clear these lists so games aren't displayed twice if new games are added
-                nextGames.clear();
-                pastGames.clear();
-                nextGames.addAll(currentTeam.getSortedScheduledGames());
-                ArrayList<Game> sortedPlayedGames = currentTeam.getSortedPlayedGames();
-                // sortedPlayedGames is sorted so that the oldest played game appears first, but we want to
-                // display the most recent played game first, so reverse this list
-                Collections.reverse(sortedPlayedGames);
-                pastGames.addAll(sortedPlayedGames);
+                if(dataSnapshot.exists()) {
+                    Team currentTeam = dataSnapshot.getValue(Team.class);
+                    // add the games scheduled and played for this team to lists to be displayed
+                    // first clear these lists so games aren't displayed twice if new games are added
+                    nextGames.clear();
+                    pastGames.clear();
+                    nextGames.addAll(currentTeam.getSortedScheduledGames());
+                    ArrayList<Game> sortedPlayedGames = currentTeam.getSortedPlayedGames();
+                    // sortedPlayedGames is sorted so that the oldest played game appears first, but we want to
+                    // display the most recent played game first, so reverse this list
+                    Collections.reverse(sortedPlayedGames);
+                    pastGames.addAll(sortedPlayedGames);
 
-                // team has no games scheduled, display this to the user
-                TextView noComingText = findViewById(R.id.no_upcoming_games_text);
-                if (nextGames.isEmpty()) {
-                    noComingText.setVisibility(View.VISIBLE);
+                    // team has no games scheduled, display this to the user
+                    TextView noComingText = findViewById(R.id.no_upcoming_games_text);
+                    if (nextGames.isEmpty()) {
+                        noComingText.setVisibility(View.VISIBLE);
+                    } else {
+                        // the user has upcoming games, don't show this text
+                        noComingText.setVisibility(View.GONE);
+                    }
+
+                    TextView noPastText = findViewById(R.id.no_past_games_text);
+
+                    if (pastGames.isEmpty()) {
+                        // team hasn't played any games, display this
+                        noPastText.setVisibility(View.VISIBLE);
+                    } else {
+                        // user has previous games don't display this message
+                        noPastText.setVisibility(View.GONE);
+                    }
+
+                    // display the games in these lists
+                    nextGameArrayAdapter.notifyDataSetChanged();
+                    pastGameArrayAdapter.notifyDataSetChanged();
+
+                    // determine the win loss ratios for this team over all of their games played
+                    ArrayList<Float> winLossRatios = currentTeam.getWinLossRatioOverTime();
+
+                    // Graph to Show the Win:Loss Ratio ==========================================================================
+
+                    lineChart = (LineChart) findViewById(R.id.WInLossRatioBarGraph);
+
+                    int count = 0;
+                    ArrayList<Entry> lineEntries = new ArrayList<>();
+                    for (int i = 0; i < winLossRatios.size(); i++) {
+                        //x and y coordinate
+                        lineEntries.add(new Entry(i, winLossRatios.get(i)));
+                        count++; //used later to animate graph to show the latest 5 ratios
+                    }
+                    LineDataSet lineDataSet = new LineDataSet(lineEntries, "Win:Loss Ratio");
+
+                    int lightGreen = Color.argb(255, 204, 229, 255);
+                    lineDataSet.setColor(lightGreen); //set Line Color
+                    lineDataSet.setLineWidth(2f); //adjust line thickness
+                    // Adjust data point circle shape and color
+                    lineDataSet.setCircleColor(Color.WHITE);
+                    lineDataSet.setCircleHoleColor(Color.DKGRAY);
+                    lineDataSet.setCircleHoleRadius(2f);
+                    lineDataSet.setCircleRadius(4f);
+                    lineDataSet.setValueTextSize(10f);
+                    lineDataSet.setValueTextColor(Color.WHITE);
+
+                    ArrayList<ILineDataSet> dataSet = new ArrayList<>();
+                    dataSet.add(lineDataSet);
+
+                    LineData data = new LineData(dataSet);
+                    lineChart.setData(data); //add data to the chart
+                    lineChart.invalidate(); //refresh the chart
+
+                    lineChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
+                    lineChart.setScaleEnabled(false); //disable all zooming
+                    lineChart.animateX(2000);
+                    lineChart.animateY(1000);
+                    lineChart.getDescription().setEnabled(false); //remove description
+                    lineChart.getLegend().setEnabled(false); //remove legend
+                    lineChart.getAxisLeft().setDrawLabels(false); //remove left axis
+                    lineChart.getAxisRight().setTextColor(Color.WHITE); //set left axis color
+                    lineChart.getXAxis().setDrawLabels(false); //remove X axis label
+                    //Show Y axis from 0 to 1 at all times
+                    lineChart.getAxisLeft().setAxisMinimum(0f);
+                    lineChart.getAxisLeft().setAxisMaximum(1f);
+                    lineChart.getAxisRight().setAxisMinimum(0f);
+                    lineChart.getAxisRight().setAxisMaximum(1f);
+                    //forces 6 Y axis values to display (0.0, 0.2, 0.4, 0.6, 0.8, 1.0); this was needed to display 1.0
+                    lineChart.getAxisRight().setLabelCount(6, true);
+                    lineChart.setVisibleXRangeMaximum(5f); //only show 5 values at a time
+                    lineChart.moveViewTo((float) count, 0.5f, YAxis.AxisDependency.RIGHT); //moves visible points to show latest 5 ratios
+
+
+                    // ==========================================================================
                 }
-                else{
-                    // the user has upcoming games, don't show this text
-                    noComingText.setVisibility(View.GONE);
-                }
-
-                TextView noPastText = findViewById(R.id.no_past_games_text);
-
-                if (pastGames.isEmpty()) {
-                    // team hasn't played any games, display this
-                    noPastText.setVisibility(View.VISIBLE);
-                }
-                else{
-                    // user has previous games don't display this message
-                    noPastText.setVisibility(View.GONE);
-                }
-
-                // display the games in these lists
-                nextGameArrayAdapter.notifyDataSetChanged();
-                pastGameArrayAdapter.notifyDataSetChanged();
-
-                // determine the win loss ratios for this team over all of their games played
-                ArrayList<Float> winLossRatios = currentTeam.getWinLossRatioOverTime();
-
-                // Graph to Show the Win:Loss Ratio ==========================================================================
-
-                lineChart = (LineChart) findViewById(R.id.WInLossRatioBarGraph);
-
-                int count = 0;
-                ArrayList<Entry> lineEntries = new ArrayList<>();
-                for (int i=0; i<winLossRatios.size(); i++) {
-                    //x and y coordinate
-                    lineEntries.add(new Entry(i, winLossRatios.get(i)));
-                    count++; //used later to animate graph to show the latest 5 ratios
-                }
-                LineDataSet lineDataSet = new LineDataSet(lineEntries, "Win:Loss Ratio");
-
-                int lightGreen = Color.argb(255, 204, 229, 255);
-                lineDataSet.setColor(lightGreen); //set Line Color
-                lineDataSet.setLineWidth(2f); //adjust line thickness
-                // Adjust data point circle shape and color
-                lineDataSet.setCircleColor(Color.WHITE);
-                lineDataSet.setCircleHoleColor(Color.DKGRAY);
-                lineDataSet.setCircleHoleRadius(2f);
-                lineDataSet.setCircleRadius(4f);
-                lineDataSet.setValueTextSize(10f);
-                lineDataSet.setValueTextColor(Color.WHITE);
-
-                ArrayList<ILineDataSet> dataSet = new ArrayList<>();
-                dataSet.add(lineDataSet);
-
-                LineData data = new LineData(dataSet);
-                lineChart.setData(data); //add data to the chart
-                lineChart.invalidate(); //refresh the chart
-
-                lineChart.setTouchEnabled(true); //true = enable all gestures and touches on the chart
-                lineChart.setScaleEnabled(false); //disable all zooming
-                lineChart.animateX(2000);
-                lineChart.animateY(1000);
-                lineChart.getDescription().setEnabled(false); //remove description
-                lineChart.getLegend().setEnabled(false); //remove legend
-                lineChart.getAxisLeft().setDrawLabels(false); //remove left axis
-                lineChart.getAxisRight().setTextColor(Color.WHITE); //set left axis color
-                lineChart.getXAxis().setDrawLabels(false); //remove X axis label
-                //Show Y axis from 0 to 1 at all times
-                lineChart.getAxisLeft().setAxisMinimum(0f);
-                lineChart.getAxisLeft().setAxisMaximum(1f);
-                lineChart.getAxisRight().setAxisMinimum(0f);
-                lineChart.getAxisRight().setAxisMaximum(1f);
-                //forces 6 Y axis values to display (0.0, 0.2, 0.4, 0.6, 0.8, 1.0); this was needed to display 1.0
-                lineChart.getAxisRight().setLabelCount(6, true);
-                lineChart.setVisibleXRangeMaximum(5f); //only show 5 values at a time
-                lineChart.moveViewTo((float) count, 0.5f, YAxis.AxisDependency.RIGHT); //moves visible points to show latest 5 ratios
-
-
-                // ==========================================================================
-
             }
 
             @Override

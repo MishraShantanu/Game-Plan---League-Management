@@ -6,7 +6,6 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 
 
@@ -62,6 +61,20 @@ public class League implements Serializable {
     public HashMap<String,TeamInfo>getTeamsInfoMap(){
         // this method is only used to allow firebase to recognize and store our instance variable teamsInfoMap
         return this.teamsInfoMap;
+    }
+
+    /**
+     * Returns an arraylist of the teams of the league
+     * @return ArrayList containing info of the teams in this league
+     */
+    public ArrayList<TeamInfo> getTeamInfos(){
+        // if there are no teams on this league, and we read this object from the database, teamsInfoMap will be null
+        if(this.teamsInfoMap == null){
+            // in this case just return an empty arraylist, as there are no teams on the league
+            return new ArrayList<>();
+        }
+        // otherwise convert the values of our map into an arraylist
+        return new ArrayList<>(this.teamsInfoMap.values());
     }
 
 

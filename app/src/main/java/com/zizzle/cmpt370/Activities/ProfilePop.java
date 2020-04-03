@@ -2,12 +2,17 @@ package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,6 +47,11 @@ public class ProfilePop extends Activity{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Window window = this.getWindow();
+        window.setDimAmount((float) 0.4);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        window.addFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
         // Creating the pop-up =====================================================================
         setContentView(R.layout.profile_popup);
@@ -84,6 +94,8 @@ public class ProfilePop extends Activity{
                 submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        hideKeyboard(ProfilePop.this);
+
                         final String memberNameString = memberName.getText().toString();
                         final String phoneNumberString = phoneNumber.getText().toString();
                         final String emailString = email.getText().toString();
@@ -96,8 +108,8 @@ public class ProfilePop extends Activity{
                             phoneNumber.setError("Phone Number Required");
                             phoneNumber.requestFocus();
                         }
-                        else if(phoneNumberString.length()!=11){
-                            phoneNumber.setError("Phone Number Must be 11 Digits");
+                        else if(phoneNumberString.length()!=10){
+                            phoneNumber.setError("Phone Number Must be 10 Digits");
                             phoneNumber.requestFocus();
                         }
                         else if(emailString.isEmpty()){
@@ -147,5 +159,36 @@ public class ProfilePop extends Activity{
 
             }
         });
+    }
+
+    //When back button is pressed, we want to just close the menu, not close the activity
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    // Close activity if clicked outside of page.
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            Rect dialogBounds = new Rect();
+            getWindow().getDecorView().getHitRect(dialogBounds);
+            if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {
+                finish();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    // Used to hide keyboard.
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }
