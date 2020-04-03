@@ -46,7 +46,10 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
     private DrawerLayout mDrawerLayout; //main roundedCorners ID of homepageWithMenu.xml
     private ActionBarDrawerToggle mToggle;
 
-
+    /**
+     * User verified or not
+     */
+    boolean verified;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,14 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
+        // Check that user is verified =========================================================================
+        verified = FirebaseAuth.getInstance().getCurrentUser().isEmailVerified();
+        if (!verified) { //user is NOT verified
+            findViewById(R.id.progressbar_loading).setVisibility(View.GONE);
+            findViewById(R.id.Leagues_NotVerified).setVisibility(View.VISIBLE); //show "need to verify account" message
+            findViewById(R.id.league_search_bar).setVisibility(View.INVISIBLE); //hide search bar
+            return;
+        }
 
         // add league button =======================================================================
 

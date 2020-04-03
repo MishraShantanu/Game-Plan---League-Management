@@ -16,6 +16,22 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/Leagues_NotVerified"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:paddingLeft="35dp"
+            android:paddingRight="35dp"
+            android:text="Verify your account via email and re-signin to get started!\n
+You can still access the Profile and About Us page."
+            android:textAlignment="center"
+            android:textColor="@color/colorText"
+            android:textSize="24dp"
+            android:visibility="gone">
+
+        </TextView>
+
+        <TextView
             android:id="@+id/no_leagues_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

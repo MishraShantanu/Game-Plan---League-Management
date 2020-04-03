@@ -63,6 +63,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      */
     BarChart barChart;
 
+    /**
+     * User verified or not
+     */
+    boolean verified;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +95,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
+        // Check that user is verified =========================================================================
+        verified = FirebaseAuth.getInstance().getCurrentUser().isEmailVerified();
+        if (!verified) { //user is NOT verified
+            findViewById(R.id.progressbar_loading).setVisibility(View.GONE);
+            findViewById(R.id.Home_NotVerified).setVisibility(View.VISIBLE); //show "need to verify account" message
+            return;
+        }
+
         // list of teams =========================================================================
         // Initialize arrays
         teamsInfo = new ArrayList<>();
@@ -110,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 // first clear out list of teams for this user to prevent teams from showing up twice if new teams are added or removed
                 teamsInfo.clear();
                 leaguesName.clear();
-                for(TeamInfo ti : currentMember.getTeamsInfo()){
+                for (TeamInfo ti : currentMember.getTeamsInfo()) {
                     teamsInfo.add(ti);
                     leaguesName.add(ti.getLeagueName());
                 }
@@ -146,9 +159,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 TextView ties = findViewById(R.id.personalRecord_ties);
 
                 // Display the W/T/L record
-                int numWins = currentMember.getCareerWins();;
-                int numLosses = currentMember.getCareerLosses();;
-                int numTies = currentMember.getCareerTies();;
+                int numWins = currentMember.getCareerWins();
+                int numLosses = currentMember.getCareerLosses();
+                int numTies = currentMember.getCareerTies();
                 wins.setText(String.valueOf(numWins));
                 losses.setText(String.valueOf(numLosses));
                 ties.setText(String.valueOf(numTies));
