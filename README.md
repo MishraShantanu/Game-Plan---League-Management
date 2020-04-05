@@ -13,7 +13,7 @@ KEY FEATURES
 *  Schedule games with other teams in your league
 *  Record scores and track your wins and losses
 
-*Please note that you will need to use a valid email to make an account. A verification email will be sent and you will need to click on a link within the email to access the main features of the app.
+*Please note that you will need to use a valid email to make an account. A verification email will be sent, and you will need to click on a link within the email to access the main features of the app.
 
 # How to Run
 
@@ -24,30 +24,30 @@ KEY FEATURES
 
 
 ## 2) Running APK from Android Studio:
-*  For these methods, you need Android Studio installed with our source code (pull master branch from the repository)
+*  For these methods, you need Android Studio installed with our source code (pull a master branch from the repository)
 ### Method 1: Using your own Android Phone
 1. You will need an Android phone and a USB cable
 2. Enable USB debugging on your Android phone
-   *  On your phone, go to settings -> about phone
-   *  tap "Build Number" 7 times and it will then say "you are now a developer"
+   *  On your phone, go to settings -> about the phone
+   *  tap "Build Number" 7 times, and it will then say, "you are now a developer."
    *  Now develop options will be available, go to develop options and enable USB debugging
    *  You may need to install a USB driver for your Android phone (depending on your phone model and device manufacturer).
-3. Plug in the phone to your computer and if a notification pops up asking to allow USB debugging, click "Yes:."
+3. Plugin the phone to your computer, and if a notification pops up asking to allow USB debugging, click "Yes"
 4. To run the app, click "Run" from the bar menu at the top of Android Studio. 
-5. You will have to select a "deployment target" which will be your phone.
+5. You will have to select a "deployment target," which will be your phone.
 
 
 ### Method 2: Using Android Studio emulator
-1. First, you need to install the Android Emulator. Select "Android Emulator" componeent in the SDK Tools tab of the SDK manager
+1. First, you need to install the Android Emulator. Select "Android Emulator" component in the SDK Tools tab of the SDK manager
    *  To open SDK manager, click Tools -> SDK Manager
-   *  Select the Android Smulator option install/update it.
+   *  Select the Android Emulator option to install/update it.
 2. Create an Android Virtual Device (AVD) that the emulator can use to install the app
-   *  In the toolbar, click on the box to the left of the "Run" button and open the "AVD Manager"
-   *  Click on "Create Virtual Device"
-   *  Select "Pizel 3 XL" and press Next
+   *  In the toolbar, click on the box to the left of the "Run" button and open the "AVD Manager."
+   *  Click on "Create Virtual Device."
+   *  Select "Pixel 3 XL" and press Next
    *  Select API Level "28" and press Next
    *  Press "Finish" which will download the phone and OS
-3. After download has completed, select the "Pixel 3 XL" from the toolbar AVD manager bar to the left of the "Run" button
+3. After the download has completed, select the "Pixel 3 XL" from the toolbar AVD manager bar to the left of the "Run" button
 4. Press "Run" which will load the emulator and start the app (might take a few minutes initially)
 
 
@@ -66,4 +66,4 @@ KEY FEATURES
 2. Download latest app APK from [APK folder](https://git.cs.usask.ca/test_alpha/project_1/tree/develop/APK)
 3. Open Nox application 
 4. Drag the Downloaded APK over Nox emulator screen(It will automatically install the APK)
-5. You will get a "GamePlan" application logo on the Nox main and applications screen, Click on that to run the app
+5. You will get a "GamePlan" application logo on the Nox main and applications screen, Click on that to run the app 
