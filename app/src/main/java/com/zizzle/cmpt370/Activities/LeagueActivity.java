@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -144,7 +143,7 @@ public class LeagueActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Firebase failed to fetch the data requested
-                // TODO display some sort of error message to the user
+                // Don't need anything, but keep method to prevent crash
             }
         });
 

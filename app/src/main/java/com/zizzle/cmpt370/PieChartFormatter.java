@@ -9,7 +9,8 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 public class PieChartFormatter extends ValueFormatter {
 
     /**
-     * Adds apercent symbol at the end
+     * Adds a percent symbol at the end
+     *
      * @param value float value for the pie chart data
      * @return String with float value (one decimal place) plus percent symbol at the end
      */

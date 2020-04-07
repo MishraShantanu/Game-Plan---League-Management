@@ -7,6 +7,7 @@ public interface InfoInterface {
 
     /**
      * Gets the name associated with the object
+     *
      * @return String name of the associated object
      */
     public String getName();
@@ -14,6 +15,7 @@ public interface InfoInterface {
     /**
      * Gets a string key into the database which can be used to read in the object corresponding to this
      * information
+     *
      * @return String key that can be used to read an object from the database at a specific path
      */
     public String getDatabaseKey();

@@ -1,7 +1,6 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,7 +37,7 @@ public class ForgotPassPop extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         // Scale of the pop up window
-        getWindow().setLayout((int)(dm.widthPixels * 0.8), (int)(dm.heightPixels * 0.5));
+        getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.5));
 
 
         // Send email ==============================================================================
@@ -66,14 +65,13 @@ public class ForgotPassPop extends Activity {
                     auth.sendPasswordResetEmail(emailString).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 // email successfully sent, inform the user they must reset their password via email
-                                Toast.makeText(ForgotPassPop.this,"Password reset email sent",Toast.LENGTH_LONG).show();
+                                Toast.makeText(ForgotPassPop.this, "Password reset email sent", Toast.LENGTH_LONG).show();
 
                                 finish();
-                            }
-                            else{
-                                Toast.makeText(ForgotPassPop.this,"Something went wrong, please try again",Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(ForgotPassPop.this, "Something went wrong, please try again", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -84,7 +82,7 @@ public class ForgotPassPop extends Activity {
 
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect dialogBounds = new Rect();
             getWindow().getDecorView().getHitRect(dialogBounds);
             if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {

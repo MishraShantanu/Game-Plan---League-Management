@@ -79,37 +79,27 @@ public class SignupActivity extends AppCompatActivity {
 
                 if (pass.isEmpty() && email.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (email.isEmpty()) {
+                } else if (email.isEmpty()) {
                     emailId.setError("Email address required");
                     emailId.requestApplyInsets();
-                }
-
-                else if (pass.isEmpty()) {
+                } else if (pass.isEmpty()) {
                     password.setError("Password required");
                     password.requestFocus();
-                }
-
-                else if (phone.isEmpty()) {
+                } else if (phone.isEmpty()) {
                     phoneNumber.setError("Phone number required");
                     phoneNumber.requestFocus();
-                }
-
-                else if(phone.length()!=10){
+                } else if (phone.length() != 10) {
                     // phone number has invalid length/format
                     phoneNumber.setError("Phone number must be 10 digits long");
                     phoneNumber.requestFocus();
-                }
-
-                else if (!(pass.isEmpty() && email.isEmpty())) {
+                } else if (!(pass.isEmpty() && email.isEmpty())) {
 
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
 
-                                Toast.makeText(SignupActivity.this, "Sign up was unsuccessful. "+task.getException().getMessage()+" please try again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignupActivity.this, "Sign up was unsuccessful. " + task.getException().getMessage() + " please try again", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 // add the newly created Member to the database
@@ -121,30 +111,25 @@ public class SignupActivity extends AppCompatActivity {
                                 Storage.writeMember(newMember);
 
                                 // initialize our information about the current user
-                                CurrentUserInfo.initializeMemberInfo(newMemberID,displayName.getText().toString());
+                                CurrentUserInfo.initializeMemberInfo(newMemberID, displayName.getText().toString());
                                 // add the user's display name to firebase authentication
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayName.getText().toString()).build();
                                 fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful())
-                                                    // this toast is for testing only
-                                                    Toast.makeText(SignupActivity.this, "couldn't add display name to user profile", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (!task.isSuccessful())
+                                            // this toast is for testing only
+                                            Toast.makeText(SignupActivity.this, "couldn't add display name to user profile", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
                                 fbUser.sendEmailVerification();
-
-
 
 
                                 Intent intoMain = new Intent(SignupActivity.this, HomeActivity.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-
-
 
                             }
                         }
@@ -154,7 +139,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
         tvSignIn.setOnClickListener(new View.OnClickListener() {
