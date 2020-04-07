@@ -73,4 +73,7 @@ KEY FEATURES
 4. Drag the Downloaded APK over Nox emulator screen (It will automatically install the APK)
 5. You will get a "GamePlan" application logo on the Nox main and applications screen, Click on that to run the app
 
-# How to Test the main Features:
+
+
+# How to Access the Main Features of the "GamePlan" App:
+A helpful file was created to outline the steps to access the key features of our app. The file is available here: [How to Access Main App Features](https://git.cs.usask.ca/test_alpha/project_1/-/wikis/How-to-Access-Main-App-Features)
