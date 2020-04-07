@@ -13,9 +13,17 @@ KEY FEATURES
 *  Schedule games with other teams in your league
 *  Record scores and track your wins and losses
 
-*Please note that you will need to use a valid email to make an account. A verification email will be sent, and you will need to click on a link within the email to access the main features of the app.
-
 # How to Run
+*  For all the methods below, an account will have to be created to use the app. Please use a valid (i.e. real) email, since a verification email will be sent. In the verification email, you must click on the link provided to verify your account and then you will be able to use the main app features
+*  For the app to truly be used, you will need to make leagues, add and join teams, schedule games, add scores for previous games, etc. To save you time, we created accounts that you can use. You can create your own account and/or use the below accounts:
+* Account 1:
+   *  Email: jaycanadaindia@gmail.com
+   *  Password: 123456
+* Account 2:
+   *  Email: brayden.martin@usask.ca
+   *  Password: openup
+* To test app features such as "Forgot my Password" on the signin page, you will need to use your own account, so that you receive an email to reset your password.
+
 
 ***Method 1: Download App from Google Play Store on an Android Phone (preferred method)***
 1. Go to the Google Play Store to our "GamePlan" app (you must be signed in to your Google Account):
