@@ -7,17 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.zizzle.cmpt370.Activities.HomeActivity;
 import com.zizzle.cmpt370.Activities.TeamActivity;
-import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.TeamInfo;
-import com.zizzle.cmpt370.R;
 
 import java.util.ArrayList;
 
@@ -25,37 +19,47 @@ import java.util.ArrayList;
 /**
  * Array adapter for the homepage to display league name above the teams
  */
-public class CustomArrayAdapter extends BaseAdapter{
+public class CustomArrayAdapter extends BaseAdapter {
 
-    /** League names */
+    /**
+     * League names
+     */
     private ArrayList<String> leagues;
 
-    /** Team Info */
+    /**
+     * Team Info
+     */
     private ArrayList<TeamInfo> teams;
 
-    /** Activity this is being used in */
+    /**
+     * Activity this is being used in
+     */
     private Context context;
 
-    /** Inflater */
+    /**
+     * Inflater
+     */
     private static LayoutInflater inflater = null;
 
 
     /**
      * Constructor for CustomArrayAdapter.
+     *
      * @param activity the activity this adapter was made in
-     * @param leagues array of league names that will be displayed
-     * @param teams array of team info that will be clicked
+     * @param leagues  array of league names that will be displayed
+     * @param teams    array of team info that will be clicked
      */
     public CustomArrayAdapter(Activity activity, ArrayList<String> leagues, ArrayList<TeamInfo> teams) {
         this.leagues = leagues;
         this.teams = teams;
         context = activity;
-        inflater = ( LayoutInflater )context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
 
     /**
      * Return the size of the array.
+     *
      * @return array size
      */
     @Override
@@ -64,11 +68,14 @@ public class CustomArrayAdapter extends BaseAdapter{
     }
 
 
-    /** Auto-Generated and unused. */
+    /**
+     * Auto-Generated and unused.
+     */
     @Override
     public Object getItem(int position) {
         return 0;
     }
+
     @Override
     public long getItemId(int position) {
         return 0;
@@ -86,9 +93,10 @@ public class CustomArrayAdapter extends BaseAdapter{
 
     /**
      * Set up the view for the listview.
-     * @param position position of item clicked
+     *
+     * @param position    position of item clicked
      * @param convertView View
-     * @param parent parent of the view
+     * @param parent      parent of the view
      * @return view
      */
     @Override
@@ -110,7 +118,7 @@ public class CustomArrayAdapter extends BaseAdapter{
                 // Intent for the team clicked.
                 Intent teamIntent = new Intent(context, TeamActivity.class);
                 // pass the clicked TeamInfo to the Team page through this intent
-                teamIntent.putExtra("TEAM_INFO_CLICKED",clickedTeamInfo);
+                teamIntent.putExtra("TEAM_INFO_CLICKED", clickedTeamInfo);
                 context.startActivity(teamIntent);
                 ((Activity) context).overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }

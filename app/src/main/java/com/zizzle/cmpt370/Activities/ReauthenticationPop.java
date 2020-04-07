@@ -1,7 +1,6 @@
 package com.zizzle.cmpt370.Activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,7 +43,7 @@ public class ReauthenticationPop extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
         // Scale pop up window.
-        getWindow().setLayout((int)(dm.widthPixels * 0.8), (int)(dm.heightPixels * 0.4));
+        getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.4));
 
 
         // Gathering Input =========================================================================
@@ -54,7 +53,7 @@ public class ReauthenticationPop extends Activity {
             public void onClick(View view) {
                 hideKeyboard(ReauthenticationPop.this);
 
-                EditText passwordInput  = findViewById(R.id.reauth_password);
+                EditText passwordInput = findViewById(R.id.reauth_password);
                 String password = passwordInput.getText().toString();
 
                 // Password is empty.
@@ -71,21 +70,20 @@ public class ReauthenticationPop extends Activity {
                     // before we can change the user's email, we must reauthenticate them
                     // reauthenticate the user with their old email and password
                     final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    AuthCredential credential = EmailAuthProvider.getCredential(oldEmail,password);
+                    AuthCredential credential = EmailAuthProvider.getCredential(oldEmail, password);
                     currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 // user gave the right password, update the user's email
                                 currentUser.updateEmail(newEmail);
                                 // update the user's email on the database
                                 MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
-                                Storage.updateEmail(currentUserInfo,newEmail);
+                                Storage.updateEmail(currentUserInfo, newEmail);
 
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-                            }
-                            else{
+                            } else {
                                 // Reauthorizing was unsuccessful.
                                 Toast.makeText(ReauthenticationPop.this,
                                         "Password is incorrect, Please try again", Toast.LENGTH_SHORT).show();
@@ -102,7 +100,7 @@ public class ReauthenticationPop extends Activity {
 
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect dialogBounds = new Rect();
             getWindow().getDecorView().getHitRect(dialogBounds);
             if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {

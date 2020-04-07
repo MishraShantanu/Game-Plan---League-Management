@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,15 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -152,8 +147,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
                     if (numWins == 0 && numTies == 0 && numLosses == 0) { //don't display graph if team hasn't played any games yet
                         barChart.setVisibility(View.GONE);
-                    }
-                    else{
+                    } else {
                         barChart.setVisibility(View.VISIBLE);
                     }
 
@@ -219,8 +213,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                             }
                         });
-                    }
-                    else{
+                    } else {
                         // this team has no upcoming games
                         nextGameText.setText("No Upcoming Games");
                     }
@@ -240,9 +233,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
                                 Intent profileFromTeam = new Intent(TeamActivity.this, ProfileActivity.class);
                                 startActivityForResult(profileFromTeam, 2);
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            }
-
-                            else {
+                            } else {
                                 // pass the MemberInfo of the clicked on Member to the TeamMemberActivity
                                 Intent teamMemberIntent = new Intent(TeamActivity.this, TeamMemberActivity.class);
                                 teamMemberIntent.putExtra("CLICKED_MEMBER", ownerInfo);
@@ -340,9 +331,8 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // called when database operation fails
-                // TODO display some error message, telling the user they couldn't connect to database, or asking them to try again
+            public void onCancelled(@NonNull DatabaseError databaseError) { // called when database operation fails
+                // No need to do anything, but keep method (prevents crash)
             }
         });
 
@@ -470,11 +460,10 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
         userOnTeamReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     // the current user is on this team, don't display the join button
                     joinButton.setVisible(false);
-                }
-                else{
+                } else {
                     // current user isn't on the team, display the join button
                     joinButton.setVisible(true);
                 }
@@ -482,7 +471,7 @@ public class TeamActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                // No need to do anything, but keep method (prevents crash)
             }
         });
         return true;

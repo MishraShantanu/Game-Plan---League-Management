@@ -13,13 +13,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -35,7 +33,6 @@ import com.zizzle.cmpt370.CustomArrayAdapter;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
-import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 

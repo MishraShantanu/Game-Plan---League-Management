@@ -2,6 +2,7 @@ package com.zizzle.cmpt370.Model;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,41 +15,62 @@ import java.util.Iterator;
  */
 public class Team {
 
-    /** Name of the team. */
+    /**
+     * Name of the team.
+     */
     private String name;
 
-    /** Sport the team is playing */
+    /**
+     * Sport the team is playing
+     */
     private String sport;
 
-    /** Info about Members of the team in the form of a map associating user IDs to MemberInfo objects */
-    private HashMap<String,MemberInfo> membersInfoMap;
+    /**
+     * Info about Members of the team in the form of a map associating user IDs to MemberInfo objects
+     */
+    private HashMap<String, MemberInfo> membersInfoMap;
 
-    /** TreeMap with the database keys of games played as keys and the Game objects played as values */
-    private HashMap<String,Game> gamesPlayed;
+    /**
+     * TreeMap with the database keys of games played as keys and the Game objects played as values
+     */
+    private HashMap<String, Game> gamesPlayed;
 
-    /** Info about the league the team is a part of */
+    /**
+     * Info about the league the team is a part of
+     */
     private LeagueInfo leagueInfo;
 
-    /** Info about the owner of the team */
+    /**
+     * Info about the owner of the team
+     */
     private MemberInfo ownerInfo;
 
-    /** TreeMap with the database keys of games schedules as keys and the Game objects schedules as values */
-    private HashMap<String,Game> scheduledGames;
+    /**
+     * TreeMap with the database keys of games schedules as keys and the Game objects schedules as values
+     */
+    private HashMap<String, Game> scheduledGames;
 
-    /** Number of wins the team has */
+    /**
+     * Number of wins the team has
+     */
     private int wins;
 
-    /** number of losses the team has*/
+    /**
+     * number of losses the team has
+     */
     private int losses;
 
-    /** number of ties the team has */
+    /**
+     * number of ties the team has
+     */
     private int ties;
 
 
     /**
      * Constructor for a Team object
-     * @param name: String name of the new team, team names must be unique for the league the team is in
-     * @param ownerInfo: MemberInfo object, represents the owner/creator of the team
+     *
+     * @param name:       String name of the new team, team names must be unique for the league the team is in
+     * @param ownerInfo:  MemberInfo object, represents the owner/creator of the team
      * @param leagueInfo: LeagueInfo object, representing the league this team belongs to
      */
     public Team(String name, MemberInfo ownerInfo, LeagueInfo leagueInfo) {
@@ -63,40 +85,42 @@ public class Team {
         this.scheduledGames = new HashMap<>();
     }
 
-    public Team(){
+    public Team() {
 
     }
 
     /**
      * Returns a TreeMap with string game keys and Game values of the games this team has played
+     *
      * @return TreeMap as described above
      */
-    public HashMap<String,Game> getGamesPlayed(){
+    public HashMap<String, Game> getGamesPlayed() {
         // In order for firebase to recognize our instance variable gamesPlayed, we must make a public getter or setter
         return this.gamesPlayed;
     }
 
     /**
      * Returns a TreeMap with string game keys and Game values of the games scheduled to be played by this team
+     *
      * @return TreeMap as described above
      */
-    public HashMap<String,Game> getScheduledGames(){
+    public HashMap<String, Game> getScheduledGames() {
         // In order for firebase to recognize our instance variable scheduledGames, we must make a public getter or setter
         return this.scheduledGames;
     }
 
     /**
      * Returns an ArrayList of scheduled games for this team
+     *
      * @return ArrayList<Game> of the games scheduled for this team, an empty list is returned if
      * there are no scheduled games
      */
-    public ArrayList<Game> getScheduledGameList(){
+    public ArrayList<Game> getScheduledGameList() {
         // if there are no scheduled games for this team, after reading this team from the database
         // the scheduled games map will be null, if this is the case, return an empty list as no games are scheduled
-        if(this.scheduledGames == null){
+        if (this.scheduledGames == null) {
             return new ArrayList<>();
-        }
-        else{
+        } else {
             return new ArrayList<>(this.scheduledGames.values());
         }
     }
@@ -104,15 +128,16 @@ public class Team {
     /**
      * Returns an ArrayList of Game objects that are sorted so that games scheduled at an earlier date appear
      * first in this list, returns an empty ArrayList if there are no scheduled games
+     *
      * @return ArrayList<Game> described above
      */
-    public ArrayList<Game> getSortedScheduledGames(){
+    public ArrayList<Game> getSortedScheduledGames() {
         // this.scheduledGames may be null after reading in a Team without any scheduled games from the database
         // if so return an empty list as no games have been scheduled
-        if(this.scheduledGames == null){
+        if (this.scheduledGames == null) {
             return new ArrayList<>();
         }
-        ArrayList<Game> sortedGames =  new ArrayList<>(this.scheduledGames.values());
+        ArrayList<Game> sortedGames = new ArrayList<>(this.scheduledGames.values());
         Collections.sort(sortedGames);
         return sortedGames;
     }
@@ -120,12 +145,13 @@ public class Team {
     /**
      * Returns an ArrayList of Game objects that are sorted so that games played at an earlier date appear
      * first in this list, returns an empty ArrayList if there are no games played
+     *
      * @return ArrayList<Game> described above
      */
-    public ArrayList<Game> getSortedPlayedGames(){
+    public ArrayList<Game> getSortedPlayedGames() {
         // this.gamesPlayed may be null after reading in a Team without any scheduled games from the database
         // if so return an empty list as no games have been scheduled
-        if(this.gamesPlayed == null){
+        if (this.gamesPlayed == null) {
             return new ArrayList<>();
         }
         ArrayList<Game> sortedGames = new ArrayList<>(this.gamesPlayed.values());
@@ -138,9 +164,10 @@ public class Team {
      * over time, the values in this list correspond to games played, so the first entry in this list
      * is 1.0 if the first game the team played is a win, and 0.0 if the first game was a loss for this team
      * ties count as 0.5 of a win, so if a team ties their first game, they will have a win/loss of 0.5
+     *
      * @return ArrayList<Float> as described above, an empty arraylist is returned if this team hasn't played any games
      */
-    public ArrayList<Float> getWinLossRatioOverTime(){
+    public ArrayList<Float> getWinLossRatioOverTime() {
         ArrayList<Float> winLossRatios = new ArrayList<>();
         float winCount = 0; // this value is a float as ties count as 0.5 of a win
         int gamesPlayedCount = 0;
@@ -152,19 +179,19 @@ public class Team {
             if (playedGame.isTie()) {
                 // tie is worth half a win
                 winCount += 0.5f;
-            }
-            else if(thisTeamInfo.equals(playedGame.getWinner())) {
+            } else if (thisTeamInfo.equals(playedGame.getWinner())) {
                 // this team has won this game
                 winCount += 1.0f;
             }
             // if the current team loses leave the win count as is
-            winLossRatios.add(winCount/gamesPlayedCount);
+            winLossRatios.add(winCount / gamesPlayedCount);
         }
         return winLossRatios;
     }
 
     /**
      * Retrieves the name of the team.
+     *
      * @return String name of the team.
      */
     public String getName() {
@@ -173,14 +200,15 @@ public class Team {
 
     /**
      * Retrievs a MemberInfo object with info about the owner of the team
+     *
      * @return MemberInfo object describing the owner of the team
      */
-    public MemberInfo getOwnerInfo(){
+    public MemberInfo getOwnerInfo() {
         return this.ownerInfo;
     }
 
 
-    public LeagueInfo getLeagueInfo(){
+    public LeagueInfo getLeagueInfo() {
         return this.leagueInfo;
     }
 
@@ -188,12 +216,13 @@ public class Team {
      * Sets the owner of the team to the MemberInfo specified, if the new owner isn't part of the team,
      * they will be added to the members of the team, the old owner still remains part of the team
      * and can be removed using removeMember
+     *
      * @param newOwnerInfo: MemberInfo object representing the new owner of the team
      */
-    public void setOwner(MemberInfo newOwnerInfo){
+    public void setOwner(MemberInfo newOwnerInfo) {
         // if newOwner isn't on the team, add them to the team members
-        if(membersInfoMap!= null && ! membersInfoMap.containsKey(newOwnerInfo.getDatabaseKey())){
-            membersInfoMap.put(newOwnerInfo.getDatabaseKey(),newOwnerInfo);
+        if (membersInfoMap != null && !membersInfoMap.containsKey(newOwnerInfo.getDatabaseKey())) {
+            membersInfoMap.put(newOwnerInfo.getDatabaseKey(), newOwnerInfo);
             // update this team on the database to include this new member
         }
         this.ownerInfo = newOwnerInfo;
@@ -202,21 +231,22 @@ public class Team {
 
     /**
      * Removes the input Member from the team
+     *
      * @param memberToRemove: Member object to be removed from the team, this Member must be on the team
-     *        and cannot be the owner of the team, a new owner of the team must be
-     *        set before the old owner can be removed
-     * @throws IllegalStateException if memberToRemove is the owner of the team
+     *                        and cannot be the owner of the team, a new owner of the team must be
+     *                        set before the old owner can be removed
+     * @throws IllegalStateException    if memberToRemove is the owner of the team
      * @throws IllegalArgumentException if memberToRemove isn't on the team
      */
-    public void removeMember(Member memberToRemove) throws IllegalStateException, IllegalArgumentException{
+    public void removeMember(Member memberToRemove) throws IllegalStateException, IllegalArgumentException {
         // make sure memberToRemove is on the team
         MemberInfo memberToRemoveInfo = new MemberInfo(memberToRemove);
-        if(! this.membersInfoMap.containsKey(memberToRemoveInfo.getDatabaseKey())){
+        if (!this.membersInfoMap.containsKey(memberToRemoveInfo.getDatabaseKey())) {
             throw new IllegalArgumentException("Team: Member: " + memberToRemove.getDisplayName() + " to remove from team: "
                     + this.name + " isn't a member of the team");
         }
         // make sure memberToRemove isn't the owner
-        if(memberToRemoveInfo.equals(this.ownerInfo)){
+        if (memberToRemoveInfo.equals(this.ownerInfo)) {
             throw new IllegalStateException("Team: Member: " + memberToRemove.getDisplayName() + " cannot be removed from team " +
                     this.name + " as this Member is the owner of the team");
         }
@@ -226,59 +256,64 @@ public class Team {
 
     /**
      * Returns the number of wins the team has
+     *
      * @return int number of wins the team has
      */
-    public int getWins(){
+    public int getWins() {
         return this.wins;
     }
 
     /**
      * Returns the number of losses the team has
+     *
      * @return int number of losses the team has
      */
-    public int getLosses(){
+    public int getLosses() {
         return this.losses;
     }
 
     /**
      * Returns the number of ties the team has
+     *
      * @return int number of ties the team has
      */
-    public int getTies(){
+    public int getTies() {
         return this.ties;
     }
 
     /**
      * Determines if the input member is on the team
+     *
      * @param member: Member to determine if on the team
      * @return true if member is on the team, false otherwise
      */
-    public boolean teamHasMember(Member member){
-        // TODO: could take in memberInfo
+    public boolean teamHasMember(Member member) {
         return this.membersInfoMap.containsKey(member.getUserID());
     }
 
     /**
      * Adds the input member to the team
+     *
      * @param newMember: member to be added to the team
      * @throws IllegalStateException if the input member is already on the team
      */
-    public void addMember(Member newMember) throws IllegalStateException{
-        if(this.teamHasMember(newMember)){
+    public void addMember(Member newMember) throws IllegalStateException {
+        if (this.teamHasMember(newMember)) {
             throw new IllegalStateException("Member: " + newMember.toString() + " is already on this team");
         }
         MemberInfo newMemberInfo = new MemberInfo(newMember);
-        this.membersInfoMap.put(newMemberInfo.getDatabaseKey(),newMemberInfo);
+        this.membersInfoMap.put(newMemberInfo.getDatabaseKey(), newMemberInfo);
     }
 
 
     /**
      * Returns an arraylist of the members of the team
+     *
      * @return ArrayList containing info of the members of the team
      */
-    public ArrayList<MemberInfo> getTeamMembersInfo(){
+    public ArrayList<MemberInfo> getTeamMembersInfo() {
         // if there are no members on this team, and we read this object from the database, membersInfoMap will be null
-        if(this.membersInfoMap == null){
+        if (this.membersInfoMap == null) {
             // in this case just return an empty arraylist, as there are no members on the team
             return new ArrayList<>();
         }
@@ -288,6 +323,7 @@ public class Team {
 
     /**
      * Returns the MemberInfo who has the specified user ID from the team
+     *
      * @param userID: String user ID of a Member on the team, if this user ID doesn't belong to a member on the team null is returned
      * @return MemberInfo representing a member with the input userID
      */
@@ -298,42 +334,44 @@ public class Team {
     /**
      * increases the number of wins the team has by 1
      */
-    public void incrementWins(){
+    public void incrementWins() {
         this.wins++;
     }
 
     /**
      * increases the number of losses the team has by 1
      */
-    public void incrementLosses(){
+    public void incrementLosses() {
         this.losses++;
     }
 
     /**
      * increases the number of ties the team has by 1
      */
-    public void incrementTies(){
+    public void incrementTies() {
         this.ties++;
     }
 
     /**
      * Returns a String representation of the team including team name, sport, and win/loss/tie record
+     *
      * @return String described above
      */
     @Override
     @NonNull
-    public String toString(){
+    public String toString() {
         return this.getName();
     }
 
     /**
      * Checks where this Team is equal to the input parameter
+     *
      * @param other: Object to see if equal to this Team
      * @return true if other is equal to this, false otherwise
      */
     @Override
-    public boolean equals(Object other){
-        if(other instanceof Team){
+    public boolean equals(Object other) {
+        if (other instanceof Team) {
             Team otherTeam = (Team) other;
             return this.name.equals(otherTeam.name) && this.sport.equals(otherTeam.sport) && this.leagueInfo.equals(otherTeam.getLeagueInfo()) && this.ownerInfo.equals(otherTeam.getOwnerInfo());
         }
@@ -343,13 +381,13 @@ public class Team {
 
     /**
      * Returns a HashMap with String user ID keys, and MemberInfo values for the members of this team
-     * @return HashMap<String,MemberInfo> as described above
+     *
+     * @return HashMap<String, MemberInfo> as described above
      */
-    public HashMap<String, MemberInfo> getMembersInfoMap(){
+    public HashMap<String, MemberInfo> getMembersInfoMap() {
         // this method is required by Firebase to actually store a Team's members on the database
         return this.membersInfoMap;
     }
-
 
 
     ////////////////////////////////////////////////////////
@@ -358,11 +396,12 @@ public class Team {
 
     /**
      * Checks if the team has at least 1 game scheduled in the future
+     *
      * @return true if the team has at least 1 game scheduled in the future, false otherwise
      */
-    public boolean hasGamesScheduled(){
+    public boolean hasGamesScheduled() {
         // scheduledGamesMap may be null if this object has been read from the database without having any games
-        if(this.scheduledGames == null){
+        if (this.scheduledGames == null) {
             return false;
         }
         return this.scheduledGames.size() > 0;
@@ -370,22 +409,23 @@ public class Team {
 
     /**
      * Gets the closest upcoming game the team has scheduled, returns null if there are no games scheduled
+     *
      * @return Game object that is scheduled to be played closest to now
      */
-    public Game getClosestScheduledGame(){
+    public Game getClosestScheduledGame() {
         // make sure there is a game scheduled
-        if(! this.hasGamesScheduled()){
+        if (!this.hasGamesScheduled()) {
             return null;
         }
         // find the closest scheduled or minimum game
         Collection<Game> games = this.scheduledGames.values();
         Iterator gameIterator = games.iterator();
-        Game minGame = (Game)gameIterator.next();
-        Log.d("minGame",minGame.toString()); // TODO code works with these logs, removing these crashes the app, why???
-        while(gameIterator.hasNext()){
-            Game currentGame = (Game)gameIterator.next();
-            Log.d("currentGame",currentGame.toString());
-            if(currentGame.compareTo(minGame)<0){
+        Game minGame = (Game) gameIterator.next();
+        Log.d("minGame", minGame.toString()); // KEEP this log (prevents crash)
+        while (gameIterator.hasNext()) {
+            Game currentGame = (Game) gameIterator.next();
+            Log.d("currentGame", currentGame.toString());
+            if (currentGame.compareTo(minGame) < 0) {
                 minGame = currentGame;
             }
         }
@@ -394,9 +434,10 @@ public class Team {
 
     /**
      * Checks if the team has played at least 1 game before
+     *
      * @return true if the team has played a game, false otherwise
      */
-    public boolean hasPlayedGame(){
+    public boolean hasPlayedGame() {
         return this.gamesPlayed.size() > 0;
     }
 

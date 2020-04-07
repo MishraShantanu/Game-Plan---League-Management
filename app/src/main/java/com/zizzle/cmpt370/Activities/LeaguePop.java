@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -70,22 +69,20 @@ public class LeaguePop extends Activity {
                 } else if (sportForLeague.isEmpty()) {
                     typeOfSport.setError("Sport required");
                     typeOfSport.requestFocus();
-                }else if (descriptionOfLeague.isEmpty()){
+                } else if (descriptionOfLeague.isEmpty()) {
                     description.setError("Description required");
                     description.requestFocus();
-                }
-                else {
+                } else {
                     // determine if the league being created has a unique name
                     DatabaseReference sameNameReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(nameOfLeague);
                     sameNameReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()){
+                            if (dataSnapshot.exists()) {
                                 // there is league with nameOfLeague already, cannot create this new league
                                 leagueName.setError("League name must be unique");
                                 leagueName.requestFocus();
-                            }
-                            else{
+                            } else {
                                 // the chosen league name is unique, we can create this league
                                 League newLeague = new League(nameOfLeague, CurrentUserInfo.getCurrentUserInfo(), sportForLeague, descriptionOfLeague);
                                 // add this new league to the database
@@ -115,7 +112,7 @@ public class LeaguePop extends Activity {
 
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect dialogBounds = new Rect();
             getWindow().getDecorView().getHitRect(dialogBounds);
             if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {

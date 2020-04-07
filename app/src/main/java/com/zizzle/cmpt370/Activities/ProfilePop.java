@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -16,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,9 +32,7 @@ import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.R;
 
-import static android.support.constraint.Constraints.TAG;
-
-public class ProfilePop extends Activity{
+public class ProfilePop extends Activity {
 
     EditText memberName, phoneNumber, email;
     Button submitButton;
@@ -61,11 +57,11 @@ public class ProfilePop extends Activity{
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.7));
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.7));
 
 
         // Gathering Input =========================================================================
-        memberName  = findViewById(R.id.displayName);
+        memberName = findViewById(R.id.displayName);
         phoneNumber = findViewById(R.id.phoneNumberInput);
         email = findViewById(R.id.emailInput);
 
@@ -88,7 +84,7 @@ public class ProfilePop extends Activity{
 
                 // Phone Number Text ==========================================================================
                 final TextView phoneNumber = (TextView) findViewById(R.id.phoneNumberInput);
-                phoneNumber.setText(user.getPhoneNumber().replace("-",""));
+                phoneNumber.setText(user.getPhoneNumber().replace("-", ""));
 
                 submitButton = findViewById(R.id.submitButton);
                 submitButton.setOnClickListener(new View.OnClickListener() {
@@ -100,49 +96,46 @@ public class ProfilePop extends Activity{
                         final String phoneNumberString = phoneNumber.getText().toString();
                         final String emailString = email.getText().toString();
 
-                        if(memberNameString.isEmpty()){
+                        if (memberNameString.isEmpty()) {
                             memberName.setError("Display Name Required");
                             memberName.requestFocus();
-                        }
-                        else if(phoneNumberString.isEmpty()){
+                        } else if (phoneNumberString.isEmpty()) {
                             phoneNumber.setError("Phone Number Required");
                             phoneNumber.requestFocus();
-                        }
-                        else if(phoneNumberString.length()!=10){
+                        } else if (phoneNumberString.length() != 10) {
                             phoneNumber.setError("Phone Number Must be 10 Digits");
                             phoneNumber.requestFocus();
-                        }
-                        else if(emailString.isEmpty()){
+                        } else if (emailString.isEmpty()) {
                             email.setError("Email Required");
                             email.requestFocus();
-                        }
-                        else{
+                        } else {
                             // determine which fields the user has changed, only update what is necessary
                             boolean displayNameChanged = !user.getDisplayName().equals(memberNameString);
                             boolean phoneNumberChanged = !user.getPhoneNumber().equals(phoneNumberString);
                             boolean emailChanged = !user.getEmail().equals(emailString);
                             MemberInfo currentUserInfo = new MemberInfo(user);
-                            if(displayNameChanged){
+                            if (displayNameChanged) {
                                 // write the user's new name to the database
-                                Storage.updateDisplayName(user,memberNameString);
+                                Storage.updateDisplayName(user, memberNameString);
                                 // update the current stored MemberInfo for this user to use the new name
-                                CurrentUserInfo.initializeMemberInfo(user.getUserID(),memberNameString);
+                                CurrentUserInfo.initializeMemberInfo(user.getUserID(), memberNameString);
                                 // update the user's profile so firebase authentication keeps track of the updated name
                                 FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(memberNameString).build();
                                 fbUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<Void> task) {}
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                    }
                                 });
                             }
-                            if(phoneNumberChanged){
-                                Storage.updatePhoneNumber(currentUserInfo,phoneNumberString);
+                            if (phoneNumberChanged) {
+                                Storage.updatePhoneNumber(currentUserInfo, phoneNumberString);
                             }
-                            if(emailChanged){
+                            if (emailChanged) {
                                 // pass the old and new emails for this user to the reauthentication popup
                                 Intent reauthenticationIntent = new Intent(ProfilePop.this, ReauthenticationPop.class);
-                                reauthenticationIntent.putExtra("OLD_EMAIL",user.getEmail());
-                                reauthenticationIntent.putExtra("NEW_EMAIL",emailString);
+                                reauthenticationIntent.putExtra("OLD_EMAIL", user.getEmail());
+                                reauthenticationIntent.putExtra("NEW_EMAIL", emailString);
 
                                 // send the user to the reauthentication popup as the user must reauthenticate when changing their login information (in this case email)
                                 startActivity(reauthenticationIntent);
@@ -169,7 +162,7 @@ public class ProfilePop extends Activity{
 
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect dialogBounds = new Rect();
             getWindow().getDecorView().getHitRect(dialogBounds);
             if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {

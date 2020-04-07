@@ -2,8 +2,6 @@ package com.zizzle.cmpt370.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,21 +9,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,16 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
 import com.zizzle.cmpt370.Model.Game;
-import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
-import com.zizzle.cmpt370.Model.Team;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
-import java.util.ArrayList;
-
-import static com.zizzle.cmpt370.Model.CurrentUserInfo.getCurrentUserInfo;
 
 public class GameActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -80,8 +65,8 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
-        currentGame = (Game)getIntent().getSerializableExtra("GAME_CLICKED");
-        currentTeamInfo = (TeamInfo)getIntent().getSerializableExtra("TEAM_INFO");
+        currentGame = (Game) getIntent().getSerializableExtra("GAME_CLICKED");
+        currentTeamInfo = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
 
         final TextView currentTeamText = findViewById(R.id.yourTeamNameText);
         TextView opponentTeamText = findViewById(R.id.opponentTeamNameText);
@@ -103,7 +88,7 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
         if (currentGame.getTeam1Info().equals(currentTeamInfo))
             opponentTeamText.setText(currentGame.getTeam2Info().getName());
 
-        // current team is team2 in this game
+            // current team is team2 in this game
         else opponentTeamText.setText(currentGame.getTeam1Info().getName());
 
 
@@ -199,7 +184,8 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
 
             // Auto Generated.
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         });
     }
 
@@ -220,10 +206,10 @@ public class GameActivity extends AppCompatActivity implements NavigationView.On
                 // the order we input scores into this game depends on whether the current team is team1 or 2 of this game
                 // current team is team1
                 if (currentTeamInfo.equals(currentGame.getTeam1Info()))
-                    currentGame.setGameAsPlayed(currentTeamScore,opponentTeamScore);
+                    currentGame.setGameAsPlayed(currentTeamScore, opponentTeamScore);
 
-                // current team is team2
-                else currentGame.setGameAsPlayed(opponentTeamScore,currentTeamScore);
+                    // current team is team2
+                else currentGame.setGameAsPlayed(opponentTeamScore, currentTeamScore);
 
                 // add this played game to the database
                 Storage.writePlayedGame(currentGame);
