@@ -67,12 +67,8 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //displays menu button
 
-
-        // Temporary User created ==========================================================================
-        //TODO Mar. 4 2020: change this to get member from the database
-
-        // the clicked on member is passed via intent
-        final MemberInfo clickedMemberInfo = (MemberInfo)getIntent().getSerializableExtra("CLICKED_MEMBER");
+        // the clicked on member is passed via intent ==========================================================================
+        final MemberInfo clickedMemberInfo = (MemberInfo) getIntent().getSerializableExtra("CLICKED_MEMBER");
 
         // read the clicked member in from the database
         DatabaseReference clickedMemberReference = FirebaseDatabase.getInstance().getReference().child("users").child(clickedMemberInfo.getDatabaseKey());
@@ -99,7 +95,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
 
                 // if the current user of the app is the owner of the current team, display the remove member button
                 // get the owner info again from our intent
-                MemberInfo ownerInfo = (MemberInfo)getIntent().getSerializableExtra("OWNER_INFO");
+                MemberInfo ownerInfo = (MemberInfo) getIntent().getSerializableExtra("OWNER_INFO");
 
                 // Remove Player Button ==========================================================================
                 // Show the remove player button if you are the owner and the player to remove is not you.
@@ -164,7 +160,6 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
         });
 
 
-
         // Remove player button ===================================
         removePlayer = findViewById(R.id.remove_player);
         removePlayer.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +167,7 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
             public void onClick(View view) {
                 // remove the team member from the team
                 TeamInfo currentTeamInfo = (TeamInfo) getIntent().getSerializableExtra("TEAM_INFO");
-                Storage.removeMemberFromTeam(clickedMemberInfo,currentTeamInfo);
+                Storage.removeMemberFromTeam(clickedMemberInfo, currentTeamInfo);
                 Toast.makeText(TeamMemberActivity.this, "Team member removed successfully", Toast.LENGTH_SHORT).show();
 
                 // Move player back to the team page.
@@ -212,7 +207,8 @@ public class TeamMemberActivity extends AppCompatActivity implements NavigationV
                 Intent toLogOut = new Intent(this, SigninActivity.class);
                 toLogOut.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(toLogOut);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);        }
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        }
         //close drawer
         mDrawerLayout.closeDrawer(GravityCompat.START);
 

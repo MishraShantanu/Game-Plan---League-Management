@@ -64,15 +64,11 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
     private DrawerLayout menuDrawer;
     private ActionBarDrawerToggle toggleDrawer;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); //Suppress soft-keyboard until user actually touches the EditTextView
         setContentView(R.layout.activity_teams);
-
 
 
         // add top bar with title 'Teams'
@@ -144,7 +140,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     // set the league description.
-                    if(dataSnapshot.exists()){
+                    if (dataSnapshot.exists()) {
                         League currentLeague = dataSnapshot.getValue(League.class);
                         MemberInfo ownerInfo = currentLeague.getOwnerInfo();
                         MemberInfo currentUserInfo = getCurrentUserInfo();
@@ -176,7 +172,7 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
                         // only display the remove league button to the owner of the league
                         if (currentUserInfo.equals(ownerInfo)) {
                             removeLeagueButton.setVisibility(View.VISIBLE);
-                        } else  removeLeagueButton.setVisibility(View.GONE);
+                        } else removeLeagueButton.setVisibility(View.GONE);
                     }
                 }
 
@@ -227,9 +223,12 @@ public class TeamsActivity extends AppCompatActivity implements NavigationView.O
 
             // these two are not needed for search but must be override.
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
     }
 

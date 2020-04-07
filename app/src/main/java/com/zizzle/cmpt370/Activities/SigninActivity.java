@@ -84,28 +84,20 @@ public class SigninActivity extends AppCompatActivity {
 
                 if (pass.isEmpty() && email.isEmpty()) {
                     Toast.makeText(SigninActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
-                }
-
-                else if (email.isEmpty()) {
+                } else if (email.isEmpty()) {
                     emailId.setError("Email address is required");
                     emailId.requestApplyInsets();
-                }
-
-                else if (pass.isEmpty()) {
+                } else if (pass.isEmpty()) {
                     password.setError("Password is required");
                     password.requestFocus();
-                }
-
-                else if (!(pass.isEmpty() && email.isEmpty())) {
+                } else if (!(pass.isEmpty() && email.isEmpty())) {
                     mFirebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()) {
                                 Toast.makeText(SigninActivity.this, "Combination of email and password is invalid", Toast.LENGTH_SHORT).show();
 
-                            }
-
-                            else {
+                            } else {
                                 Intent intoMain = new Intent(SigninActivity.this, HomeActivity.class);
                                 intoMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intoMain);
@@ -115,9 +107,7 @@ public class SigninActivity extends AppCompatActivity {
 
                         ;
                     });
-                }
-
-                else {
+                } else {
                     Toast.makeText(SigninActivity.this, "Something went wrong, try again", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -144,8 +134,6 @@ public class SigninActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     @Override

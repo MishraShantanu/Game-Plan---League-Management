@@ -33,7 +33,7 @@ public class RemoveConfirmPop extends Activity {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        getWindow().setLayout((int)(dm.widthPixels * 0.8), (int)(dm.heightPixels * 0.5));
+        getWindow().setLayout((int) (dm.widthPixels * 0.8), (int) (dm.heightPixels * 0.5));
 
 
         // Views =================================================================================
@@ -71,7 +71,7 @@ public class RemoveConfirmPop extends Activity {
 
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect dialogBounds = new Rect();
             getWindow().getDecorView().getHitRect(dialogBounds);
             if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {

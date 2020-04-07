@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -17,20 +16,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zizzle.cmpt370.Model.CurrentUserInfo;
-import com.zizzle.cmpt370.Model.League;
 import com.zizzle.cmpt370.Model.LeagueInfo;
 import com.zizzle.cmpt370.Model.MemberInfo;
 import com.zizzle.cmpt370.Model.Storage;
 import com.zizzle.cmpt370.Model.Team;
-import com.zizzle.cmpt370.Model.Member;
 import com.zizzle.cmpt370.Model.TeamInfo;
 import com.zizzle.cmpt370.R;
 
@@ -56,11 +51,11 @@ public class TeamsPop extends Activity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout((int)(width * 0.8), (int)(height * 0.4));
+        getWindow().setLayout((int) (width * 0.8), (int) (height * 0.4));
 
 
         // Gathering Input =========================================================================
-        teamName  = findViewById(R.id.teamName);
+        teamName = findViewById(R.id.teamName);
         submitButton = findViewById(R.id.submitButton);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -72,17 +67,15 @@ public class TeamsPop extends Activity {
 
                 if (nameOfTeam.isEmpty()) {
                     Toast.makeText(TeamsPop.this, "Team name is required", Toast.LENGTH_SHORT).show();
-                }
-
-                else {
+                } else {
                     final MemberInfo currentUserInfo = CurrentUserInfo.getCurrentUserInfo();
                     Bundle extras = getIntent().getExtras();
-                    if(extras != null){
+                    if (extras != null) {
                         // get the current league name
                         final String currentLeagueName = extras.getString("CURRENT_LEAGUE_NAME");
                         final LeagueInfo parentLeagueInfo = new LeagueInfo(currentLeagueName);
                         int initialWins = 0; // new team initially has no wins
-                        final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam,currentLeagueName,initialWins);
+                        final TeamInfo newTeamInfo = new TeamInfo(nameOfTeam, currentLeagueName, initialWins);
                         // check if the input team name is unique for this league
                         DatabaseReference newTeamReference = FirebaseDatabase.getInstance().getReference().child("Leagues").child(parentLeagueInfo.getDatabaseKey()).child("teamsInfoMap").child(newTeamInfo.getName());
                         newTeamReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -90,19 +83,18 @@ public class TeamsPop extends Activity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 // called to read data, here we should retrieve null from the database if team name is unique
                                 boolean teamAlreadyExists = dataSnapshot.exists();
-                                if(teamAlreadyExists){
+                                if (teamAlreadyExists) {
                                     // team doesn't have a unique name
                                     teamName.setError("Team name must be unique");
                                     teamName.requestFocus();
-                                }
-                                else{
+                                } else {
                                     // team name is unique, create and add this team to the database
                                     Team newTeam = new Team(nameOfTeam, currentUserInfo, parentLeagueInfo);
                                     Storage.writeTeam(newTeam);
                                     // add this new team to its parent league and vice versa on the database
-                                    Storage.addTeamToLeague(parentLeagueInfo,newTeamInfo);
+                                    Storage.addTeamToLeague(parentLeagueInfo, newTeamInfo);
                                     // add the current user to this team, and this team to the current user
-                                    Storage.addTeamToMember(currentUserInfo,newTeamInfo);
+                                    Storage.addTeamToMember(currentUserInfo, newTeamInfo);
 
                                     // close this pop-up activity
                                     finish();
@@ -131,7 +123,7 @@ public class TeamsPop extends Activity {
 
     // Close activity if clicked outside of page.
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             Rect dialogBounds = new Rect();
             getWindow().getDecorView().getHitRect(dialogBounds);
             if (!dialogBounds.contains((int) event.getX(), (int) event.getY())) {
