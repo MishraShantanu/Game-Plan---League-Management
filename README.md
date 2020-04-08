@@ -85,3 +85,7 @@ KEY FEATURES
 
 # How to Access the Main Features of the "GamePlan" App:
 A helpful file was created to outline the features of each main page on the app. It is not a comprehensive list but is intended to help you access key features. The file is available here: [How to Access Main App Features](https://git.cs.usask.ca/test_alpha/project_1/-/wikis/How-to-Access-Main-App-Features)
+
+
+# Tests
+Our "Acceptance Test Results" provided in the final project deliverables wiki go through step-by-step instructions for how to access & test the main app features. A video for each test is also provided. [Acceptance Test Results](https://git.cs.usask.ca/test_alpha/project_1/-/wikis/Acceptance-Test-Results)
