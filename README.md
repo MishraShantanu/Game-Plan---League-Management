@@ -89,3 +89,7 @@ A helpful file was created to outline the features of each main page on the app.
 
 # Tests
 Our "Acceptance Test Results" provided in the final project deliverables wiki go through step-by-step instructions for how to access & test the main app features. A video for each test is also provided. [Acceptance Test Results](https://git.cs.usask.ca/test_alpha/project_1/-/wikis/Acceptance-Test-Results)
+
+## Video Links
+*  Final Presentation: https://youtu.be/9BrDlAfIdjs
+*  Product Demo: https://youtu.be/IEaiSEWLgxA
